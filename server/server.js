@@ -125,22 +125,22 @@ class Game {
     this.password = password;
   }
   updateUsers() {
-    this.host = Math.max(0, this.host % this.users.size);
+    this.gm = Math.max(0, this.gm % this.users.size);
     const data = Object.assign({}, this);
     let s = JSON.stringify({ event: "gameData", data }, (key, value) => value);
     for (const user of this.users)
       clients[ids[user]].send(s);
   }
-  isHost(id) {
+  isGM(id) {
     let i = 0;
     for (let user of this.users)
-      if (i++ === this.host)
+      if (i++ === this.gm)
         return user == id;
   }
-  getHost() {
+  getGM() {
     let i = 0;
     for (let user of this.users)
-      if (i++ === this.host)
+      if (i++ === this.gm)
         return user;
   }
   addUser(id, avatar, name) {
@@ -166,50 +166,63 @@ class Game {
     this.updateUsers();
   }
   everyoneReady() {
-      for (const user of this.users)
-        if (!this.userData[user].ready)
-          return false;
-      return true;
+    for (const user of this.users)
+      if (!this.userData[user].ready)
+        return false;
+    return true;
   }
   createDefaultData(avatar, name) {
     const defaultSpecie = Object.keys(this.species)[0];
     return {
+      playerName: name,
       species: defaultSpecie,
       level: this.startingLevel,
       xp: 0,
       body: 0,
       mind: 0,
       soul: 0,
+      /** @type {number} */
       constitution: this.species[defaultSpecie].constitution,
+      /** @type {number} */
       endurance: this.species[defaultSpecie].endurance,
+      /** @type {number} */
       effervescence: this.species[defaultSpecie].effervescence,
+      /** @type {[number, number]} */
       blockRating: this.species[defaultSpecie].blockRating,
+      /** @type {[number, number]} */
       dodgeRating: this.species[defaultSpecie].dodgeRating,
       blockBonus: 0,
       dodgeBonus: 0,
-      gifted: this.species[defaultSpecie].gifted.set || [],
+      /** @type {Set.<string>} */
+      gifted: new JSet(this.species[defaultSpecie].languages.set ?? this.species[defaultSpecie].gifted.set),
+      /** @type {number} */
       availableGifteds: this.species[defaultSpecie].gifted.any || 0,
+      /** @type {StatModifier} */
       landTravelMod: new StatModifier(),
+      /** @type {StatModifier} */
       waterTravelMod: new StatModifier(),
+      /** @type {StatModifier} */
       airTravelMod: new StatModifier(),
       dhpMod: new StatModifier(),
+      /** @type {StatModifier} */
       shpMod: new StatModifier(),
+      /** @type {StatModifier} */
       staminaMod: new StatModifier(),
-      /**
-       * @type {Object.<string[]>}
-       */
-      languages: this.species[defaultSpecie].languages.set || [],
+      dhp: this.startingLevel, // effervescence * soul, except soul is 0 for new characters so that equates to 0
+      shp: this.startingLevel, // ^
+      stamina: this.startingLevel, // ^
+      /** @type {Set.<string>} */
+      languages: new JSet(this.species[defaultSpecie].languages.set ?? this.species[defaultSpecie].languages.set),
+      /** @type {number} */
       availableSimpleLanguages: this.species[defaultSpecie].languages.simple || 0,
+      /** @type {number} */
       availableComplexLanguages: this.species[defaultSpecie].languages.complex || 0,
+      /** @type {number} */
       availableEitherLanguages: this.species[defaultSpecie].languages.either || 0,
-      /**
-       * @type {Object.<string[]>}
-       */
-      talents: [],
-      /**
-       * @type {Object.<[string, int][]>}
-       */
-      inventory: [],
+      /** @type {Set.<string>} */
+      talents: new JSet(),
+      /** @type {Set.<string>} */
+      inventory: new JSet(),
       ready: false,
       avatar,
       name,
@@ -223,13 +236,13 @@ function guid() {
 
 function randHex(length) {
   return Math.random()
-      .toString(16)
-      .slice(2, 2 + length);
+    .toString(16)
+    .slice(2, 2 + length);
 }
 
 router.ws(
   "/api/ws",
-  /**@param {WebSocket} ws*/ (ws) => {
+  /** @param {WebSocket} ws */ (ws) => {
     const uuid = guid();
     clients[uuid] = ws;
     uids.add(uuid);
@@ -244,39 +257,38 @@ router.ws(
         msg = data;
       }
       if (msg.event) {
-          switch (msg.event) {
-            case "userData":
-              ws.data = msg.data;
-              ids[msg.data.userId] = uuid;
-              if (!(msg.data.channelId in games))
-                games[msg.data.channelId] = new Game(msg.data.gameName, msg.data.channelId);
-              const game = games[msg.data.channelId];
-              game.addUser(msg.data.userId, msg.data.avatar, msg.data.name);
-              return;
-            case "ready":
-              games[ws.data.channelId].readyUser(ws.data.userId, msg.data);
-              return;
-            case "reqUserData": {
-              ws.send(JSON.stringify({ event: "resUserData", data: clients[ids[msg.data]].data }));
-              return;
-            }
-            case "addSpecies": {
-
-            }
+        switch (msg.event) {
+          case "userData":
+            ws.data = msg.data;
+            ids[msg.data.userId] = uuid;
+            if (!(msg.data.channelId in games))
+              games[msg.data.channelId] = new Game(msg.data.gameName, msg.data.channelId);
+            const game = games[msg.data.channelId];
+            game.addUser(msg.data.userId, msg.data.avatar, msg.data.name);
+            return;
+          case "ready":
+            games[ws.data.channelId].readyUser(ws.data.userId, msg.data);
+            return;
+          case "reqUserData": {
+            ws.send(JSON.stringify({ event: "resUserData", data: clients[ids[msg.data]].data }));
+            return;
           }
+          case "addSpecies": {
+
+          }
+        }
       }
       console.log(msg, JSON.stringify(data));
     });
     ws.on("close", () => {
-        delete clients[uuid];
-        uids.delete(uuid);
-        if (ws.data?.channelId in rooms) {
-            const room = rooms[ws.data.channelId];
-            room.removeUser(ws.data.userId);
-            if (room.users.size == 0) {
-                delete rooms[ws.data.channelId];
-            }
-        }
+      delete clients[uuid];
+      uids.delete(uuid);
+      if (ws.data?.channelId in games) {
+        const game = games[ws.data.channelId];
+        game.removeUser(ws.data.userId);
+        if (game.users.size == 0)
+          delete games[ws.data.channelId];
+      }
     });
   }
 );

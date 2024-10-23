@@ -1,9 +1,12 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   envDir: '../',
   server: {
+    watch: {
+      usePolling: true,
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:3001',

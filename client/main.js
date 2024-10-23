@@ -1,56 +1,16 @@
-import { DiscordSDK, DiscordSDKMock } from "@discord/embedded-app-sdk";
-
 import './style.css'
-import { setupPage } from './lazy';
-import { speciesStats } from './constants';
+import setupPage from './lazy';
+import setupDiscordSdk from "./util/discord";
 
-let auth;
 let pageNum = 1;
 let pdf = null;
 let totalPages = 0;
 let renderingTwoPages = false;
-export let level = 10;
-
-const queryParams = new URLSearchParams(window.location.search);
-const isEmbedded = queryParams.get("frame_id") != null;
-
-let discordSdk;
-if (isEmbedded) {
-  discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
-} else {
-  const mockUserId = getOverrideOrRandomSessionValue("user_id");
-  const mockGuildId = getOverrideOrRandomSessionValue("guild_id");
-  const mockChannelId = getOverrideOrRandomSessionValue("channel_id");
-
-  discordSdk = new DiscordSDKMock(
-      import.meta.env.VITE_DISCORD_CLIENT_ID,
-      mockGuildId,
-      mockChannelId
-  );
-  const discriminator = String(mockUserId.charCodeAt(0) % 5);
-
-  discordSdk._updateCommandMocks({
-      authenticate: async () => {
-          return {
-              access_token: "mock_token",
-              user: {
-                  username: mockUserId,
-                  discriminator,
-                  id: mockUserId,
-                  avatar: null,
-                  public_flags: 1,
-              },
-              scopes: [],
-              expires: new Date(2112, 1, 1).toString(),
-              application: {
-                  description: "mock_app_description",
-                  icon: "mock_app_icon",
-                  id: "mock_app_id",
-                  name: "mock_app_name",
-              },
-          };
-      },
-  });
+export let characterData = {
+  level: 10
+};
+export let speciesStats = {
+  nada: { name: "", constitution: 4, endurance: 5, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { any: 2 }, languages: { simple: 2 } },
 }
 
 import * as pdfjsLib from "pdfjs-dist";
@@ -60,73 +20,7 @@ setupDiscordSdk().then(() => {
   console.log("done");
 });
 
-async function setupDiscordSdk() {
-  await discordSdk.ready();
-  console.log("Discord SDK is ready");
-
-  // Authorize with Discord Client
-  const { code } = await discordSdk.commands.authorize({
-    client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
-    response_type: "code",
-    state: "",
-    prompt: "none",
-    scope: [
-      "identify",
-			'guilds',
-			"guilds.members.read"
-    ]
-  });
-
-  // Retrieve an access_token from your activity's server
-  // Note: We need to prefix our backend `/api/token` route with `/.proxy` to stay compliant with the CSP.
-  // Read more about constructing a full URL and using external resources at
-  // https://discord.com/developers/docs/activities/development-guides#construct-a-full-url
-  const response = await fetch("/.proxy/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      code,
-    }),
-  });
-  const { access_token } = await response.json();
-
-  // Authenticate with Discord client (using the access_token)
-  auth = await discordSdk.commands.authenticate({access_token});
-
-  if (auth == null)
-    throw new Error("Authentication failed");
-
-  const guildMember = await fetch(
-		`https://discord.com/api/users/@me/guilds/${discordSdk.guildId}/member`,
-		{
-			method: 'get',
-			headers: { Authorization: `Bearer ${access_token}` },
-		},
-	)
-		.then((j) => j.json())
-		.catch(() => {
-			return null;
-		});
-
-	// Done with discord-specific setup
-
-	const authState = {
-		...authResponse,
-		user: {
-			...authResponse.user,
-			id:
-				new URLSearchParams(window.location.search).get('user_id') ??
-				authResponse.user.id,
-		},
-		guildMember,
-	};
-}
-
 async function loadPdf() {
-  if (pdf === null)
-    return;
   const loadingIndicator = document.getElementById('loading');
   loadingIndicator.style.display = 'block'; // Show loading
 
@@ -227,21 +121,6 @@ export function goToPreviousPage(event) {
     renderPage(pageNum);
     event.stopPropagation();
   }
-}
-
-function getOverrideOrRandomSessionValue(queryParam) {
-  const overrideValue = queryParams.get(queryParam);
-  if (overrideValue != null)
-      return overrideValue;
-
-  const currentStoredValue = sessionStorage.getItem(queryParam);
-  if (currentStoredValue != null)
-      return currentStoredValue;
-
-  // Set queryParam to a random 8-character string
-  const randomString = Math.random().toString(36).slice(2, 10);
-  sessionStorage.setItem(queryParam, randomString);
-  return randomString;
 }
 
 window.addEventListener('resize', () => {
