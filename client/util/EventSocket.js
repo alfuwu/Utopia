@@ -15,6 +15,7 @@ export default class EventSocket extends WebSocket {
       } catch {
         console.error("Non JSON message:", msg);
       }
+      //console.log("RECEIVED EVENT " + msg.event);
       if (this.listeners[msg.event]?.length)
         for (const listener of this.listeners[msg.event])
           listener(msg?.data || msg);

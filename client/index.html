@@ -2,12 +2,473 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Utopia TTRPG</title>
+    <style>
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.vanilla:hover {
+  filter: drop-shadow(0 0 2em #f7df1eaa);
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Center the loading container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Take full viewport height */
+}
+
+/* Style for the loading icon */
+.loading-icon {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3); /* Light background for spinner */
+  border-top-color: #646cff; /* Active color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.character-creation {
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  right: 10px;
+  bottom: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.character-bar {
+  position: absolute;
+  top: 22.5px;
+  left: 15px;
+  right: 15px;
+  height: 50px;
+  border: 3px solid #000000ee;
+  background-color: #343434;
+}
+
+/* Position the character name input in the top-left corner */
+.character-name-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 10px;
+}
+
+/* Style the input field */
+.character-name-container input[type="text"] {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 0px solid #646cff;
+  background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.character-name-container label {
+  margin-right: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Stats container for block, dodge, DHP, and SHP */
+.character-thingy-container {
+  position: absolute;
+  top: 100px; /* Position this below the name input */
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Container for Block and Dodge */
+.block-dodge-container {
+  display: flex;
+  gap: 20px; /* Add space between block and dodge fields */
+}
+
+/* Container for DHP and SHP */
+.dhp-shp-container {
+  display: flex;
+  gap: 20px; /* Add space between DHP and SHP fields */
+}
+
+.block-container input, .dodge-container input,
+.dhp-container input, .shp-container input {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 0px;
+  border: 1px solid #646cff;
+  background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+  width: 3em;
+}
+.dhp-container input {
+  margin-left: 8px;
+}
+.shp-container input {
+  margin-left: 18px;
+}
+
+/* Position the character name input in the top-left corner */
+.character-name-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 10px;
+}
+
+/* Position the species input in the top-right corner */
+.character-species-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+}
+
+/* Style the species input field */
+.character-species-container input[type="text"] {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 0px solid #646cff;
+  background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.character-species-container label {
+  margin-right: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Attribute container for all fields */
+.attribute-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px; /* Space between each attribute field */
+}
+
+/* Each attribute field and its subfields */
+.attribute-field {
+  display: grid;
+  grid-template-columns: 200px auto; /* 2 columns: labels and value-box */
+  align-items: center;
+  gap: 10px; /* Space between label and value box */
+  position: relative;
+  padding-bottom: 20px;
+}
+
+/* Subfields (e.g. Speed, Dexterity) */
+.subfield {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+/* Checkmark next to subfields */
+.checkmark {
+  color: #646cff;
+}
+
+/* Subfield line that connects two subfields */
+.subfield-line {
+  position: absolute;
+  height: 2px;
+  background-color: #646cff;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Value box with decrement/increment buttons and value display */
+.value-box {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.value-box button {
+  background-color: #1a1a1a;
+  color: white;
+  border: 1px solid #646cff;
+  padding: 5px 10px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.value-box button:hover {
+  background-color: #646cff;
+}
+
+.value-box .value {
+  min-width: 30px;
+  text-align: center;
+  background-color: #1a1a1a;
+  color: white;
+  border: 1px solid #646cff;
+  padding: 5px;
+  font-size: 1em;
+}
+
+/* Ensure all boxes line up, regardless of label length */
+.attribute-field label, .subfield label {
+  white-space: nowrap;
+}
+
+.page {
+  display: none;
+}
+
+/* Keyframe for spinning effect */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+
+  .character-name-container input[type="text"] {
+    background-color: #f9f9f9;
+    color: #213547;
+  }
+
+  .character-name-container label {
+    color: #213547;
+  }
+  
+  .character-species-container input[type="text"] {
+    background-color: #f9f9f9;
+    color: #213547;
+  }
+
+  .character-species-container label {
+    color: #213547;
+  }
+
+  .block-container input, .dodge-container input,
+  .dhp-container input, .shp-container input {
+    background-color: #f9f9f9;
+    color: #213547;
+  }
+
+  /* Line color adjustments for light mode */
+  @media (prefers-color-scheme: light) {
+    .subfield-line {
+      background-color: #747bff;
+    }
+
+    .value-box button, .value-box .value {
+      background-color: #f9f9f9;
+      color: #213547;
+    }
+  }
+}
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <!-- Pages -->
+      <div id="charactercreation" class="page character-creation">
+        <div class="character-bar"></div>
+        <div class="character-name-container">
+          <label for="character-name">Name:</label>
+          <input type="text" id="character-name" name="character-name" placeholder="Bob Jr., the local bartender">
+        </div>
+
+        <div class="character-thingy-container">
+          <div class="block-dodge-container">
+            <div class="block-container">
+              <label for="block">Block:</label>
+              <input type="text" id="block" name="block" placeholder="2d4">
+            </div>
+            
+            <div class="dodge-container">
+              <label for="dodge">Dodge:</label>
+              <input type="text" id="dodge" name="dodge" placeholder="2d12">
+            </div>
+          </div>
+      
+          <div class="dhp-shp-container">
+            <div class="dhp-container">
+              <label for="dhp">DHP:</label>
+              <input type="text" id="dhp" name="dhp" placeholder="0">
+            </div>
+            
+            <div class="shp-container">
+              <label for="shp">SHP:</label>
+              <input type="text" id="shp" name="shp" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="character-species-container">
+          <label for="character-species">Species:</label>
+          <input type="text" id="character-species" name="character-species" placeholder="Human">
+        </div>
+
+        <!-- Agility Section -->
+        <div class="attribute-container">
+          <div class="attribute-field">
+            <label>Agility:</label>
+            <div class="subfield">
+              <span class="checkmark">✔</span>
+              <label>Speed</label>
+              <div class="value-box">
+                <button class="decrement">-</button>
+                <span class="value" id="speed-value">0</span>
+                <button class="increment">+</button>
+              </div>
+            </div>
+            <div class="subfield">
+              <span class="checkmark">✔</span>
+              <label>Dexterity</label>
+              <div class="value-box">
+                <button class="decrement">-</button>
+                <span class="value" id="dexterity-value">0</span>
+                <button class="increment">+</button>
+              </div>
+            </div>
+            <div class="subfield-line"></div>
+          </div>
+
+          <!-- Strength Section -->
+          <div class="attribute-field">
+            <label>Strength:</label>
+            <div class="subfield">
+              <span class="checkmark">✔</span>
+              <label>Power</label>
+              <div class="value-box">
+                <button class="decrement">-</button>
+                <span class="value" id="power-value">0</span>
+                <button class="increment">+</button>
+              </div>
+            </div>
+            <div class="subfield">
+              <span class="checkmark">✔</span>
+              <label>Fortitude</label>
+              <div class="value-box">
+                <button class="decrement">-</button>
+                <span class="value" id="fortitude-value">0</span>
+                <button class="increment">+</button>
+              </div>
+            </div>
+            <div class="subfield-line"></div>
+          </div>
+        </div>
+      </div>
+      <div id="ingame" class="page">In-Game Page Content</div>
+      <div id="loading" class="page">
+        <div class="loading-container">
+          <div class="loading-icon"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+  
+      <!-- GM Pages -->
+      <div id="gm-creature" class="page">GM Creature Page Content</div>
+      <div id="gm-fight" class="page">GM Fight Page Content</div>
+      <div id="gm-ingame" class="page">GM In-Game Page Content</div>
+      <div id="gm-language" class="page">GM Language Page Content</div>
+      <div id="gm-species" class="page">GM Species Page Content</div>
+      <div id="gm-talent" class="page">GM Talent Page Content</div>
+    </div>
     <script type="module" src="/main.js"></script>
   </body>
 </html>

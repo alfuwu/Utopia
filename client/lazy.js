@@ -1,10 +1,11 @@
-import rocketLogo from '/rocket.png'
-import { characterData, speciesStats, goToNextPage, goToPreviousPage } from './main.js'
+import icon from '/icon.svg'
+import { game, characterData } from './main.js'
+import { goToNextPage, goToPreviousPage } from './util/pdf.js';
 
 export default function setupPage() {
   document.querySelector('#app').innerHTML = `
   <div>
-    <img src="${rocketLogo}" class="logo" alt="Discord" />
+    <img src="${icon}" class="logo" alt="Discord" />
     <h1>Utopia TTRPG</h1>
     
     <div id="loading" style="display: none;">Loading PDF...</div>
@@ -145,22 +146,21 @@ function cancelInvalidNumberInputs(event) {
 export function generateSpeciesList() {
   const speciesSelect = document.getElementById("species");
   
-  // Clear any existing options in case this function is called multiple times
   speciesSelect.innerHTML = '';
   
   // Loop through speciesStats and create an option for each species
-  for (const species in speciesStats) {
-  const option = document.createElement('option');
-  option.value = species; // The key in speciesStats
-  option.textContent = species.name;
-  speciesSelect.appendChild(option);
+  for (const species in game.speciesStats) {
+    const option = document.createElement('option');
+    option.value = species; // The key in speciesStats
+    option.textContent = game.speciesStats[species].name;
+    speciesSelect.appendChild(option);
   }
 }
   
 // Update base stats when species is selected
 export function updateBaseStats() {
   const selectedSpecies = document.getElementById("species").value;
-  const stats = speciesStats[selectedSpecies];
+  const stats = game.speciesStats[selectedSpecies];
 
   // Set the base stats in the UI
   document.getElementById("constitution").textContent = stats.constitution;

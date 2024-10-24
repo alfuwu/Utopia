@@ -1,4 +1,6 @@
 import { DiscordSDK, DiscordSDKMock } from "@discord/embedded-app-sdk";
+import { game, characterData } from "../main";
+import { generateSpeciesList } from "../lazy";
 import EventSocket from './EventSocket';
 
 let auth;
@@ -100,7 +102,7 @@ export default async function setupDiscordSdk() {
 
   let uidRes;
   let uuid = new Promise(r => uidRes = r);
-  socket = new EventSocket(`wss://${location.host}/api/ws`);
+  socket = new EventSocket(`/.proxy/api/ws`);
   socket.on("clientId", function (data) {
     uidRes(data);
   });
@@ -113,9 +115,20 @@ export default async function setupDiscordSdk() {
     userData[data.userId] = data;
   });
   socket.on("gameData", data => {
-    setGame(data);
-    if (data.state != LOBBY)
-      setPage(data.state);
+    delete game.speciesStats[""];
+    Object.assign(game, data);
+    generateSpeciesList();
+  });
+  socket.on("species", data => {
+    delete speciesStats[""];
+    Object.assign(speciesStats, data);
+    generateSpeciesList();
+  });
+  socket.on("talents", data => {
+    Object.assign(talents, data);
+  });
+  socket.on("resSelfData", data => {
+    Object.assign(characterData, data);
   });
   uuid = await uuid;
 
