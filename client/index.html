@@ -19,6 +19,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* prevent text selection */
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 a {
@@ -85,6 +90,10 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+option[value=""][disabled] {
+  display: none;
+}
+
 /* Center the loading container */
 .loading-container {
   display: flex;
@@ -114,6 +123,17 @@ button:focus-visible {
   border: 3px solid rgba(255, 255, 255, 0.4);
 }
 
+.left-bar {
+  position: fixed;
+  z-index: -1;
+  top: 0px;
+  left: 20px;
+  height: 100vh;
+  width: 405px;
+  border: 3px solid #000000ee;
+  background-color: #161719;
+}
+
 .character-bar {
   position: absolute;
   top: 22.5px;
@@ -140,6 +160,7 @@ button:focus-visible {
   border: 0px solid #646cff;
   background-color: #1a1a1a;
   color: rgba(255, 255, 255, 0.87);
+  padding-right: 7em;
 }
 
 .character-name-container label {
@@ -153,38 +174,9 @@ button:focus-visible {
   position: absolute;
   top: 100px; /* Position this below the name input */
   left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Container for Block and Dodge */
-.block-dodge-container {
-  display: flex;
-  gap: 20px; /* Add space between block and dodge fields */
-}
-
-/* Container for DHP and SHP */
-.dhp-shp-container {
-  display: flex;
-  gap: 20px; /* Add space between DHP and SHP fields */
-}
-
-.block-container input, .dodge-container input,
-.dhp-container input, .shp-container input {
-  padding: 10px;
-  font-size: 1em;
-  border-radius: 0px;
-  border: 1px solid #646cff;
-  background-color: #1a1a1a;
-  color: rgba(255, 255, 255, 0.87);
-  width: 3em;
-}
-.dhp-container input {
-  margin-left: 8px;
-}
-.shp-container input {
-  margin-left: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 4px;
 }
 
 /* Position the character name input in the top-left corner */
@@ -204,8 +196,9 @@ button:focus-visible {
 }
 
 /* Style the species input field */
-.character-species-container input[type="text"] {
+.character-species-container select {
   padding: 10px;
+  padding-right: 10em;
   font-size: 1em;
   border-radius: 5px;
   border: 0px solid #646cff;
@@ -219,48 +212,78 @@ button:focus-visible {
   color: rgba(255, 255, 255, 0.87);
 }
 
+.character-species-container select:invalid {
+  color: gray;
+}
+
+.attributes {
+  text-align: left;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  position: absolute;
+  top: 220px;
+  left: 20px;
+  gap: 0px;
+}
+
 /* Attribute container for all fields */
 .attribute-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 40px; /* Space between each attribute field */
+  flex-direction: column;
+  gap: 0px; /* Space between each attribute field */
 }
 
-/* Each attribute field and its subfields */
+/* Each attribute field and its subtraits */
 .attribute-field {
-  display: grid;
-  grid-template-columns: 200px auto; /* 2 columns: labels and value-box */
+  display: flex;
   align-items: center;
   gap: 10px; /* Space between label and value box */
   position: relative;
   padding-bottom: 20px;
 }
 
-/* Subfields (e.g. Speed, Dexterity) */
-.subfield {
+.attribute-label {
+  display: flex;
+  align-items: center;
+}
+
+.subtrait-field {
+  display: flex;
+  flex-direction: column;
+  zoom: 0.7;
+}
+
+/* subtraits (e.g. Speed, Dexterity) */
+.subtrait {
+  margin-left: 30px;
+  margin-top: 15px;
   display: flex;
   align-items: center;
   gap: 10px;
-  position: relative;
+  /*position: relative;*/
 }
 
-/* Checkmark next to subfields */
+/* Checkmark next to subtraits */
 .checkmark {
   color: #646cff;
+  cursor: pointer;
 }
 
-/* Subfield line that connects two subfields */
-.subfield-line {
-  position: absolute;
-  height: 2px;
-  background-color: #646cff;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.subtrait-line {
+  position: relative;
+  z-index: -1;
+  height: 0.1px;
+  background-color: #646cffaa;
+  width: 11em;
+  top: 23px;
+  left: 20px;
+  right: 20px;
 }
 
-/* Value box with decrement/increment buttons and value display */
+.ml10 {
+  margin-left: 10px;
+}
+
 .value-box {
   display: flex;
   align-items: center;
@@ -290,8 +313,21 @@ button:focus-visible {
   font-size: 1em;
 }
 
+.plus-minus-button-thingies {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1px;
+}
+
+.plus-minus-button-thingies button {
+  padding: 0px;
+  padding-left: 3px;
+  padding-right: 3px;
+  border-radius: 0px;
+}
+
 /* Ensure all boxes line up, regardless of label length */
-.attribute-field label, .subfield label {
+.attribute-field label, .subtrait label {
   white-space: nowrap;
 }
 
@@ -350,7 +386,7 @@ button:focus-visible {
 
   /* Line color adjustments for light mode */
   @media (prefers-color-scheme: light) {
-    .subfield-line {
+    .subtrait-line {
       background-color: #747bff;
     }
 
@@ -366,90 +402,241 @@ button:focus-visible {
     <div id="app">
       <!-- Pages -->
       <div id="charactercreation" class="page character-creation">
+        <div class="left-bar"></div>
         <div class="character-bar"></div>
         <div class="character-name-container">
           <label for="character-name">Name:</label>
           <input type="text" id="character-name" name="character-name" placeholder="Bob Jr., the local bartender">
         </div>
 
-        <div class="character-thingy-container">
-          <div class="block-dodge-container">
-            <div class="block-container">
-              <label for="block">Block:</label>
-              <input type="text" id="block" name="block" placeholder="2d4">
-            </div>
-            
-            <div class="dodge-container">
-              <label for="dodge">Dodge:</label>
-              <input type="text" id="dodge" name="dodge" placeholder="2d12">
-            </div>
-          </div>
-      
-          <div class="dhp-shp-container">
-            <div class="dhp-container">
-              <label for="dhp">DHP:</label>
-              <input type="text" id="dhp" name="dhp" placeholder="0">
-            </div>
-            
-            <div class="shp-container">
-              <label for="shp">SHP:</label>
-              <input type="text" id="shp" name="shp" placeholder="0">
-            </div>
-          </div>
-        </div>
-
         <div class="character-species-container">
           <label for="character-species">Species:</label>
-          <input type="text" id="character-species" name="character-species" placeholder="Human">
+          <!-- input type="text" id="character-species" name="character-species" placeholder="Human" -->
+          <select id="species" name="species" required>
+            <option value="" disabled selected hidden>Human...</option>
+            <!-- Species options are dynamically generated -->
+          </select>
         </div>
 
-        <!-- Agility Section -->
-        <div class="attribute-container">
-          <div class="attribute-field">
-            <label>Agility:</label>
-            <div class="subfield">
+        <div class="character-thingy-container">
+          <label for="block" class="attribute-label">Block:</label>
+          <div class="value-box">
+            <span class="value" id="block" name="block">2d4</span>
+          </div>
+          <label for="dodge" class="attribute-label">Dodge:</label>
+          <div class="value-box ml10">
+            <span class="value" id="dodge" name="dodge">2d12</span>
+          </div>
+      
+          <label for="dhp" class="attribute-label">DHP:</label>
+          <div class="value-box">
+             <span class="value" id="dhp" name="dhp">0</span>
+           </div>
+           <label for="shp" class="attribute-label">SHP:</label>
+           <div class="value-box ml10">
+             <span class="value" id="shp" name="shp">0</span>
+           </div>
+          </div>
+        </div>
+
+        <div class="attributes ml10">
+          <label class="attribute-label">Agility</label>
+          <div class="value-box">
+            <span class="value" id="agility-value">2</span>
+            <span class="value" id="agility-modifier">-2</span>
+          </div>
+          <div class="subtrait-field">
+            <div class="subtrait">
               <span class="checkmark">✔</span>
               <label>Speed</label>
-              <div class="value-box">
-                <button class="decrement">-</button>
-                <span class="value" id="speed-value">0</span>
-                <button class="increment">+</button>
-              </div>
             </div>
-            <div class="subfield">
+            <div class="subtrait">
               <span class="checkmark">✔</span>
               <label>Dexterity</label>
-              <div class="value-box">
-                <button class="decrement">-</button>
-                <span class="value" id="dexterity-value">0</span>
+            </div>
+          </div>
+          <div class="subtrait-field ml10">
+            <div class="value-box">
+              <span class="value" id="speed-value">1</span>
+              <span class="value" id="speed-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
                 <button class="increment">+</button>
+                <button class="decrement">-</button>
               </div>
             </div>
-            <div class="subfield-line"></div>
+            <div class="value-box">
+              <span class="value" id="dexterity-value">1</span>
+              <span class="value" id="dexterity-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
           </div>
-
-          <!-- Strength Section -->
-          <div class="attribute-field">
-            <label>Strength:</label>
-            <div class="subfield">
+          <label class="attribute-label">Strength</label>
+          <div class="value-box">
+            <span class="value" id="strength-value">2</span>
+            <span class="value" id="strength-modifier">-2</span>
+          </div>
+          <div class="subtrait-field">
+            <div class="subtrait">
               <span class="checkmark">✔</span>
               <label>Power</label>
-              <div class="value-box">
-                <button class="decrement">-</button>
-                <span class="value" id="power-value">0</span>
-                <button class="increment">+</button>
-              </div>
             </div>
-            <div class="subfield">
+            <div class="subtrait">
               <span class="checkmark">✔</span>
               <label>Fortitude</label>
-              <div class="value-box">
-                <button class="decrement">-</button>
-                <span class="value" id="fortitude-value">0</span>
+            </div>
+          </div>
+          <div class="subtrait-field ml10">
+            <div class="value-box">
+              <span class="value" id="power-value">1</span>
+              <span class="value" id="power-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
                 <button class="increment">+</button>
+                <button class="decrement">-</button>
               </div>
             </div>
-            <div class="subfield-line"></div>
+            <div class="value-box">
+              <span class="value" id="fortitude-value">1</span>
+              <span class="value" id="fortitude-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
+          </div>
+          <label class="attribute-label">Intellect</label>
+          <div class="value-box">
+            <span class="value" id="intellect-value">2</span>
+            <span class="value" id="intellect-modifier">-2</span>
+          </div>
+          <div class="subtrait-field">
+            <div class="subtrait">
+              <span class="checkmark">✔</span>
+              <label>Memory</label>
+            </div>
+            <div class="subtrait">
+              <span class="checkmark">✔</span>
+              <label>Engineering</label>
+            </div>
+          </div>
+          <div class="subtrait-field ml10">
+            <div class="value-box">
+              <span class="value" id="memory-value">1</span>
+              <span class="value" id="memory-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
+            <div class="value-box">
+              <span class="value" id="engineering-value">1</span>
+              <span class="value" id="engineering-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
+          </div>
+          <label class="attribute-label">Will</label>
+          <div class="value-box">
+            <span class="value" id="will-value">2</span>
+            <span class="value" id="will-modifier">-2</span>
+          </div>
+          <div class="subtrait-field">
+            <div class="subtrait">
+              <span class="checkmark">✔</span>
+              <label>Resolve</label>
+            </div>
+            <div class="subtrait">
+              <span class="checkmark">✔</span>
+              <label>Awareness</label>
+            </div>
+          </div>
+          <div class="subtrait-field ml10">
+            <div class="value-box">
+              <span class="value" id="resolve-value">1</span>
+              <span class="value" id="resolve-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
+            <div class="value-box">
+              <span class="value" id="awareness-value">1</span>
+              <span class="value" id="awareness-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
+          </div>
+          <label class="attribute-label">Display</label>
+          <div class="value-box">
+            <span class="value" id="display-value">2</span>
+            <span class="value" id="display-modifier">-2</span>
+          </div>
+          <div class="subtrait-field">
+            <div class="subtrait">
+              <span class="checkmark">✔</span>
+              <label>Portrayal</label>
+            </div>
+            <div class="subtrait">
+              <span class="checkmark">✔</span>
+              <label>Stunt</label>
+            </div>
+          </div>
+          <div class="subtrait-field ml10">
+            <div class="value-box">
+              <span class="value" id="portrayal-value">1</span>
+              <span class="value" id="portrayal-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
+            <div class="value-box">
+              <span class="value" id="stunt-value">1</span>
+              <span class="value" id="stunt-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
+          </div>
+          <label class="attribute-label">Charm</label>
+          <div class="value-box">
+            <span class="value" id="charm-value">2</span>
+            <span class="value" id="charm-modifier">-2</span>
+          </div>
+          <div class="subtrait-field">
+            <div class="subtrait">
+              <span class="checkmark">✔</span>
+              <label>Appeal</label>
+            </div>
+            <div class="subtrait">
+              <span class="checkmark">✔</span>
+              <label>Language</label>
+            </div>
+          </div>
+          <div class="subtrait-field ml10">
+            <div class="value-box">
+              <span class="value" id="appeal-value">1</span>
+              <span class="value" id="appeal-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
+            <div class="value-box">
+              <span class="value" id="language-value">1</span>
+              <span class="value" id="language-modifier">-3</span>
+              <div class="plus-minus-button-thingies">
+                <button class="increment">+</button>
+                <button class="decrement">-</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

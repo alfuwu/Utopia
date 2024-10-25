@@ -59,4 +59,4 @@ function showPage(page) {
 //pages.loading.show();
 
 // dev
-pages.characterCreation.show();
+pages.language.show();

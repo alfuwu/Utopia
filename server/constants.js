@@ -1,70 +1,101 @@
 // game states
-export const SETTING_UP = 0;
-export const LOBBY = 1;
+/** state */ export const SETTING_UP = 0;
+/** state */ export const LOBBY = 1;
 
 // talent condition ids
-export const SPECIES = 0;
+/** talent condition/tree */ export const SPECIES = 0; // requires player to be of defined species before they may unlock this talent
+/** talent condition */ export const TALENT = 1; // requires player to have defined talent before they may unlock this talent
+/** talent condition */ export const AT_LEAST_FROM_TREE = 2; // requires player to have defined amount from the defined tree, or at least 1 from the defined tree if amount is undefined
+/** talent condition */ export const ALL_FROM_TREE = 3; // requires player to have every talent in the defined tree
+/** talent condition */ export const AT_LEAST_ANY_OF = 4; // requires player to have defined amount from the defined list of talents, or at least 1 from the defined list of talents if amount is undefined
+/** talent condition */ export const SUBTRAIT_SCORE = 5; // requires player to have a subtrait score of the defined value or higher before they may unlock this talent
+/** talent condition */ export const TRAIT_SCORE = 6; // same as above but with traits instead
 
 // talent cost type ids
-export const FLAT = 0;
-export const DEPENDANT = 1;
+/** talent cost */ export const FLAT = false;
+/** makes the talent cost depend on the actions the talent performs
+ * 
+ * e.g. the SUBSPECIES_TALENT action will make the talent's cost equal to the talent picked, plus `amount`
+*/
+export const DEPENDANT = true;
 
 // action ids (used for talents/species)
-export const MODIFY_SUBTRAIT = 0;
-export const MODIFY_META = 1; // meta stats
-export const MODIFY_CORE = 2; // core stats (body, mind, soul, defenses, travel modifiers)
-export const MODIFY_BLOCK_RATING = 3;
-export const MODIFY_DODGE_RATING = 4;
-export const SUBSPECIES_TALENT = 5;
-export const CONTINUE_SUBSPECIES_TALENT = 6;
-export const CRAFTING = 7; // dont know about this one should work
+/** talent action */ export const MODIFY_SUBTRAIT = 0;
+/** talent action */ export const MODIFY_META = 1; // meta stats
+/** talent action */ export const MODIFY_CORE = 2; // core stats (body, mind, soul, defenses, travel modifiers)
+/** talent action */ export const MODIFY_BLOCK_RATING = 3;
+/** talent action */ export const MODIFY_DODGE_RATING = 4;
+/** talent action */ export const SUBSPECIES_TALENT = 5;
+/** talent action */ export const CONTINUE_SUBSPECIES_TALENT = 6;
+/** talent action */ export const CRAFTING = 7; // dont know about this one should work
+/** talent action */ export const RESET_TALENT_BRANCH = 8; // resets an entire talent branch, starting from talent. If talent is not specified, resets current branch
+/** talent action */ export const EITHER = 9; // shows the user two different actions, allowing them to pick one to have apply
 
 // subtrait ids
-export const SPEED = 0; // agility
-export const DEXTERITY = 1;
-export const POWER = 2; // strength
-export const FORTITUDE = 3;
-export const ENGINEERING = 4; // intellect
-export const MEMORY = 5;
-export const RESOLVE = 6; // will
-export const AWARENESS = 7;
-export const PORTRAYAL = 8; // display
-export const STUNT = 9;
-export const APPEAL = 10; // charm
-export const LANGUAGE = 11;
+/** subtrait */ export const SPEED = 0; // agility
+/** subtrait */ export const DEXTERITY = 1;
+/** subtrait */ export const POWER = 2; // strength
+/** subtrait */ export const FORTITUDE = 3;
+/** subtrait */ export const ENGINEERING = 4; // intellect
+/** subtrait */ export const MEMORY = 5;
+/** subtrait */ export const RESOLVE = 6; // will
+/** subtrait */ export const AWARENESS = 7;
+/** subtrait */ export const PORTRAYAL = 8; // display
+/** subtrait */ export const STUNT = 9;
+/** subtrait */ export const APPEAL = 10; // charm
+/** subtrait */ export const LANGUAGE = 11;
+
+// trait ids
+/** trait */ export const AGILITY = 0;
+/** trait */ export const STRENGTH = 1;
+/** trait */ export const INTELLECT = 2;
+/** trait */ export const WILL = 3;
+/** trait */ export const DISPLAY = 4;
+/** trait */ export const CHARM = 5;
 
 // meta stat ids
-export const SIMPLE_LANGUAGE = 0;
-export const COMPLEX_LANGUAGE = 1;
-export const EITHER_LANGUAGE = 2;
-export const SET_LANGUAGE = 3; // makes the player 
-export const ANY_GIFTED = 4; // allows player to pick any new gifted subtrait
-export const SET_GIFTED = 5; // makes the player gifted in a specific subtrait(s)
+/** meta */ export const SIMPLE_LANGUAGE = 0; // allows the player to pick a simple language to learn
+/** meta */ export const COMPLEX_LANGUAGE = 1; // allows the player to pick a complex language to learn
+/** meta */ export const EITHER_LANGUAGE = 2; // allows the player to pick a complex/simple language to learn
+/** meta */ export const SET_LANGUAGE = 3; // makes the player learn a language
+/** meta */ export const ANY_GIFTED = 4; // allows player to pick any new gifted subtrait
+/** meta */ export const SET_GIFTED = 5; // makes the player gifted in a specific subtrait(s)
+
+// tree ids
+///** tree */ export const SPECIES = 0;
+/** tree */ export const WARFARE = 1;
+/** tree */ export const TACTICS = 2;
+/** tree */ export const INNOVATION = 3;
+/** tree */ export const MAGECRAFT = 4;
+/** tree */ export const INFLUENCE = 5;
+/** tree */ export const PROWESS = 6;
+/** tree */ export const SPECIALIST = 7; // unused
 
 // core stat ids
-export const BODY = 0;
-export const MIND = 1;
-export const SOUL = 2;
+/** core */ export const BODY = 0;
+/** core */ export const MIND = 1;
+/** core */ export const SOUL = 2;
 // defense
-export const CHILL_DEF = 3;
-export const ENERGY_DEF = 4;
-export const HEAT_DEF = 5;
-export const PHYSICAL_DEF = 6;
-export const PSYCHE_DEF = 7;
+/** core */ export const CHILL_DEF = 3;
+/** core */ export const ENERGY_DEF = 4;
+/** core */ export const HEAT_DEF = 5;
+/** core */ export const PHYSICAL_DEF = 6;
+/** core */ export const PSYCHE_DEF = 7;
 // travel
-export const LAND = 8;
-export const WATER = 9;
-export const FLIGHT = 10;
+/** core */ export const LAND = 8;
+/** core */ export const WATER = 9;
+/** core */ export const FLIGHT = 10;
 
 // operator ids
-export const ADD = 0;
-export const SUB = 1;
-export const MUL = 2;
-export const DIV = 3;
-export const ABMUL = 4;
-export const ABDIV = 5;
-export const SUBTRAIT = 6;
+/** operator + */ export const ADD = 0;
+/** operator - */ export const SUB = 1;
+/** operator * */ export const MUL = 2;
+/** operator / */ export const DIV = 3;
+/** operator abmul */ export const ABMUL = 4;
+/** operator abdiv */ export const ABDIV = 5;
+/** operator dependant on subtrait */ export const SUBTRAIT = 6;
 
 // rounding ids
-export const ROUND_UP = true;
-export const ROUND_DOWN = false;
+/** rounds a value up (used with DIV operator) */ export const ROUND_UP = true;
+/** rounds a value down (used with DIV operator) */ export const ROUND_DOWN = false;
+/** rounds a value to nearest integer (used with DIV operator) */ export const ROUND_NEAREST = null;

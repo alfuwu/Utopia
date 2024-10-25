@@ -1,0 +1,23 @@
+replace "tests" with "checks"
+add true cyborg subspecies/species
+add advantage & disadvantage (stacks with favor)
+increasing language subtrait during character creation grants your character additional starting languages, giving a character a complex/simple language at 7, a simple language at 10, and a complex language at 15
+rename Oxtus "Remineralize" talent to "Imbue Water" -- most water already has minerals in it; adding more ain't gonna do jack all
+rename turn order to initiative
+rename Extraordinary to Fine
+rename Magus Apprentice magecraft talent to Magus Skill
+add level cap to prevent player from i am become death, destroyer of worlds'ing the entire story by taking a ton of talents (also encourages more strategic choice of talents, as they aren't something you can simply rectify later by killing some things)
+^ allow resetting entire character (level, talents, etc) back to default somehow
+make xp cost to level up exponential, not linear
+modify Discipline prowess talent so that a player may only become gifted in a maximum of 5 subtraits
+add dodging & misses to combat
+more specialist talents?
+rename Chill to Frost
+
+handbook error notes:
+page 056 does not mention Influence core tree
+page 064, Coup de Grace is misspelled (should be Coup de Grâce)
+page 064, Coup de Grâce specialist talent repeats "than" ("...do and the attack deals more damage than than the...")
+page 064, Coup de Grâce specialist talent ends with "Otherwise, it deals half as much damage, rounded down, instead." (the ", instead" at the end is unnecessary)
+page 064, Dual Wielder specialist talent specifies "multiple weapons" but later specifies "both weapons" rather than "all weapons", making it unclear whether or not it works with more than 2 weapons or not
+page 066, Phonetic Composer specialist talent does not state that creatures you teach must share a language (would take a substantially longer amount of time to teach a creature the self-made language if you did not share a common tongue with your student)
