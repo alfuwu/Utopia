@@ -1,7 +1,7 @@
 import setupPage from "./lazy";
 import setupDiscordSdk from "./util/discord";
 
-import CharacterCreation from './pages/charactercreation.js';
+import Character from './pages/character.js';
 import InGame from './pages/ingame.js';
 import Loading from './pages/loading.js';
 import Creature from './pages/gm/creature.js';
@@ -27,7 +27,7 @@ setupDiscordSdk().then(() => {
 
 // Initialize pages
 const pages = {
-  characterCreation: new CharacterCreation(),
+  characterCreation: new Character(),
   inGame: new InGame(),
   loading: new Loading(),
   gm: {
@@ -59,4 +59,4 @@ function showPage(page) {
 //pages.loading.show();
 
 // dev
-pages.language.show();
+pages.characterCreation.show();

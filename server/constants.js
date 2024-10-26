@@ -10,6 +10,9 @@
 /** talent condition */ export const AT_LEAST_ANY_OF = 4; // requires player to have defined amount from the defined list of talents, or at least 1 from the defined list of talents if amount is undefined
 /** talent condition */ export const SUBTRAIT_SCORE = 5; // requires player to have a subtrait score of the defined value or higher before they may unlock this talent
 /** talent condition */ export const TRAIT_SCORE = 6; // same as above but with traits instead
+/** talent condition */ export const OR = 7; // any of the conditions defined must be true 
+/** talent condition */ export const EXCLUSIVE_OR = 8; // only one condition defined must be true
+/** talent condition */ export const NOT = 9; // condition must be false
 
 // talent cost type ids
 /** talent cost */ export const FLAT = false;
@@ -20,16 +23,18 @@
 export const DEPENDANT = true;
 
 // action ids (used for talents/species)
-/** talent action */ export const MODIFY_SUBTRAIT = 0;
-/** talent action */ export const MODIFY_META = 1; // meta stats
-/** talent action */ export const MODIFY_CORE = 2; // core stats (body, mind, soul, defenses, travel modifiers)
-/** talent action */ export const MODIFY_BLOCK_RATING = 3;
-/** talent action */ export const MODIFY_DODGE_RATING = 4;
-/** talent action */ export const SUBSPECIES_TALENT = 5;
-/** talent action */ export const CONTINUE_SUBSPECIES_TALENT = 6;
-/** talent action */ export const CRAFTING = 7; // dont know about this one should work
-/** talent action */ export const RESET_TALENT_BRANCH = 8; // resets an entire talent branch, starting from talent. If talent is not specified, resets current branch
-/** talent action */ export const EITHER = 9; // shows the user two different actions, allowing them to pick one to have apply
+/** action */ export const MODIFY_SUBTRAIT = 0;
+/** action */ export const MODIFY_META = 1; // meta stats
+/** action */ export const MODIFY_CORE = 2; // core stats (body, mind, soul, defenses, travel modifiers)
+/** action */ export const MODIFY_SCORE = 3;
+/** action */ export const MODIFY_BLOCK_RATING = 4;
+/** action */ export const MODIFY_DODGE_RATING = 5;
+/** action */ export const SUBSPECIES_TALENT = 6;
+/** action */ export const CONTINUE_SUBSPECIES_TALENT = 7;
+/** action */ export const CRAFTING = 8; // dont know about this one should work
+/** action */ export const RESET_TALENT_BRANCH = 9; // resets an entire talent branch, starting from talent. If talent is not specified, resets current branch
+/** action */ export const EITHER = 10; // shows the user two different actions, allowing them to pick one to have apply
+/** action */ export const LEARN_TALENT = 11;
 
 // subtrait ids
 /** subtrait */ export const SPEED = 0; // agility
@@ -85,6 +90,19 @@ export const DEPENDANT = true;
 /** core */ export const LAND = 8;
 /** core */ export const WATER = 9;
 /** core */ export const FLIGHT = 10;
+
+// score stat ids things
+/** score */ export const CONSTITUTION  = 0;
+/** score */ export const ENDURANCE = 1;
+/** score */ export const EFFERVESCENCE = 2;
+// maxes
+/** score */ export const MAX_CONSTITUTION  = 3;
+/** score */ export const MAX_ENDURANCE = 4;
+/** score */ export const MAX_EFFERVESCENCE = 5;
+// mins
+/** score */ export const MIN_CONSTITUTION  = 6;
+/** score */ export const MIN_ENDURANCE = 7;
+/** score */ export const MIN_EFFERVESCENCE = 8;
 
 // operator ids
 /** operator + */ export const ADD = 0;

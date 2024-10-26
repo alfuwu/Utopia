@@ -146,7 +146,7 @@ function cancelInvalidNumberInputs(event) {
 export function generateSpeciesList() {
   const speciesSelect = document.getElementById("species");
   
-  speciesSelect.innerHTML = '';
+  speciesSelect.innerHTML = '<option value="" disabled selected hidden>Human...</option>';
   
   // Loop through speciesStats and create an option for each species
   for (const species in game.speciesStats) {

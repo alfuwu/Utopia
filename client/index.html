@@ -114,7 +114,7 @@ option[value=""][disabled] {
   margin-bottom: 20px;
 }
 
-.character-creation {
+.character {
   position: absolute;
   top: 20px;
   left: 10px;
@@ -126,10 +126,10 @@ option[value=""][disabled] {
 .left-bar {
   position: fixed;
   z-index: -1;
-  top: 0px;
+  top: -20px;
   left: 20px;
-  height: 100vh;
-  width: 405px;
+  height: calc(100vh + 40px);
+  width: 425px;
   border: 3px solid #000000ee;
   background-color: #161719;
 }
@@ -160,7 +160,7 @@ option[value=""][disabled] {
   border: 0px solid #646cff;
   background-color: #1a1a1a;
   color: rgba(255, 255, 255, 0.87);
-  padding-right: 7em;
+  padding-right: 8em;
 }
 
 .character-name-container label {
@@ -248,8 +248,10 @@ option[value=""][disabled] {
 }
 
 .subtrait-field {
+  margin-top: 5px;
   display: flex;
   flex-direction: column;
+  position: relative;
   zoom: 0.7;
 }
 
@@ -304,6 +306,7 @@ option[value=""][disabled] {
 }
 
 .value-box .value {
+  margin-top: 5px;
   min-width: 30px;
   text-align: center;
   background-color: #1a1a1a;
@@ -313,13 +316,12 @@ option[value=""][disabled] {
   font-size: 1em;
 }
 
-.plus-minus-button-thingies {
-  display: flex;
-  flex-direction: column;
-  margin-left: 1px;
+.value-box-wide {
+  min-width: 60px;
 }
 
-.plus-minus-button-thingies button {
+.increment button, .decrement button {
+  margin-left: 1px;
   padding: 0px;
   padding-left: 3px;
   padding-right: 3px;
@@ -333,6 +335,19 @@ option[value=""][disabled] {
 
 .page {
   display: none;
+}
+
+/* Lines (there's a lot of these) */
+.line-container {
+  position: absolute;
+  grid-row: 1 / span 1; /* Random CSS things go brr */
+  z-index: -1;
+  left: -12px;
+  top: calc(-10px + 1 / span 1);
+  width: 100%;
+  height: calc(100% + 10px); /* Adjust this to fit the row height */
+  background-color: transparent;
+  overflow: hidden; /* Ensures the SVG doesn't overflow the container */
 }
 
 /* Keyframe for spinning effect */
@@ -401,7 +416,7 @@ option[value=""][disabled] {
   <body>
     <div id="app">
       <!-- Pages -->
-      <div id="charactercreation" class="page character-creation">
+      <div id="character" class="page character">
         <div class="left-bar"></div>
         <div class="character-bar"></div>
         <div class="character-name-container">
@@ -411,36 +426,46 @@ option[value=""][disabled] {
 
         <div class="character-species-container">
           <label for="character-species">Species:</label>
-          <!-- input type="text" id="character-species" name="character-species" placeholder="Human" -->
           <select id="species" name="species" required>
             <option value="" disabled selected hidden>Human...</option>
-            <!-- Species options are dynamically generated -->
           </select>
         </div>
 
         <div class="character-thingy-container">
           <label for="block" class="attribute-label">Block:</label>
-          <div class="value-box">
+          <div class="value-box value-box-wide">
             <span class="value" id="block" name="block">2d4</span>
           </div>
           <label for="dodge" class="attribute-label">Dodge:</label>
-          <div class="value-box ml10">
+          <div class="value-box value-box-wide ml10">
             <span class="value" id="dodge" name="dodge">2d12</span>
           </div>
       
           <label for="dhp" class="attribute-label">DHP:</label>
-          <div class="value-box">
+          <div class="value-box value-box-wide">
              <span class="value" id="dhp" name="dhp">0</span>
            </div>
            <label for="shp" class="attribute-label">SHP:</label>
-           <div class="value-box ml10">
+           <div class="value-box value-box-wide ml10">
              <span class="value" id="shp" name="shp">0</span>
            </div>
           </div>
         </div>
 
         <div class="attributes ml10">
-          <label class="attribute-label">Agility</label>
+          <div class="attribute-label">
+            <label>Agility</label>
+            <div class="line-container">
+              <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+              </svg>
+            </div>
+          </div>
           <div class="value-box">
             <span class="value" id="agility-value">2</span>
             <span class="value" id="agility-modifier">-2</span>
@@ -457,23 +482,39 @@ option[value=""][disabled] {
           </div>
           <div class="subtrait-field ml10">
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="speed-value">1</span>
               <span class="value" id="speed-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="dexterity-value">1</span>
               <span class="value" id="dexterity-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
           </div>
-          <label class="attribute-label">Strength</label>
+          <div class="attribute-label">
+            <label>Strength</label>
+            <div class="line-container">
+              <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+              </svg>
+            </div>
+          </div>
           <div class="value-box">
             <span class="value" id="strength-value">2</span>
             <span class="value" id="strength-modifier">-2</span>
@@ -490,23 +531,39 @@ option[value=""][disabled] {
           </div>
           <div class="subtrait-field ml10">
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="power-value">1</span>
               <span class="value" id="power-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="fortitude-value">1</span>
               <span class="value" id="fortitude-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
           </div>
-          <label class="attribute-label">Intellect</label>
+          <div class="attribute-label">
+            <label>Intellect</label>
+            <div class="line-container">
+              <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+              </svg>
+            </div>
+          </div>
           <div class="value-box">
             <span class="value" id="intellect-value">2</span>
             <span class="value" id="intellect-modifier">-2</span>
@@ -523,23 +580,39 @@ option[value=""][disabled] {
           </div>
           <div class="subtrait-field ml10">
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="memory-value">1</span>
               <span class="value" id="memory-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="engineering-value">1</span>
               <span class="value" id="engineering-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
           </div>
-          <label class="attribute-label">Will</label>
+          <div class="attribute-label">
+            <label>Will</label>
+            <div class="line-container">
+              <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+              </svg>
+            </div>
+          </div>
           <div class="value-box">
             <span class="value" id="will-value">2</span>
             <span class="value" id="will-modifier">-2</span>
@@ -556,23 +629,39 @@ option[value=""][disabled] {
           </div>
           <div class="subtrait-field ml10">
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="resolve-value">1</span>
               <span class="value" id="resolve-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="awareness-value">1</span>
               <span class="value" id="awareness-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
           </div>
-          <label class="attribute-label">Display</label>
+          <div class="attribute-label">
+            <label>Display</label>
+            <div class="line-container">
+              <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+              </svg>
+            </div>
+          </div>
           <div class="value-box">
             <span class="value" id="display-value">2</span>
             <span class="value" id="display-modifier">-2</span>
@@ -589,23 +678,39 @@ option[value=""][disabled] {
           </div>
           <div class="subtrait-field ml10">
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="portrayal-value">1</span>
               <span class="value" id="portrayal-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="stunt-value">1</span>
               <span class="value" id="stunt-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
           </div>
-          <label class="attribute-label">Charm</label>
+          <div class="attribute-label">
+            <label>Charm</label>
+            <div class="line-container">
+              <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+              </svg>
+            </div>
+          </div>
           <div class="value-box">
             <span class="value" id="charm-value">2</span>
             <span class="value" id="charm-modifier">-2</span>
@@ -622,19 +727,23 @@ option[value=""][disabled] {
           </div>
           <div class="subtrait-field ml10">
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="appeal-value">1</span>
               <span class="value" id="appeal-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
             <div class="value-box">
+              <div class="increment">
+                <button>+</button>
+              </div>
               <span class="value" id="language-value">1</span>
               <span class="value" id="language-modifier">-3</span>
-              <div class="plus-minus-button-thingies">
-                <button class="increment">+</button>
-                <button class="decrement">-</button>
+              <div class="decrement">
+                <button>-</button>
               </div>
             </div>
           </div>

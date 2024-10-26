@@ -13,8 +13,9 @@ modify Discipline prowess talent so that a player may only become gifted in a ma
 add dodging & misses to combat
 more specialist talents?
 rename Chill to Frost
+species weight
 
-handbook error notes:
+handbook error notes (should be fixed):
 page 056 does not mention Influence core tree
 page 064, Coup de Grace is misspelled (should be Coup de Grâce)
 page 064, Coup de Grâce specialist talent repeats "than" ("...do and the attack deals more damage than than the...")

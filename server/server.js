@@ -2,7 +2,7 @@ import express from "express";
 import expressWs from "express-ws";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
-import * as Constants from "./constants";
+import * as Constants from "./constants.js";
 dotenv.config({ path: "../.env" });
 
 const app = express();
@@ -63,6 +63,9 @@ class StatModifier {
     this.mult = mult;
     this.abMult = abMult;
   }
+  apply(value) {
+    return ((value * mult) + this.flat) * this.abMult;
+  }
   toJSON() {
     return {
       flat: this.flat,
@@ -92,41 +95,38 @@ const ids = Object.create(null);
 class Game {
   name;
   channelId;
-  state = SETTING_UP;
+  state = Constants.SETTING_UP;
   password;
   users = new JSet();
   userData = Object.create(null);
-  gm = 0;
-  speciesDescriptions = {
-
-  };
+  gm;
   species = {
-    human: { name: "Human", constitution: 4, endurance: 5, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { any: 2 }, languages: { simple: 2 } },
-    automaton: { name: "Automaton", constitution: 7, endurance: 4, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { any: 2 }, languages: { either: 1 } },
+    human: { name: "Human", constitution: 4, endurance: 5, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { any: 2 }, languages: { simple: 2 }, quirks: [] },
+    automaton: { name: "Automaton", constitution: 7, endurance: 4, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { any: 2 }, languages: { either: 1 }, quirks: [] },
 
     // superspecies aren't rendered on the client
-    dwarf: { name: "Dwarf", superspecies: true, constitution: 4, endurance: 6, effervescence: 3, blockRating: [3, 4], dodgeRating: [1, 12], languages: { set: ["utopian", "dwarvish"] } },
-    copperDwarf: { name: "Copper Dwarf", subspecies: "dwarf", gifted: { set: [Constants.MEMORY, Constants.RESOLVE, Constants.ENGINEERING] } },
-    ironDwarf: { name: "Iron Dwarf", subspecies: "dwarf", gifted: { set: [Constants.MEMORY, Constants.RESOLVE, Constants.AWARENESS] } },
+    dwarf: { name: "Dwarf", superspecies: true, constitution: 4, endurance: 6, effervescence: 3, blockRating: [3, 4], dodgeRating: [1, 12], languages: { set: ["utopian", "dwarvish"] }, quirks: [] },
+    copperDwarf: { name: "Copper Dwarf", subspecies: "dwarf", gifted: { set: [Constants.MEMORY, Constants.RESOLVE, Constants.ENGINEERING] }, quirks: [] },
+    ironDwarf: { name: "Iron Dwarf", subspecies: "dwarf", gifted: { set: [Constants.MEMORY, Constants.RESOLVE, Constants.AWARENESS] }, quirks: [] },
     
-    cyborg: { name: "Cyborg", superspecies: true, constitution: 4, endurance: 5, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], languages: { simple: 1, set: ["utopian"] } },
-    biotechCyborg: { name: "Biotech Cyborg", subspecies: "cyborg", gifted: { set: [Constants.ENGINEERING, Constants.MEMORY, Constants.AWARENESS] } },
-    cyberneticCyborg: { name: "Cybernetic Cyborg", subspecies: "cyborg", gifted: { set: [Constants.ENGINEERING, Constants.MEMORY, Constants.POWER] } },
+    cyborg: { name: "Cyborg", superspecies: true, constitution: 4, endurance: 5, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], languages: { simple: 1, set: ["utopian"] }, quirks: [] },
+    biotechCyborg: { name: "Biotech Cyborg", subspecies: "cyborg", gifted: { set: [Constants.ENGINEERING, Constants.MEMORY, Constants.AWARENESS] }, quirks: [] },
+    cyberneticCyborg: { name: "Cybernetic Cyborg", subspecies: "cyborg", gifted: { set: [Constants.ENGINEERING, Constants.MEMORY, Constants.POWER] }, quirks: [] },
     
-    oxtus: { name: "Oxtus", superspecies: true, constitution: 4, endurance: 4, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], languages: { set: ["utopian", "oxtan"] } },
-    regalOxtus: { name: "Regal Oxtus", subspecies: "oxtus", gifted: { set: [Constants.MEMORY, Constants.PORTRAYAL, Constants.APPEAL] } },
-    brazenOxtus: { name: "Brazen Oxtus", subspecies: "oxtus", gifted: { set: [Constants.MEMORY, Constants.PORTRAYAL, Constants.POWER] } },
-    astuteOxtus: { name: "Astute Oxtus", subspecies: "oxtus", gifted: { set: [Constants.MEMORY, Constants.PORTRAYAL, Constants.ENGINEERING] } },
+    oxtus: { name: "Oxtus", superspecies: true, constitution: 4, endurance: 4, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], languages: { set: ["utopian", "oxtan"] }, quirks: [] },
+    regalOxtus: { name: "Regal Oxtus", subspecies: "oxtus", gifted: { set: [Constants.MEMORY, Constants.PORTRAYAL, Constants.APPEAL] }, quirks: [] },
+    brazenOxtus: { name: "Brazen Oxtus", subspecies: "oxtus", gifted: { set: [Constants.MEMORY, Constants.PORTRAYAL, Constants.POWER] }, quirks: [] },
+    astuteOxtus: { name: "Astute Oxtus", subspecies: "oxtus", gifted: { set: [Constants.MEMORY, Constants.PORTRAYAL, Constants.ENGINEERING] }, quirks: [] },
     
-    elf: { name: "Elf", superspecies: true, constitution: 3, endurance: 7, effervescence: 2, blockRating: [2, 4], dodgeRating: [2, 12], languages: { set: ["utopian", "Eevish"] } },
-    solarElf: { name: "Solar Elf", subspecies: "elf", gifted: { set: [Constants.SPEED, Constants.PORTRAYAL, Constants.STUNT] } },
-    lunarElf: { name: "Lunar Elf", subspecies: "elf", gifted: { set: [Constants.SPEED, Constants.PORTRAYAL, Constants.APPEAL] } },
-    twilightElf: { name: "Twilight Elf", subspecies: "elf", gifted: { set: [Constants.SPEED, Constants.PORTRAYAL, Constants.LANGUAGE] } },
+    elf: { name: "Elf", superspecies: true, constitution: 3, endurance: 7, effervescence: 2, blockRating: [2, 4], dodgeRating: [2, 12], languages: { set: ["utopian", "elvish"] }, quirks: [] },
+    solarElf: { name: "Solar Elf", subspecies: "elf", gifted: { set: [Constants.SPEED, Constants.PORTRAYAL, Constants.STUNT] }, quirks: [] },
+    lunarElf: { name: "Lunar Elf", subspecies: "elf", gifted: { set: [Constants.SPEED, Constants.PORTRAYAL, Constants.APPEAL] }, quirks: [] },
+    twilightElf: { name: "Twilight Elf", subspecies: "elf", gifted: { set: [Constants.SPEED, Constants.PORTRAYAL, Constants.LANGUAGE] }, quirks: [] },
     
-    cambion: { name: "Cambion", superspecies: true, constitution: 4, endurance: 6, effervescence: 2, blockRating: [2, 4], dodgeRating: [2, 12], languages: { set: ["utopian", "primordial"] } },
-    angelicCambion: { name: "Angelic Cambion", subspecies: "cambion", gifted: { set: [Constants.POWER, Constants.APPEAL, Constants.STUNT] } },
-    demonicCambion: { name: "Demonic Cambion", subspecies: "cambion", gifted: { set: [Constants.POWER, Constants.APPEAL, Constants.PORTRAYAL] } },
-    eldritchCambion: { name: "Eldritch Cambion", subspecies: "cambion", gifted: { set: [Constants.POWER, Constants.APPEAL, Constants.MEMORY] } },
+    cambion: { name: "Cambion", superspecies: true, constitution: 4, endurance: 6, effervescence: 2, blockRating: [2, 4], dodgeRating: [2, 12], languages: { set: ["utopian", "primordial"] }, quirks: [] },
+    angelicCambion: { name: "Angelic Cambion", subspecies: "cambion", gifted: { set: [Constants.POWER, Constants.APPEAL, Constants.STUNT] }, quirks: [] },
+    demonicCambion: { name: "Demonic Cambion", subspecies: "cambion", gifted: { set: [Constants.POWER, Constants.APPEAL, Constants.PORTRAYAL] }, quirks: [] },
+    eldritchCambion: { name: "Eldritch Cambion", subspecies: "cambion", gifted: { set: [Constants.POWER, Constants.APPEAL, Constants.MEMORY] }, quirks: [] },
     
     //goliath: { name: "Goliath", constitution: ???, endurance: ???, effervescence: ???, blockRating: [???, 4], dodgeRating: [??? 12], gifted: { set: [Constants.???, Constants.???, Constants.???] }, languages: { set: ["utopian", "???"] } },
   };
@@ -431,9 +431,10 @@ class Game {
 
   }; // custom magic arts
   alfuwuPatch = false;
-  constructor(name, channelId, password = "") {
+  constructor(name, channelId, gm = -1, password = "") {
     this.name = name;
     this.channelId = channelId;
+    this.gm = gm;
     this.password = password;
   }
   updateSpecies(...newSpecies) {
@@ -476,18 +477,16 @@ class Game {
     let i = 0;
     for (const user of this.users)
       if (i++ != ignore)
-        this.updateUser(user, i == this.gm, ...include);
+        this.updateUser(user, user.userId == this.gm, ...include);
   }
   isGM(id) {
-    let i = 0;
     for (let user of this.users)
-      if (i++ === this.gm)
-        return user == id;
+      if (user == id)
+        return user.userId == this.gm;
   }
   getGM() {
-    let i = 0;
     for (let user of this.users)
-      if (i++ === this.gm)
+      if (user.userId == this.gm)
         return user;
   }
   addUser(id, avatar, name) {
@@ -498,13 +497,11 @@ class Game {
     this.updateUsers();
   }
   removeUser(id) {
-    if ([...this.users].indexOf(id) < this.gm)
-      this.gm--;
     this.users.delete(id);
     if (this.users.size == 1) {
-      this.state = Constants.LOBBY;
-      for (const user in this.userData)
-        Object.assign(this.userData[user], { ready: false });
+      //this.state = Constants.LOBBY;
+      //for (const user in this.userData)
+      //  Object.assign(this.userData[user], { ready: false });
     }
     this.updateUsers();
   }
@@ -519,6 +516,187 @@ class Game {
         return false;
     return true;
   }
+  applyOp(obj, operator) {
+    switch (operator.op) {
+      case Constants.ADD:
+        if (typeof obj === Number)
+          return obj + operator.amount;
+        else
+          obj.flat += operator.amount;
+        return obj;
+      case Constants.SUB:
+        if (typeof obj === Number)
+          return obj - operator.amount;
+        else
+          obj.flat -= operator.amount;
+        return obj;
+      case Constants.MUL:
+        if (typeof obj === Number)
+          return obj * operator.amount;
+        else
+          obj.mult += operator.amount;
+        return obj;
+      case Constants.DIV:
+        if (typeof obj === Number)
+          return obj / operator.amount;
+        else
+          obj.mult -= operator.amount;
+        return obj;
+      case Constants.ABMUL:
+        if (typeof obj === Number)
+          return obj * operator.amount;
+        else
+          obj.abMult += operator.amount;
+        return obj;
+      case Constants.ABDIV:
+        if (typeof obj === Number)
+          return obj / operator.amount;
+        else
+          obj.abMult -= operator.amount;
+        return obj;
+    }
+  }
+  getMaxBody(user) {
+    let max = 10;
+    for (const quirk of this.species[user.species].quirks)
+      if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_CONSTITUTION)
+        max = this.applyOp(max, quirk);
+    for (const talent of user.talents)
+      for (const act of this.talents[talent].actions)
+        if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_CONSTITUTION)
+          max = this.applyOp(max, act);
+    return max;
+  }
+  getMaxMind(user) {
+    let max = 10;
+    for (const quirk of this.species[user.species].quirks)
+      if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_ENDURANCE)
+        max = this.applyOp(max, quirk);
+    for (const talent of user.talents)
+      for (const act of this.talents[talent].actions)
+        if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_ENDURANCE)
+          max = this.applyOp(max, act);
+    return max;
+  }
+  getMaxSoul(user) {
+    let max = 10;
+    for (const quirk of this.species[user.species].quirks)
+      if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_EFFERVESCENCE)
+        max = this.applyOp(max, quirk);
+    for (const talent of user.talents)
+      for (const act of this.talents[talent].actions)
+        if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_EFFERVESCENCE)
+          max = this.applyOp(max, act);
+    return max;
+  }
+  countTalentsFromTree(talents, tree) {
+    if (tree == null)
+      return talents.length;
+    let i = 0;
+    for (const talent of talents)
+      if (talent.tree === tree)
+        i++;
+    return i;
+  }
+  getTraitScore(user, traitId) {
+    return this.userData[user].subtraitModifiers[traitId * 2].apply(this.userData[user].subtraits[traitId * 2]) + this.userData[user].subtraitModifiers[traitId * 2].apply(this.userData[user].subtraits[traitId * 2 + 1]);
+  }
+  meetsRequirements(user, cond) {
+    switch (cond.type) {
+      case Constants.SPECIES:
+        if (this.userData[user].species != cond.species)
+          return false;
+        break;
+      case Constants.TALENT:
+        if (!this.userData[user].talents.has(cond.talent))
+          return false;
+        break;
+      case Constants.AT_LEAST_FROM_TREE:
+        if (this.countTalentsFromTree(this.userData[user].talents, cond.tree) < cond.amount || 1)
+          return false;
+        break;
+      case Constants.ALL_FROM_TREE:
+        if (this.countTalentsFromTree(this.userData[user].talents, cond.tree) < this.countTalentsFromTree(Object.values(this.talents), cond.tree))
+          return false;
+        break;
+      case Constants.AT_LEAST_ANY_OF:
+        // TODO: IMPLEMENT
+        break;
+      case Constants.SUBTRAIT_SCORE:
+        if (this.userData[user].subtraitModifiers[cond.subtrait].apply(this.userData[user].subtraits[cond.subtrait]) < cond.amount)
+          return false;
+        break;
+      case Constants.TRAIT_SCORE:
+        if (this.getTraitScore(user, cond.trait) < cond.amount)
+          return false;
+        break;
+      case Constants.OR:
+        let metReqs = false;
+        for (const req of cond.requirements) {
+          if (this.meetsRequirements(user, req)) {
+            metReqs = true;
+            break;
+          }
+        }
+        if (!metReqs)
+          return false;
+        break;
+      case Constants.EXCLUSIVE_OR:
+        let metExReqs = false;
+        for (const req of cond.requirements) {
+          if (this.meetsRequirements(user, req)) {
+            if (metExReqs)
+              return false;
+            metExReqs = true;
+            break;
+          }
+        }
+        if (!metExReqs)
+          return false;
+        break;
+      case Constants.NOT:
+        if (this.meetsAllRequirements(user, cond.requirements))
+          return false;
+        break;
+    }
+    return true;
+  }
+  meetsAllRequirements(user, requirements) {
+    for (const cond of requirements)
+      if (!this.meetsRequirements(user, cond))
+        return false;
+    return true;
+  }
+  applyTalent(user, talent) {
+    if (talent.after && !this.userData[user].talents.has(talent.after))
+      return;
+    if (talent.requirements && !this.meetsAllRequirements(user, talent.requirements))
+      return;
+    if (talent.special) {
+      if (this.userData[user].level - this.userData[user].specialistTalents * 10 < 10)
+        return; // cannot pick a specialist talent (too low level)
+      this.userData[user].specialistTalents++;
+    }
+    this.userData[user].talents.add(talent);
+    for (const act of talent.actions) {
+      switch (act.type) {
+        case Constants.MODIFY_SUBTRAIT:
+          this.applyOp(this.userData[user].subtraitModifiers[act.id], act);
+          break;
+        case Constants.MODIFY_META:
+
+        case Constants.MODIFY_CORE:
+          if (act.id === Constants.BODY)
+            this.userData[user].body = Math.max(Math.min(this.applyOp(this.userData[user].body, act), this.getMaxBody(this.userData[user])), 2); // todo: calculate minimum body/mind/soul stats
+          else if (act.id === Constants.MIND)
+            this.userData[user].mind = Math.max(Math.min(this.applyOp(this.userData[user].mind, act), this.getMaxBody(this.userData[user])), 2);
+          else if (act.id === Constants.SOUL)
+            this.userData[user].soul = Math.max(Math.min(this.applyOp(this.userData[user].soul, act), this.getMaxBody(this.userData[user])), 2);
+          else if (act.id <= Constants.FLIGHT)
+            this.applyOp(this.userData[user].coreModifiers[act.id], act);
+      }
+    }
+  }
   createDefaultData(avatar, name) {
     const defaultSpecie = Object.keys(this.species)[0];
     return {
@@ -530,6 +708,11 @@ class Game {
       body: 0,
       mind: 0,
       soul: 0,
+      chillDef: 0,
+      energyDef: 0,
+      heatDef: 0,
+      physicalDef: 0,
+      psycheDef: 0,
       /** @type {number} */
       constitution: this.species[defaultSpecie].constitution,
       /** @type {number} */
@@ -537,25 +720,18 @@ class Game {
       /** @type {number} */
       effervescence: this.species[defaultSpecie].effervescence,
       /** @type {[number, number]} */
-      blockRating: this.species[defaultSpecie].blockRating,
+      blockRating: [this.species[defaultSpecie].blockRating],
       /** @type {[number, number]} */
-      dodgeRating: this.species[defaultSpecie].dodgeRating,
+      dodgeRating: [this.species[defaultSpecie].dodgeRating],
       blockBonus: 0,
       dodgeBonus: 0,
       /** @type {Set.<string>} */
       gifted: new JSet(this.species[defaultSpecie].languages.set ?? this.species[defaultSpecie].gifted.set),
       /** @type {number} */
       availableGifteds: this.species[defaultSpecie].gifted.any || 0,
-      /** @type {StatModifier} */
-      landTravelMod: new StatModifier(),
-      /** @type {StatModifier} */
-      waterTravelMod: new StatModifier(),
-      /** @type {StatModifier} */
-      airTravelMod: new StatModifier(),
+      coreModifiers: [new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier()],
       dhpMod: new StatModifier(),
-      /** @type {StatModifier} */
       shpMod: new StatModifier(),
-      /** @type {StatModifier} */
       staminaMod: new StatModifier(),
       dhp: this.startingLevel, // effervescence * soul, except soul is 0 for new characters so that equates to 0
       shp: this.startingLevel, // ^
@@ -572,6 +748,9 @@ class Game {
       talents: new JSet(),
       /** @type {Set.<string>} */
       inventory: new JSet(),
+      // speed, dexterity, power, fortitude, 
+      subtraits: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      subtraitModifiers: [new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier(), new StatModifier()],
       ready: false,
       avatar,
       name,
@@ -606,8 +785,8 @@ router.ws(
         msg = data;
       }
       if (msg.event) {
-        if (!(msg.data.channelId in games))
-          games[msg.data.channelId] = new Game(msg.data.gameName || "Unnamed", msg.data.channelId);
+        if (!(msg.data.channelId in games) && typeof msg.data.channelId === Number && msg.data.channelId >= 0)
+          games[msg.data.channelId] = new Game(msg.data.gameName || "Unnamed", msg.data.channelId, msg.data.userId || -1);
         const game = games[msg.data.channelId];
         switch (msg.event) {
           case "userData":
@@ -633,7 +812,43 @@ router.ws(
                 break;
               case "t": // talent
                 const talent = game.talents[msg.data.t];
-                game.userData[user].talents;
+                let bodyCost, mindCost, soulCost = 0;
+                if (talent.body.amount || typeof talent.body == Number)
+                  bodyCost += talent.body.amount || talent.body;
+                if (talent.mind.amount || typeof talent.mind == Number)
+                  mindCost += talent.mind.amount || talent.mind;
+                if (talent.soul.amount || typeof talent.soul == Number)
+                  soulCost += talent.soul.amount || talent.soul;
+                if (talent.body.type === Constants.DEPENDANT) {
+                  for (const act of talent.actions) {
+                    if (act.type === Constants.SUBSPECIES_TALENT) {
+                      const tree = act.tree || msg.data.tr;
+                      let subspeciesTalent = null;
+                      for (const tal of game.talents) {
+                        if (tal.primaryBranch && tal.tree === tree) {
+                          subspeciesTalent = tal;
+                          break;
+                        }
+                      }
+                      if (subspeciesTalent !== null) {
+                        if (subspeciesTalent.body.amount || typeof subspeciesTalent.body == Number)
+                          bodyCost += subspeciesTalent.body.amount || subspeciesTalent.body;
+                        if (subspeciesTalent.mind.amount || typeof subspeciesTalent.mind == Number)
+                          mindCost += subspeciesTalent.mind.amount || subspeciesTalent.mind;
+                        if (subspeciesTalent.soul.amount || typeof subspeciesTalent.soul == Number)
+                          soulCost += subspeciesTalent.soul.amount || subspeciesTalent.soul;
+                      }
+                    } else if (act.type === Constants.CONTINUE_SUBSPECIES_TALENT) {
+
+                    }
+                  }
+                }
+                if (game.userData[user].level - game.userData[user].body - game.userData[user].mind - game.userData[user].soul >= bodyCost + mindCost + soulCost) {
+                  game.applyTalent(user, talent);
+                  game.userData[user].body += bodyCost;
+                  game.userData[user].mind += mindCost;
+                  game.userData[user].soul += soulCost
+                }
                 break;
             }
             game.updateUsers();
@@ -659,3 +874,18 @@ router.ws(
     });
   }
 );
+
+// dev stuff
+const g = new Game()
+ids[0] = 0;
+clients[ids[0]] = {
+  send: function(data){
+    console.log(data);
+  }
+}
+g.addUser(0, null, "hii");
+g.applyTalent(0, g.talents.adaptableDefenseHuman);
+g.applyTalent(0, g.talents.acrobat);
+g.applyTalent(0, g.talents.archmage);
+g.applyTalent(0, g.talents.championBrawler);
+console.log(g.userData[0]);
