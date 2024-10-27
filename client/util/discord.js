@@ -1,6 +1,5 @@
 import { DiscordSDK, DiscordSDKMock } from "@discord/embedded-app-sdk";
-import { game, characterData } from "../main";
-import { generateSpeciesList } from "../lazy";
+import { game, characterData, pages } from "../main";
 import EventSocket from './EventSocket';
 
 let auth;
@@ -9,8 +8,7 @@ let discordSdk;
 
 const queryParams = new URLSearchParams(window.location.search);
 const isEmbedded = queryParams.get("frame_id") != null;
-const SETTING_UP = 0;
-const LOBBY = 1;
+
 /**
  * @type {EventSocket}
  */
@@ -117,16 +115,21 @@ export default async function setupDiscordSdk() {
   socket.on("gameData", data => {
     delete game.speciesStats[""];
     Object.assign(game, data);
-    generateSpeciesList();
+    pages.characterSheet.generateSpeciesOptions();
+    pages.characterSheet.updateAvailableLanguages();
+    pages.gm.language.generateLanguages();
   });
   socket.on("species", data => {
-    delete speciesStats[""];
-    Object.assign(speciesStats, data);
-    generateSpeciesList();
+    delete game.speciesStats[""];
+    Object.assign(game.speciesStats, data);
+    pages.characterSheet.generateSpeciesOptions();
   });
   socket.on("talents", data => {
-    Object.assign(talents, data);
+    Object.assign(game.talents, data);
   });
+  socket.on("language", data => {
+    Object.assign(game.languages, data);
+  })
   socket.on("resSelfData", data => {
     Object.assign(characterData, data);
   });

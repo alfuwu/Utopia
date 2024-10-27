@@ -18,7 +18,28 @@ export const game = {
   speciesStats: {
     "": { name: "", constitution: 1, endurance: 1, effervescence: 1, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { }, languages: { } },
   },
-  talents: { }
+  talents: { },
+  languages: {
+    utopian: {
+      name: "Utopian",
+      description: "Utopian is a language spoken by all manner of people, utilized as a common tongue to communicate with other cultures and species.",
+      alphabet: [
+        'a', 'b', 'c', 'd', 'e', 'fa', 'fu', 'fe', 'fo', 'g', 'i', 'k', 'l', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'z'
+      ],
+      alphabetCaseSensitive: false,
+      words: [{
+        word: "na",
+        uses: [{
+          type: "exclamation",
+          state: "informal",
+          meaning: "hello",
+          example: "Na!",
+          translation: "Hello!",
+          literalTranslation: "Hello!"
+        }]
+      }]
+    }
+  }
 };
 
 setupDiscordSdk().then(() => {
@@ -26,8 +47,8 @@ setupDiscordSdk().then(() => {
 });
 
 // Initialize pages
-const pages = {
-  characterCreation: new Character(),
+export const pages = {
+  characterSheet: new Character(),
   inGame: new InGame(),
   loading: new Loading(),
   gm: {
@@ -59,4 +80,6 @@ function showPage(page) {
 //pages.loading.show();
 
 // dev
-pages.characterCreation.show();
+//pages.gm.language.show();
+//pages.gm.language.loadLanguage("utopian");
+pages.characterSheet.show();

@@ -346,15 +346,15 @@ class Game {
     polyglot: { tree: Constants.INFLUENCE, name: "Polyglot", after: "broadcast", body: 0, mind: 4, soul: 4, description: "Before you make an Appeal, Language, or Charm test, you may choose to treat each 5 rolled as if it was a 6 when calculating critical successes. If you do, treat each 2 rolled as if it was a 1 when calculating critical failures.", actions: [] },
 
     // prowess core tree
-    traveler: { tree: Constants.PROWESS, name: "Traveler", after: null, body: 1, mind: 1, soul: 1, description: "Choose between Land travel and Water travel. Your travel of the chosen type increases by 2.", actions: [] },
-    adventurer: { tree: Constants.PROWESS, name: "Adventurer", after: "traveler", body: 1, mind: 1, soul: 1, description: "Choose two defenses. They each increase by 2.", actions: [] },
-    voyager: { tree: Constants.PROWESS, name: "Voyager", after: "adventurer", body: 1, mind: 1, soul: 1, description: "Choose either your Block Rating or Dodge Rating. If you choose your Block Rating, it increases by 1d4. If you choose your Dodge Rating, it increases by 1d12.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
-    practice: { tree: Constants.PROWESS, name: "Practice", after: null, body: 1, mind: 1, soul: 1, description: "Choose one or two subtraits. If one is chosesn, it increases by 2 given it wouldn't increase past its maximum. If two are chosen, they both increase by 1, given they aren't at their maximum.", actions: [] },
-    discipline: { tree: Constants.PROWESS, name: "Discipline", after: "practice", body: 1, mind: 1, soul: 1, description: "You become gifted in a subtrait of your choice. If you are gifted in each subtrait, instead choose a subtrait. It increases by 3, given it wouldn't increase past its maximum.", actions: [] },
-    prosperity: { tree: Constants.PROWESS, name: "Propserity", after: "discipline", body: 2, mind: 2, soul: 2, description: "Increase either your Constitution, Endurance, or Effervescence by 1.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
-    nomad: { tree: Constants.PROWESS, name: "Nomad", after: null, body: 2, mind: 0, soul: 0, description: "When you regain 5 or more SHP, you regain an additional 1d4 SHP.", actions: [] },
-    wanderer: { tree: Constants.PROWESS, name: "Wanderer", after: "nomad", body: 0, mind: 2, soul: 0, description: "When you spend any amount of stamina, you may reduce the cost by an additional 1 stamina, minimum cost of half the original, rounded up.", actions: [] },
-    vagabond: { tree: Constants.PROWESS, name: "Vagabond", after: "wanderer", body: 0, mind: 0, soul: 2, description: "When you finish a rest, you regain an additional 1d4 DHP.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
+    traveler: { tree: Constants.PROWESS, repeatable: true, name: "Traveler", after: null, body: 1, mind: 1, soul: 1, description: "Choose between Land travel and Water travel. Your travel of the chosen type increases by 2.", actions: [] },
+    adventurer: { tree: Constants.PROWESS, repeatable: true, name: "Adventurer", after: "traveler", body: 1, mind: 1, soul: 1, description: "Choose two defenses. They each increase by 2.", actions: [] },
+    voyager: { tree: Constants.PROWESS, repeatable: true, name: "Voyager", after: "adventurer", body: 1, mind: 1, soul: 1, description: "Choose either your Block Rating or Dodge Rating. If you choose your Block Rating, it increases by 1d4. If you choose your Dodge Rating, it increases by 1d12.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
+    practice: { tree: Constants.PROWESS, repeatable: true, name: "Practice", after: null, body: 1, mind: 1, soul: 1, description: "Choose one or two subtraits. If one is chosesn, it increases by 2 given it wouldn't increase past its maximum. If two are chosen, they both increase by 1, given they aren't at their maximum.", actions: [] },
+    discipline: { tree: Constants.PROWESS, repeatable: true, name: "Discipline", after: "practice", body: 1, mind: 1, soul: 1, description: "You become gifted in a subtrait of your choice. If you are gifted in each subtrait, instead choose a subtrait. It increases by 3, given it wouldn't increase past its maximum.", actions: [] },
+    prosperity: { tree: Constants.PROWESS, repeatable: true, name: "Propserity", after: "discipline", body: 2, mind: 2, soul: 2, description: "Increase either your Constitution, Endurance, or Effervescence by 1.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
+    nomad: { tree: Constants.PROWESS, repeatable: true, name: "Nomad", after: null, body: 2, mind: 0, soul: 0, description: "When you regain 5 or more SHP, you regain an additional 1d4 SHP.", actions: [] },
+    wanderer: { tree: Constants.PROWESS, repeatable: true, name: "Wanderer", after: "nomad", body: 0, mind: 2, soul: 0, description: "When you spend any amount of stamina, you may reduce the cost by an additional 1 stamina, minimum cost of half the original, rounded up.", actions: [] },
+    vagabond: { tree: Constants.PROWESS, repeatable: true, name: "Vagabond", after: "wanderer", body: 0, mind: 0, soul: 2, description: "When you finish a rest, you regain an additional 1d4 DHP.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
 
     // basic specialist talents
     silentSteps: { special: true, name: "Silent Steps", requirements: [], description: "You gain a point of favor on tests made to remain inconspicuous.", actions: [] },
@@ -556,7 +556,7 @@ class Game {
         return obj;
     }
   }
-  getMaxBody(user) {
+  getMaxCon(user) {
     let max = 10;
     for (const quirk of this.species[user.species].quirks)
       if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_CONSTITUTION)
@@ -567,7 +567,7 @@ class Game {
           max = this.applyOp(max, act);
     return max;
   }
-  getMaxMind(user) {
+  getMaxEnd(user) {
     let max = 10;
     for (const quirk of this.species[user.species].quirks)
       if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_ENDURANCE)
@@ -578,7 +578,7 @@ class Game {
           max = this.applyOp(max, act);
     return max;
   }
-  getMaxSoul(user) {
+  getMaxEff(user) {
     let max = 10;
     for (const quirk of this.species[user.species].quirks)
       if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_EFFERVESCENCE)
@@ -684,16 +684,37 @@ class Game {
           this.applyOp(this.userData[user].subtraitModifiers[act.id], act);
           break;
         case Constants.MODIFY_META:
-
+          if (act.id === Constants.SIMPLE_LANGUAGE)
+            this.userData[user].availableSimpleLanguages = this.applyOp(this.userData[user].availableSimpleLanguages, act);
         case Constants.MODIFY_CORE:
-          if (act.id === Constants.BODY)
-            this.userData[user].body = Math.max(Math.min(this.applyOp(this.userData[user].body, act), this.getMaxBody(this.userData[user])), 2); // todo: calculate minimum body/mind/soul stats
+          this.applyOp(this.userData[user].coreModifiers[act.id], act);
+        case Constants.MODIFY_SCORE:
+          if (act.id <= Constants.EFFERVESCENCE) {
+            this.applyOp(this.userData[user].scoreModifiers[act.id], act);
+            
+            // todo: calculate minimum con/end/eff stats
+            let stat, max = 0;
+            let min = 2;
+            if (act.id === Constants.CONSTITUTION) {
+              stat = this.userData[user].constitution;
+              max = this.getMaxCon();
+            } else if (act.id === Constants.ENDURANCE) {
+              stat = this.userData[user].endurance;
+              max = this.getMaxEnd();
+            } else if (act.id === Constants.EFFERVESCENCE) {
+              stat = this.userData[user].effervescence;
+              max = this.getMaxEff();
+            }
+            const applied = this.userData[user].scoreModifiers[act.id].apply(stat);
+            if (applied > max)
+              this.userData[user].scoreModifiers[act.id].flat -= applied - max;
+            else if (applied < min)
+              this.userData[user].scoreModifiers[act.id].flat += min - applied;
+          }
           else if (act.id === Constants.MIND)
-            this.userData[user].mind = Math.max(Math.min(this.applyOp(this.userData[user].mind, act), this.getMaxBody(this.userData[user])), 2);
+            this.userData[user].mind = Math.max(Math.min(this.applyOp(this.userData[user].endurance, act), this.getMaxEnd(this.userData[user])), 2);
           else if (act.id === Constants.SOUL)
-            this.userData[user].soul = Math.max(Math.min(this.applyOp(this.userData[user].soul, act), this.getMaxBody(this.userData[user])), 2);
-          else if (act.id <= Constants.FLIGHT)
-            this.applyOp(this.userData[user].coreModifiers[act.id], act);
+            this.userData[user].soul = Math.max(Math.min(this.applyOp(this.userData[user].effervescence, act), this.getMaxEff(this.userData[user])), 2);
       }
     }
   }
@@ -719,6 +740,7 @@ class Game {
       endurance: this.species[defaultSpecie].endurance,
       /** @type {number} */
       effervescence: this.species[defaultSpecie].effervescence,
+      scoreModifiers: [new StatModifier(), new StatModifier(), new StatModifier()],
       /** @type {[number, number]} */
       blockRating: [this.species[defaultSpecie].blockRating],
       /** @type {[number, number]} */
@@ -876,16 +898,19 @@ router.ws(
 );
 
 // dev stuff
-const g = new Game()
-ids[0] = 0;
-clients[ids[0]] = {
+const g = new Game();
+const uid = 0;
+const uuid = guid();
+uids.add(uuid);
+ids[uid] = uuid;
+clients[ids[uid]] = {
   send: function(data){
     console.log(data);
   }
 }
-g.addUser(0, null, "hii");
-g.applyTalent(0, g.talents.adaptableDefenseHuman);
-g.applyTalent(0, g.talents.acrobat);
-g.applyTalent(0, g.talents.archmage);
-g.applyTalent(0, g.talents.championBrawler);
-console.log(g.userData[0]);
+g.addUser(uid, null, "hii");
+g.applyTalent(uid, g.talents.adaptableDefenseHuman);
+g.applyTalent(uid, g.talents.acrobat);
+g.applyTalent(uid, g.talents.archmage);
+g.applyTalent(uid, g.talents.championBrawler);
+console.log(g.userData[uid]);
