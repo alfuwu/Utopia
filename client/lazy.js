@@ -148,11 +148,11 @@ export function generateSpeciesList() {
   
   speciesSelect.innerHTML = '<option value="" disabled selected hidden>Human...</option>';
   
-  // Loop through speciesStats and create an option for each species
-  for (const species in game.speciesStats) {
+  // Loop through species and create an option for each species
+  for (const species in game.species) {
     const option = document.createElement('option');
-    option.value = species; // The key in speciesStats
-    option.textContent = game.speciesStats[species].name;
+    option.value = species; // The key in species
+    option.textContent = game.species[species].name;
     speciesSelect.appendChild(option);
   }
 }
@@ -160,7 +160,7 @@ export function generateSpeciesList() {
 // Update base stats when species is selected
 export function updateBaseStats() {
   const selectedSpecies = document.getElementById("species").value;
-  const stats = game.speciesStats[selectedSpecies];
+  const stats = game.species[selectedSpecies];
 
   // Set the base stats in the UI
   document.getElementById("constitution").textContent = stats.constitution;

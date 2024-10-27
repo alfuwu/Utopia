@@ -12,10 +12,36 @@ import Species from './pages/gm/species.js';
 import Talent from './pages/gm/talent.js';
 
 export const characterData = {
-  level: 10
+  species: "",
+  body: 0,
+  mind: 0,
+  soul: 0,
+  coreModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
+  scoreModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
+  blockRating: [[2, 6]],
+  dodgeRating: [[2, 14]],
+  level: 10,
+  cBody() {
+    return applyModifier(this.coreModifiers[0], this.body);
+  },
+  cMind() {
+    return applyModifier(this.coreModifiers[1], this.mind);
+  },
+  cSoul() {
+    return applyModifier(this.coreModifiers[2], this.soul);
+  },
+  cCon() {
+    return applyModifier(this.scoreModifiers[0], game.species[this.species].constitution);
+  },
+  cEnd() {
+    return applyModifier(this.scoreModifiers[1], game.species[this.species].endurance);
+  },
+  cEff() {
+    return applyModifier(this.scoreModifiers[2], game.species[this.species].effervescence);
+  }
 };
 export const game = {
-  speciesStats: {
+  species: {
     "": { name: "", constitution: 1, endurance: 1, effervescence: 1, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { }, languages: { } },
   },
   talents: { },
@@ -24,7 +50,7 @@ export const game = {
       name: "Utopian",
       description: "Utopian is a language spoken by all manner of people, utilized as a common tongue to communicate with other cultures and species.",
       alphabet: [
-        'a', 'b', 'c', 'd', 'e', 'fa', 'fu', 'fe', 'fo', 'g', 'i', 'k', 'l', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'z'
+        'a', 'b', 'c', 'd', 'e', 'fa', 'fu', 'fe', 'fo', 'g', 'i', 'k', 'l', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'z', 'kpsop'
       ],
       alphabetCaseSensitive: false,
       words: [{
@@ -41,6 +67,10 @@ export const game = {
     }
   }
 };
+
+export function applyModifier(modifier, stat) {
+  return ((stat * modifier.mult) + modifier.flat) * modifier.abMult;
+}
 
 setupDiscordSdk().then(() => {
   console.log("done");
@@ -80,6 +110,7 @@ function showPage(page) {
 //pages.loading.show();
 
 // dev
-//pages.gm.language.show();
-//pages.gm.language.loadLanguage("utopian");
-pages.characterSheet.show();
+pages.gm.language.show();
+pages.gm.language.loadLanguage("utopian");
+//pages.characterSheet.show();
+//pages.characterSheet.calculateSpeciesStats();

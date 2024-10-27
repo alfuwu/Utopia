@@ -734,12 +734,6 @@ class Game {
       heatDef: 0,
       physicalDef: 0,
       psycheDef: 0,
-      /** @type {number} */
-      constitution: this.species[defaultSpecie].constitution,
-      /** @type {number} */
-      endurance: this.species[defaultSpecie].endurance,
-      /** @type {number} */
-      effervescence: this.species[defaultSpecie].effervescence,
       scoreModifiers: [new StatModifier(), new StatModifier(), new StatModifier()],
       /** @type {[number, number]} */
       blockRating: [this.species[defaultSpecie].blockRating],

@@ -39,11 +39,37 @@ export default class LanguageCreation extends Page {
     super('gm-language');
     const word = document.getElementById("word");
     word.addEventListener('keypress', (evt) => {
-      if (evt.key.length === 1) // is a keyboard key thing
-        for (const validLetter of game.languages[this.currentLanguage].alphabet)
-          if (word.value.substring(word.value.length - validLetter.length + 1) + evt.key === validLetter)
+      // okay so the plan here is
+      // loop through all "characters" in the current language's alphabet
+      // go through every possible position in the character, and check if the previous characters in word.value match the characters leading up to the position
+      // add the character at the position to a list
+      // if evt.key is present in that list, return to allow the keypress to go through
+      if (evt.key.length === 1) { // is a keyboard key thing
+        let longestLength = 0;
+        for (const c of game.languages[this.currentLanguage].alphabet)
+          if (c.length > longestLength)
+            longestLength = c.length;
+        let nextCharacters = new Set();
+        for (let i = 0; i < longestLength; i++) {
+          const replaceSet = new Set();
+          let fullMatch = false;
+          for (const c of game.languages[this.currentLanguage].alphabet) {
+            if (i === 1 && word.value.endsWith(c)) {
+              fullMatch = true;
+              break;
+            }
+            if (c.length > i && (word.value.endsWith(c.substring(0, i)) || i === 0))
+              replaceSet.add(c.charAt(i));
+          }
+          if (replaceSet.size > 0 && !fullMatch)
+            nextCharacters = replaceSet;
+        }
+        console.log(nextCharacters);
+        for (const key of nextCharacters)
+          if ((game.languages[this.currentLanguage].alphabetCaseInsensitive ? evt.key.toLowerCase() : evt.key) === (game.languages[this.currentLanguage].alphabetCaseInsensitive ? key.toLowerCase() : key))
             return;
-      evt.preventDefault();
+        evt.preventDefault();
+      }
     })
     document.getElementById("add-word").addEventListener('click', () => {
       if (this.currentLanguage == null)
@@ -79,7 +105,7 @@ export default class LanguageCreation extends Page {
   loadLanguage(language) {
     document.getElementById("language-name").value = game.languages[language].name;
     const scrollableList = document.getElementById("scrollable-list");
-    scrollableList.textContent = ``;
+    scrollableList.innerHTML = ``;
     for (const word of game.languages[language].words)
       scrollableList.appendChild(this.generateWordListElement(word));
     this.currentLanguage = language;

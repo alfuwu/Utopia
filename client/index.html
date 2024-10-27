@@ -129,13 +129,12 @@ option[value=""][disabled] {
 }
 
 .left-bar {
-  display: flex;
-  flex-shrink: 0;
+  position: absolute; /* does not expand to fill page raaaaghhhh */
   z-index: -1;
   top: -50px;
   left: 10px;
+  bottom: 0px;
   width: 445px;
-  flex-grow: 1;
   border: 3px solid #000000ee;
   background-color: #161719;
 }
@@ -143,8 +142,8 @@ option[value=""][disabled] {
 .character-bar {
   position: absolute;
   top: 22.5px;
-  left: 15px;
-  right: 15px;
+  left: 13px;
+  right: 13px;
   height: 50px;
   border: 3px solid #000000ee;
   background-color: #343434;
@@ -264,7 +263,7 @@ option[value=""][disabled] {
 /* subtraits (e.g. Speed, Dexterity) */
 .subtrait {
   margin-left: 30px;
-  margin-top: 15px;
+  margin-top: 13px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -419,7 +418,7 @@ option[value=""][disabled] {
 }
 .x:hover {
   border-color: darkred;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.13s ease-in-out, background-color 0.13s ease-in-out, border-color 0.13s ease-in-out, box-shadow 0.13s ease-in-out;
 }
 /* end of gm language style sheet */
 
@@ -504,7 +503,7 @@ option[value=""][disabled] {
         </div>
 
         <div class="character-species-container">
-          <label for="character-species">Species:</label>
+          <label for="species">Species:</label>
           <select id="species" name="species" required>
             <option value="" disabled selected hidden>Human...</option>
           </select>
@@ -538,9 +537,9 @@ option[value=""][disabled] {
                 <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
               </svg>
             </div>
           </div>
@@ -587,9 +586,9 @@ option[value=""][disabled] {
                 <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
               </svg>
             </div>
           </div>
@@ -636,9 +635,9 @@ option[value=""][disabled] {
                 <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
               </svg>
             </div>
           </div>
@@ -685,9 +684,9 @@ option[value=""][disabled] {
                 <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
               </svg>
             </div>
           </div>
@@ -734,9 +733,9 @@ option[value=""][disabled] {
                 <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
               </svg>
             </div>
           </div>
@@ -783,9 +782,9 @@ option[value=""][disabled] {
                 <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54" y1="6.75" x2="54" y2="15.25" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
                 <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                <line x1="54.25" y1="15" x2="57" y2="15" stroke="#ffffffaa" stroke-width="0.5" />
+                <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
               </svg>
             </div>
           </div>
