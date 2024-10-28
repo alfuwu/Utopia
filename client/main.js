@@ -13,6 +13,7 @@ import Talent from './pages/gm/talent.js';
 
 export const characterData = {
   species: "",
+  xp: 500,
   body: 0,
   mind: 0,
   soul: 0,
@@ -110,7 +111,8 @@ function showPage(page) {
 //pages.loading.show();
 
 // dev
-pages.gm.language.show();
-pages.gm.language.loadLanguage("utopian");
-//pages.characterSheet.show();
-//pages.characterSheet.calculateSpeciesStats();
+//pages.gm.language.show();
+//pages.gm.language.loadLanguage("utopian");
+pages.characterSheet.show();
+pages.characterSheet.calculateSpeciesStats();
+pages.characterSheet.calculateXp();

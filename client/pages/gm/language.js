@@ -39,11 +39,6 @@ export default class LanguageCreation extends Page {
     super('gm-language');
     const word = document.getElementById("word");
     word.addEventListener('keypress', (evt) => {
-      // okay so the plan here is
-      // loop through all "characters" in the current language's alphabet
-      // go through every possible position in the character, and check if the previous characters in word.value match the characters leading up to the position
-      // add the character at the position to a list
-      // if evt.key is present in that list, return to allow the keypress to go through
       if (evt.key.length === 1) { // is a keyboard key thing
         let longestLength = 0;
         for (const c of game.languages[this.currentLanguage].alphabet)
@@ -64,7 +59,6 @@ export default class LanguageCreation extends Page {
           if (replaceSet.size > 0 && !fullMatch)
             nextCharacters = replaceSet;
         }
-        console.log(nextCharacters);
         for (const key of nextCharacters)
           if ((game.languages[this.currentLanguage].alphabetCaseInsensitive ? evt.key.toLowerCase() : evt.key) === (game.languages[this.currentLanguage].alphabetCaseInsensitive ? key.toLowerCase() : key))
             return;
