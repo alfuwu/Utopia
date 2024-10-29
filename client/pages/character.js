@@ -3,7 +3,7 @@ import Page from "./page";
 
 export default class Character extends Page {
   constructor() {
-    super('character');
+    super('character', 'character-sheet');
 
     document.querySelectorAll('.increment button').forEach(button => {
       button.addEventListener('click', () => {
@@ -72,9 +72,23 @@ export default class Character extends Page {
     document.getElementById("dodge").textContent = characterData.dodgeRating[0][0] + 'd' + characterData.dodgeRating[0][1];
     document.getElementById("dhp").textContent = characterData.level + characterData.cEff() * characterData.cSoul();
     document.getElementById("shp").textContent = characterData.level + characterData.cCon() * characterData.cBody();
+    document.getElementById("stamina").textContent = characterData.level + characterData.cEnd() * characterData.cMind();
   }
   calculateXp() {
     document.getElementById("current-xp").textContent = characterData.xp;
     document.getElementById("target-xp").textContent = characterData.level * 100;
+  }
+  calculatePoints() {
+    document.getElementById("talent-points").textContent = characterData.level - characterData.body - characterData.mind - characterData.soul;
+    document.getElementById("body-points").textContent = characterData.body;
+    document.getElementById("mind-points").textContent = characterData.mind;
+    document.getElementById("soul-points").textContent = characterData.soul;
+  }
+  show() {
+    super.show();
+    this.calculateTraits();
+    this.calculateSpeciesStats();
+    this.calculateXp();
+    this.calculatePoints();
   }
 };

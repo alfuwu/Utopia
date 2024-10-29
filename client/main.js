@@ -1,15 +1,20 @@
 import setupPage from "./lazy";
-import setupDiscordSdk from "./util/discord";
+import setupDiscordSdk, { serverless } from "./util/discord";
 
-import Character from './pages/character.js';
-import InGame from './pages/ingame.js';
-import Loading from './pages/loading.js';
-import Creature from './pages/gm/creature.js';
-import Fight from './pages/gm/fight.js';
-import GMInGame from './pages/gm/ingame.js';
-import Language from './pages/gm/language.js';
-import Species from './pages/gm/species.js';
-import Talent from './pages/gm/talent.js';
+import InGame from "./pages/ingame";
+import CharacterSheet from "./pages/character";
+import Talents from "./pages/talents";
+import Actions from "./pages/actions";
+import Inventory from "./pages/inventory";
+import Language from "./pages/language";
+import Loading from "./pages/loading";
+import Creature from "./pages/gm/creature";
+import Fight from "./pages/gm/fight";
+import GMInGame from "./pages/gm/ingame";
+import LanguageCreation from "./pages/gm/language";
+import SpeciesCreation from "./pages/gm/species";
+import TalentCreation from "./pages/gm/talent";
+import Page from "./pages/page";
 
 export const characterData = {
   species: "",
@@ -75,37 +80,43 @@ export function applyModifier(modifier, stat) {
 
 setupDiscordSdk().then(() => {
   console.log("done");
+  console.log(serverless);
 });
 
 // Initialize pages
 export const pages = {
-  characterSheet: new Character(),
   inGame: new InGame(),
+  characterSheet: new CharacterSheet(),
+  talents: new Talents(),
+  actions: new Actions(),
+  inventory: new Inventory(),
+  language: new Language(),
   loading: new Loading(),
   gm: {
     creature: new Creature(),
     fight: new Fight(),
     inGame: new GMInGame(),
-    language: new Language(),
-    species: new Species(),
-    talent: new Talent()
+    language: new LanguageCreation(),
+    species: new SpeciesCreation(),
+    talent: new TalentCreation()
   }
 };
 
-// Function to switch between pages
-function showPage(page) {
-  Object.keys(pages).forEach(key => {
-    if (typeof pages[key] === 'object')
-      Object.values(pages[key]).forEach(p => p.hide());
-    else
-      pages[key].hide();
+
+function hidePages(p) {
+  Object.values(p).forEach(v => {
+    if (!(v instanceof Page) && typeof v === 'object')
+      hidePages(v);
+    else if (v instanceof Page)
+      v.hide()
   });
+}
+
+export function showPage(page) {
+  hidePages(pages);
 
   page.show();
 }
-
-// Set up event listeners to navigate to pages
-//document.getElementById('some-nav-button').addEventListener('click', () => showPage(pages.characterCreation));
 
 // Initialize default page
 //pages.loading.show();
@@ -114,5 +125,3 @@ function showPage(page) {
 //pages.gm.language.show();
 //pages.gm.language.loadLanguage("utopian");
 pages.characterSheet.show();
-pages.characterSheet.calculateSpeciesStats();
-pages.characterSheet.calculateXp();

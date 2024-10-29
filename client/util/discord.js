@@ -13,6 +13,7 @@ const isEmbedded = queryParams.get("frame_id") != null;
  * @type {EventSocket}
  */
 export let socket;
+export let serverless = false;
 
 if (isEmbedded) {
   discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
@@ -83,7 +84,11 @@ export default async function setupDiscordSdk() {
     }),
   });
   let access_token;
-  access_token = await response.json().then((j) => j.access_token);
+  try {   
+    access_token = await response.json().then(j => j.access_token);
+  } catch {
+    serverless = true;
+  }
   
   // Authenticate with Discord client (using the access_token)
   auth = await discordSdk.commands.authenticate({ access_token });
@@ -96,7 +101,7 @@ export default async function setupDiscordSdk() {
   const guildMember = await fetch(`https://discord.com/api/users/@me/guilds/${discordSdk.guildId}/member`, {
     method: 'get',
     headers: { Authorization: `Bearer ${access_token}` },
-  }).then((j) => j.json()).catch(() => null);
+  }).then(j => j.json()).catch(() => null);
 
   let uidRes;
   let uuid = new Promise(r => uidRes = r);
@@ -129,9 +134,15 @@ export default async function setupDiscordSdk() {
   });
   socket.on("language", data => {
     Object.assign(game.languages, data);
+    pages.gm.language.generateLanguages();
+    pages.language.generateWordsList();
   })
   socket.on("resSelfData", data => {
     Object.assign(characterData, data);
+    pages.characterSheet.calculateTraits();
+    pages.characterSheet.calculateSpeciesStats();
+    pages.characterSheet.calculateXp();
+    pages.characterSheet.calculatePoints();
   });
   uuid = await uuid;
 

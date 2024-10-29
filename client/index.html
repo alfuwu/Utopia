@@ -49,6 +49,8 @@ h1 {
 }
 
 #app {
+  display: flex;
+  flex-direction: row;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -99,6 +101,30 @@ option[value=""][disabled] {
   display: none;
 }
 
+.navigation {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  background-color: #161719;
+  border: 5px solid #000000ee;
+}
+
+.navigation button {
+  margin-bottom: 2px;
+  border-radius: 5px;
+}
+
+.navigation button:disabled {
+  border-width: 0px;
+  cursor: auto;
+}
+
+.pages {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
 /* Center the loading container */
 .loading-container {
   display: flex;
@@ -120,20 +146,14 @@ option[value=""][disabled] {
 }
 
 .zoomer {
-  width: max-content;
-  height: max-content;
   zoom: 1;
 }
 
-/* start of character page style sheet */
-.character {
-  position: absolute;
-  top: 20px;
-  left: 10px;
-  right: 10px;
-  bottom: 20px;
+.max-size {
+  width: 100%;
 }
 
+/* start of character page style sheet */
 .left-bar {
   position: absolute;
   z-index: -1;
@@ -501,6 +521,22 @@ option[value=""][disabled] {
 }
 /* end of character page style sheet */
 
+/* start of language style sheet */
+.language-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.dictionary {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+/* end of language style sheet */
+
 /* start of gm language style sheet */
 .language-name-container {
   border: 3px solid #000000ee;
@@ -512,26 +548,30 @@ option[value=""][disabled] {
   right: 20px;
   z-index: -1;
   top: -50px;
-  height: calc(100vh + 20px);
+  bottom: 0px;
   min-width: 20%;
   border: 3px solid #000000ee;
   background-color: #191618;
 }
 
 .word-list {
-  position: absolute;
+  position: relative;
   display: flex;
   flex-direction: column;
-  vertical-align:middle;
-  align-items: center;
+  top: 20px;
   right: 20px;
   min-width: 20%;
+  max-width: 20%;
+  overflow-x: hidden;
+  flex-wrap: wrap;
+  text-wrap: wrap;
 }
 
 .word-data {
-  position: relative;
-  left: calc(445px + 2%);
-  width: 40%;
+  flex-grow: 1;
+  flex-basis: 0;
+  min-width: 0;
+  min-height: 0;
   top: 100px;
 }
 
@@ -539,6 +579,13 @@ option[value=""][disabled] {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  vertical-align: auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  flex-wrap: wrap;
+  text-wrap: wrap;
 }
 
 .round-input {
@@ -553,6 +600,12 @@ option[value=""][disabled] {
 .language-container {
   display: flex;
   flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+.language-data-container {
+  width: calc(445px + 1%);
 }
 
 .x {
@@ -564,6 +617,36 @@ option[value=""][disabled] {
 .x:hover {
   border-color: darkred;
   transition: color 0.13s ease-in-out, background-color 0.13s ease-in-out, border-color 0.13s ease-in-out, box-shadow 0.13s ease-in-out;
+  box-shadow: 1em 1em rgb(49, 11, 11);
+}
+
+.language-data-stuff {
+  position: relative;
+  top: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  width: calc(395px - 1%);
+}
+
+.big-text-box {
+  text-wrap: pretty;
+  text-align: start;
+  min-width: 100%;
+  resize: none;
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 0px solid #646cff;
+  background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.scrollable-list {
+  overflow-y: auto;
+  max-height: calc(100vh - 10px);
+  width: auto;
 }
 /* end of gm language style sheet */
 
@@ -571,7 +654,12 @@ option[value=""][disabled] {
   display: none;
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 100vh;
+
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  right: 10px;
+  bottom: 20px;
 }
 
 /* Keyframe for spinning effect */
@@ -679,461 +767,526 @@ option[value=""][disabled] {
   </head>
   <body>
     <div id="app">
-      <!-- Pages -->
-      <div id="character" class="page character hidden">
-        <div class="zoomer">
-          <div class="left-bar"></div>
-          <div class="character-bar"></div>
-          <div class="character-name-container">
-            <label for="character-name">Name:</label>
-            <input type="text" id="character-name" name="character-name" placeholder="Bob Jr., the local bartender">
+      <div class="navigation zoomer" style="height: 100%;">
+        <button id="in-game">Map</button>
+        <button id="character-sheet">Character</button>
+        <button id="talent">Talents</button>
+        <button id="action">Actions</button>
+        <button id="character-inventory">Inventory</button>
+        <button id="language">Languages</button>
+        <p>GM</p>
+        <button id="gm-in-game">Map Editor</button>
+        <button id="creature">Creatures</button>
+        <button id="species">Species</button>
+        <button id="talent-editor">Talent Creator</button>
+        <button id="language-editor">Language Editor</button>
+        <button id="fight">Fight</button>
+      </div>
+      <div class="pages">
+        <div id="ingame" class="page">
+          <div class="zoomer max-size">
+            
           </div>
+        </div>
+        <div id="character" class="page">
+          <div class="zoomer max-size">
+            <div class="left-bar"></div>
+            <div class="character-bar"></div>
+            <div class="character-name-container">
+              <label for="character-name">Name:</label>
+              <input type="text" id="character-name" name="character-name" placeholder="Bob Jr., the local bartender">
+            </div>
 
-          <div class="character-species-container">
-            <label for="species">Species:</label>
-            <select id="species" name="species" required>
-              <option value="" disabled selected hidden>Human...</option>
-            </select>
-          </div>
+            <div class="character-species-container">
+              <label for="species">Species:</label>
+              <select id="species" name="species" required>
+                <option value="" disabled selected hidden>Human...</option>
+              </select>
+            </div>
 
-          <div class="character-thingy-container">
-            <label for="block" class="attribute-label">Block:</label>
-            <div class="value-box value-box-wide">
-              <span class="value" id="block" name="block">2d4</span>
-            </div>
-            <label for="dodge" class="attribute-label">Dodge:</label>
-            <div class="value-box value-box-wide ml10">
-              <span class="value" id="dodge" name="dodge">2d12</span>
-            </div>
-        
-            <label for="dhp" class="attribute-label">DHP:</label>
-            <div class="value-box value-box-wide">
-              <span class="value" id="dhp" name="dhp">0</span>
-            </div>
-            <label for="shp" class="attribute-label">SHP:</label>
-            <div class="value-box value-box-wide ml10">
-              <span class="value" id="shp" name="shp">0</span>
-            </div>
-          </div>
-
-          <div class="attributes ml10">
-            <div class="attribute-label">
-              <label>Agility</label>
-              <div class="line-container">
-                <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                </svg>
-              </div>
-            </div>
-            <div class="value-box">
-              <span class="value" id="agility-value">2</span>
-              <span class="value" id="agility-modifier">-2</span>
-            </div>
-            <div class="subtrait-field">
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Speed</label>
-              </div>
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Dexterity</label>
-              </div>
-            </div>
-            <div class="subtrait-field ml10">
-              <div class="value-box">
-                <div class="increment">
-                  <button id="speed-inc">+</button>
-                </div>
-                <span class="value" id="speed-value">1</span>
-                <span class="value" id="speed-modifier">-3</span>
-                <div class="decrement">
-                  <button id="speed-dec">-</button>
-                </div>
-              </div>
-              <div class="value-box">
-                <div class="increment">
-                  <button id="dexterity-inc">+</button>
-                </div>
-                <span class="value" id="dexterity-value">1</span>
-                <span class="value" id="dexterity-modifier">-3</span>
-                <div class="decrement">
-                  <button>-</button>
-                </div>
-              </div>
-            </div>
-            <div class="attribute-label">
-              <label>Strength</label>
-              <div class="line-container">
-                <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                </svg>
-              </div>
-            </div>
-            <div class="value-box">
-              <span class="value" id="strength-value">2</span>
-              <span class="value" id="strength-modifier">-2</span>
-            </div>
-            <div class="subtrait-field">
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Power</label>
-              </div>
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Fortitude</label>
-              </div>
-            </div>
-            <div class="subtrait-field ml10">
-              <div class="value-box">
-                <div class="increment">
-                  <button id="power-inc">+</button>
-                </div>
-                <span class="value" id="power-value">1</span>
-                <span class="value" id="power-modifier">-3</span>
-                <div class="decrement">
-                  <button id="power-dec">-</button>
-                </div>
-              </div>
-              <div class="value-box">
-                <div class="increment">
-                  <button id="fortitude-inc">+</button>
-                </div>
-                <span class="value" id="fortitude-value">1</span>
-                <span class="value" id="fortitude-modifier">-3</span>
-                <div class="decrement">
-                  <button id="fortitude-dec">-</button>
-                </div>
-              </div>
-            </div>
-            <div class="attribute-label">
-              <label>Intellect</label>
-              <div class="line-container">
-                <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                </svg>
-              </div>
-            </div>
-            <div class="value-box">
-              <span class="value" id="intellect-value">2</span>
-              <span class="value" id="intellect-modifier">-2</span>
-            </div>
-            <div class="subtrait-field">
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Memory</label>
-              </div>
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Engineering</label>
-              </div>
-            </div>
-            <div class="subtrait-field ml10">
-              <div class="value-box">
-                <div class="increment">
-                  <button id="memory-inc">+</button>
-                </div>
-                <span class="value" id="memory-value">1</span>
-                <span class="value" id="memory-modifier">-3</span>
-                <div class="decrement">
-                  <button id="memory-dec">-</button>
-                </div>
-              </div>
-              <div class="value-box">
-                <div class="increment">
-                  <button id="engineering-inc">+</button>
-                </div>
-                <span class="value" id="engineering-value">1</span>
-                <span class="value" id="engineering-modifier">-3</span>
-                <div class="decrement">
-                  <button id="engineering-dec">-</button>
-                </div>
-              </div>
-            </div>
-            <div class="attribute-label">
-              <label>Will</label>
-              <div class="line-container">
-                <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                </svg>
-              </div>
-            </div>
-            <div class="value-box">
-              <span class="value" id="will-value">2</span>
-              <span class="value" id="will-modifier">-2</span>
-            </div>
-            <div class="subtrait-field">
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Resolve</label>
-              </div>
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Awareness</label>
-              </div>
-            </div>
-            <div class="subtrait-field ml10">
-              <div class="value-box">
-                <div class="increment">
-                  <button>+</button>
-                </div>
-                <span class="value" id="resolve-value">1</span>
-                <span class="value" id="resolve-modifier">-3</span>
-                <div class="decrement">
-                  <button>-</button>
-                </div>
-              </div>
-              <div class="value-box">
-                <div class="increment">
-                  <button>+</button>
-                </div>
-                <span class="value" id="awareness-value">1</span>
-                <span class="value" id="awareness-modifier">-3</span>
-                <div class="decrement">
-                  <button>-</button>
-                </div>
-              </div>
-            </div>
-            <div class="attribute-label">
-              <label>Display</label>
-              <div class="line-container">
-                <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                </svg>
-              </div>
-            </div>
-            <div class="value-box">
-              <span class="value" id="display-value">2</span>
-              <span class="value" id="display-modifier">-2</span>
-            </div>
-            <div class="subtrait-field">
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Portrayal</label>
-              </div>
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Stunt</label>
-              </div>
-            </div>
-            <div class="subtrait-field ml10">
-              <div class="value-box">
-                <div class="increment">
-                  <button>+</button>
-                </div>
-                <span class="value" id="portrayal-value">1</span>
-                <span class="value" id="portrayal-modifier">-3</span>
-                <div class="decrement">
-                  <button>-</button>
-                </div>
-              </div>
-              <div class="value-box">
-                <div class="increment">
-                  <button>+</button>
-                </div>
-                <span class="value" id="stunt-value">1</span>
-                <span class="value" id="stunt-modifier">-3</span>
-                <div class="decrement">
-                  <button>-</button>
-                </div>
-              </div>
-            </div>
-            <div class="attribute-label">
-              <label>Charm</label>
-              <div class="line-container">
-                <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
-                  <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
-                </svg>
-              </div>
-            </div>
-            <div class="value-box">
-              <span class="value" id="charm-value">2</span>
-              <span class="value" id="charm-modifier">-2</span>
-            </div>
-            <div class="subtrait-field">
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Appeal</label>
-              </div>
-              <div class="subtrait">
-                <span class="checkmark">✔</span>
-                <label>Language</label>
-              </div>
-            </div>
-            <div class="subtrait-field ml10">
-              <div class="value-box">
-                <div class="increment">
-                  <button>+</button>
-                </div>
-                <span class="value" id="appeal-value">1</span>
-                <span class="value" id="appeal-modifier">-3</span>
-                <div class="decrement">
-                  <button>-</button>
-                </div>
-              </div>
-              <div class="value-box">
-                <div class="increment">
-                  <button>+</button>
-                </div>
-                <span class="value" id="language-value">1</span>
-                <span class="value" id="language-modifier">-3</span>
-                <div class="decrement">
-                  <button>-</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="core-stats">
-            <div class="defenses">
-              <label style="padding-right: 15px;">Defenses</label>
-              <div class="defense value-box">
-                <span id="chill" class="value">0</span>
-                <span id="energy" class="value">0</span>
-                <span id="heat" class="value">0</span>
-                <span id="physical" class="value">0</span>
-                <span id="psyche" class="value">0</span>
-                <svg viewBox="00 00 50 1.5" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 45px; right: -12px; left: 7px; height: 15px; z-index: -1;">
-                  <line x1="0" y1="0" x2="33" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
-                </svg>
-              </div>
-            </div>
-            <div class="xp-and-stamina">
-              <label style="padding-right: 15px;">XP</label>
-              <div class="xp value-box value-box-wide">
-                <span id="current-xp" class="value" style="margin-right:-6px; margin-left: 0px;">0</span>
-                <span id="target-xp" class="value" style="margin-left:0px">1000</span>
-              </div>
-              <svg viewBox="00 00 50 1.5" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 125px; right: -12px; left: 7px; height: 15px; z-index: -1;">
-                <line x1="0" y1="0" x2="18.7" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
-                <line x1="20" y1="0" x2="35" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
-              </svg>
-              <label style="padding-right: 30px;">Stamina</label>
+            <div class="character-thingy-container">
+              <label for="block" class="attribute-label">Block:</label>
               <div class="value-box value-box-wide">
-                <span id="stamina" class="value">0</span>
+                <span class="value" id="block" name="block">2d4</span>
+              </div>
+              <label for="dodge" class="attribute-label">Dodge:</label>
+              <div class="value-box value-box-wide ml10">
+                <span class="value" id="dodge" name="dodge">2d12</span>
+              </div>
+          
+              <label for="dhp" class="attribute-label">DHP:</label>
+              <div class="value-box value-box-wide">
+                <span class="value" id="dhp" name="dhp">0</span>
+              </div>
+              <label for="shp" class="attribute-label">SHP:</label>
+              <div class="value-box value-box-wide ml10">
+                <span class="value" id="shp" name="shp">0</span>
               </div>
             </div>
-            <div class="points value-box">
-              <div class="talent-points">
-                <label style="left:-2px">Points</label>
-                <span id="talent-points" class="value" style="margin-left:-2px">0</span>
+
+            <div class="attributes ml10">
+              <div class="attribute-label">
+                <label>Agility</label>
+                <div class="line-container">
+                  <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                  </svg>
+                </div>
               </div>
-              <div class="distributed-points">
-                <label>Body</label>
-                <span id="body-points" class="value">0</span>
-                <label>Mind</label>
-                <span id="Mind-points" class="value">0</span>
-                <label>Soul</label>
-                <span id="soul-points" class="value">0</span>
+              <div class="value-box">
+                <span class="value" id="agility-value">2</span>
+                <span class="value" id="agility-modifier">-2</span>
+              </div>
+              <div class="subtrait-field">
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Speed</label>
+                </div>
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Dexterity</label>
+                </div>
+              </div>
+              <div class="subtrait-field ml10">
+                <div class="value-box">
+                  <div class="increment">
+                    <button id="speed-inc">+</button>
+                  </div>
+                  <span class="value" id="speed-value">1</span>
+                  <span class="value" id="speed-modifier">-3</span>
+                  <div class="decrement">
+                    <button id="speed-dec">-</button>
+                  </div>
+                </div>
+                <div class="value-box">
+                  <div class="increment">
+                    <button id="dexterity-inc">+</button>
+                  </div>
+                  <span class="value" id="dexterity-value">1</span>
+                  <span class="value" id="dexterity-modifier">-3</span>
+                  <div class="decrement">
+                    <button>-</button>
+                  </div>
+                </div>
+              </div>
+              <div class="attribute-label">
+                <label>Strength</label>
+                <div class="line-container">
+                  <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                  </svg>
+                </div>
+              </div>
+              <div class="value-box">
+                <span class="value" id="strength-value">2</span>
+                <span class="value" id="strength-modifier">-2</span>
+              </div>
+              <div class="subtrait-field">
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Power</label>
+                </div>
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Fortitude</label>
+                </div>
+              </div>
+              <div class="subtrait-field ml10">
+                <div class="value-box">
+                  <div class="increment">
+                    <button id="power-inc">+</button>
+                  </div>
+                  <span class="value" id="power-value">1</span>
+                  <span class="value" id="power-modifier">-3</span>
+                  <div class="decrement">
+                    <button id="power-dec">-</button>
+                  </div>
+                </div>
+                <div class="value-box">
+                  <div class="increment">
+                    <button id="fortitude-inc">+</button>
+                  </div>
+                  <span class="value" id="fortitude-value">1</span>
+                  <span class="value" id="fortitude-modifier">-3</span>
+                  <div class="decrement">
+                    <button id="fortitude-dec">-</button>
+                  </div>
+                </div>
+              </div>
+              <div class="attribute-label">
+                <label>Intellect</label>
+                <div class="line-container">
+                  <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                  </svg>
+                </div>
+              </div>
+              <div class="value-box">
+                <span class="value" id="intellect-value">2</span>
+                <span class="value" id="intellect-modifier">-2</span>
+              </div>
+              <div class="subtrait-field">
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Memory</label>
+                </div>
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Engineering</label>
+                </div>
+              </div>
+              <div class="subtrait-field ml10">
+                <div class="value-box">
+                  <div class="increment">
+                    <button id="memory-inc">+</button>
+                  </div>
+                  <span class="value" id="memory-value">1</span>
+                  <span class="value" id="memory-modifier">-3</span>
+                  <div class="decrement">
+                    <button id="memory-dec">-</button>
+                  </div>
+                </div>
+                <div class="value-box">
+                  <div class="increment">
+                    <button id="engineering-inc">+</button>
+                  </div>
+                  <span class="value" id="engineering-value">1</span>
+                  <span class="value" id="engineering-modifier">-3</span>
+                  <div class="decrement">
+                    <button id="engineering-dec">-</button>
+                  </div>
+                </div>
+              </div>
+              <div class="attribute-label">
+                <label>Will</label>
+                <div class="line-container">
+                  <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                  </svg>
+                </div>
+              </div>
+              <div class="value-box">
+                <span class="value" id="will-value">2</span>
+                <span class="value" id="will-modifier">-2</span>
+              </div>
+              <div class="subtrait-field">
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Resolve</label>
+                </div>
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Awareness</label>
+                </div>
+              </div>
+              <div class="subtrait-field ml10">
+                <div class="value-box">
+                  <div class="increment">
+                    <button>+</button>
+                  </div>
+                  <span class="value" id="resolve-value">1</span>
+                  <span class="value" id="resolve-modifier">-3</span>
+                  <div class="decrement">
+                    <button>-</button>
+                  </div>
+                </div>
+                <div class="value-box">
+                  <div class="increment">
+                    <button>+</button>
+                  </div>
+                  <span class="value" id="awareness-value">1</span>
+                  <span class="value" id="awareness-modifier">-3</span>
+                  <div class="decrement">
+                    <button>-</button>
+                  </div>
+                </div>
+              </div>
+              <div class="attribute-label">
+                <label>Display</label>
+                <div class="line-container">
+                  <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                  </svg>
+                </div>
+              </div>
+              <div class="value-box">
+                <span class="value" id="display-value">2</span>
+                <span class="value" id="display-modifier">-2</span>
+              </div>
+              <div class="subtrait-field">
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Portrayal</label>
+                </div>
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Stunt</label>
+                </div>
+              </div>
+              <div class="subtrait-field ml10">
+                <div class="value-box">
+                  <div class="increment">
+                    <button>+</button>
+                  </div>
+                  <span class="value" id="portrayal-value">1</span>
+                  <span class="value" id="portrayal-modifier">-3</span>
+                  <div class="decrement">
+                    <button>-</button>
+                  </div>
+                </div>
+                <div class="value-box">
+                  <div class="increment">
+                    <button>+</button>
+                  </div>
+                  <span class="value" id="stunt-value">1</span>
+                  <span class="value" id="stunt-modifier">-3</span>
+                  <div class="decrement">
+                    <button>-</button>
+                  </div>
+                </div>
+              </div>
+              <div class="attribute-label">
+                <label>Charm</label>
+                <div class="line-container">
+                  <svg viewBox="00 00 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="3" y1="13" x2="21.75" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22" y1="13.25" x2="22" y2="9.75" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="22.25" y1="10" x2="53.75" y2="10" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54" y1="6.75" x2="54" y2="13.25" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="7" x2="57" y2="7" stroke="#ffffffaa" stroke-width="0.5" />
+                    <line x1="54.25" y1="13" x2="57" y2="13" stroke="#ffffffaa" stroke-width="0.5" />
+                  </svg>
+                </div>
+              </div>
+              <div class="value-box">
+                <span class="value" id="charm-value">2</span>
+                <span class="value" id="charm-modifier">-2</span>
+              </div>
+              <div class="subtrait-field">
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Appeal</label>
+                </div>
+                <div class="subtrait">
+                  <span class="checkmark">✔</span>
+                  <label>Language</label>
+                </div>
+              </div>
+              <div class="subtrait-field ml10">
+                <div class="value-box">
+                  <div class="increment">
+                    <button>+</button>
+                  </div>
+                  <span class="value" id="appeal-value">1</span>
+                  <span class="value" id="appeal-modifier">-3</span>
+                  <div class="decrement">
+                    <button>-</button>
+                  </div>
+                </div>
+                <div class="value-box">
+                  <div class="increment">
+                    <button>+</button>
+                  </div>
+                  <span class="value" id="language-value">1</span>
+                  <span class="value" id="language-modifier">-3</span>
+                  <div class="decrement">
+                    <button>-</button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="species-stats value-box value-box-wide">
-              <div class="species-stat-thingy">
-                <label>Constitution</label>
-                <span id="constitution" class="value">0</span>
+
+            <div class="core-stats">
+              <div class="defenses">
+                <label style="padding-right: 15px;">Defenses</label>
+                <div class="defense value-box">
+                  <span id="chill" class="value">0</span>
+                  <span id="energy" class="value">0</span>
+                  <span id="heat" class="value">0</span>
+                  <span id="physical" class="value">0</span>
+                  <span id="psyche" class="value">0</span>
+                  <svg viewBox="00 00 50 1.5" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 45px; right: -12px; left: 7px; height: 15px; z-index: -1;">
+                    <line x1="0" y1="0" x2="33" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
+                  </svg>
+                </div>
               </div>
-              <div class="species-stat-thingy">
-                <label>Endurance</label>
-                <span id="endurance" class="value">0</span>
+              <div class="xp-and-stamina">
+                <label style="padding-right: 15px;">XP</label>
+                <div class="xp value-box value-box-wide">
+                  <span id="current-xp" class="value" style="margin-right:-6px; margin-left: 0px;">0</span>
+                  <span id="target-xp" class="value" style="margin-left:0px">1000</span>
+                </div>
+                <svg viewBox="00 00 50 1.5" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 125px; right: -12px; left: 7px; height: 15px; z-index: -1;">
+                  <line x1="0" y1="0" x2="18.7" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
+                  <line x1="20" y1="0" x2="35" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
+                </svg>
+                <label style="padding-right: 30px;">Stamina</label>
+                <div class="value-box value-box-wide">
+                  <span id="stamina" class="value">0</span>
+                </div>
               </div>
-              <div class="species-stat-thingy">
-                <label>Effervescence</label>
-                <span id="effervescence" class="value">0</span>
+              <div class="points value-box">
+                <div class="talent-points">
+                  <label style="left:-2px">Points</label>
+                  <span id="talent-points" class="value" style="margin-left:-2px">0</span>
+                </div>
+                <div class="distributed-points">
+                  <label>Body</label>
+                  <span id="body-points" class="value">0</span>
+                  <label>Mind</label>
+                  <span id="mind-points" class="value">0</span>
+                  <label>Soul</label>
+                  <span id="soul-points" class="value">0</span>
+                </div>
               </div>
-            </div>
-            <div class="travel value-box value-box-wide">
-              <label class="travel-stat">Travel</label>
-              <div class="travel-values">
-                <span id="land" class="value">0</span>
-                <span id="water" class="value">0</span>
-                <span id="air" class="value">0</span>
+              <div class="species-stats value-box value-box-wide">
+                <div class="species-stat-thingy">
+                  <label>Constitution</label>
+                  <span id="constitution" class="value">0</span>
+                </div>
+                <div class="species-stat-thingy">
+                  <label>Endurance</label>
+                  <span id="endurance" class="value">0</span>
+                </div>
+                <div class="species-stat-thingy">
+                  <label>Effervescence</label>
+                  <span id="effervescence" class="value">0</span>
+                </div>
+              </div>
+              <div class="travel value-box value-box-wide">
+                <label class="travel-stat">Travel</label>
+                <div class="travel-values">
+                  <span id="land" class="value">0</span>
+                  <span id="water" class="value">0</span>
+                  <span id="air" class="value">0</span>
+                </div>
+              </div>
+              <div class="languages">
+
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div id="ingame" class="page">
-
-      </div>
-      <div id="loading" class="page">
-        <div class="loading-container">
-          <div class="loading-icon"></div>
-          <p>Loading...</p>
+        <div id="talents" class="page">
+          <div class="zoomer max-size">
+            
+          </div>
         </div>
-      </div>
-      <div id="languages" class="page">
-      </div>
+        <div id="actions" class="page">
+          <div class="zoomer max-size">
+            
+          </div>
+        </div>
+        <div id="inventory" class="page">
+          <div class="zoomer max-size">
+            
+          </div>
+        </div>
+        <div id="languages" class="page">
+          <div class="zoomer max-size">
+            <div class="lang-container">
+              <div class="lang-data">
+                <h1 id="lang-title">Utopian</h1>
+                <p id="lang-desc"></p>
+              </div>
+              <div class="lang-search-container">
+                <input type="text" class="form-control round-input" id="lang-search" placeholder="Search Utopian dictionary">
+              </div>
+              <div id="dict" class="dictionary">
   
-      <!-- GM Pages -->
-      <div id="gm-creature" class="page">
-
-      </div>
-      <div id="gm-fight" class="page">
-        
-      </div>
-      <div id="gm-ingame" class="page">
-
-      </div>
-      <div id="gm-language" class="page">
-        <div class="left-bar"></div>
-        <div class="character-name-container language-name-container">
-          <label for="language-name">Name:</label>
-          <input type="text" id="language-name" name="language-name" placeholder="Utopian">
-        </div>
-        <div class="language-container">
-          <div class="language-data-container">
-
-          </div>
-          <div class="word-data">
-            <label for="word">Word:</label>
-            <input type="text" class="round-input" id="word" name="word" placeholder="Word...">
-            <div id="uses" style="overflow-y: auto; min-height: 40vh; max-height: calc(40vh); width: 100%; background-color: #000000ee;">
-              
+              </div>
             </div>
           </div>
-          <div class="word-list-bg"></div>
-          <div class="word-list">
-            <div id="scrollable-list" style="overflow-y: auto; max-height: calc(100vh - 10px);">
-              
-            </div>
-            <button id="add-word">+ Add</button>
+        </div>
+        <div id="loading" class="page">
+          <div class="loading-container">
+            <div class="loading-icon"></div>
+            <p>Loading...</p>
           </div>
         </div>
-      </div>
-      <div id="gm-species" class="page">
+    
+        <!-- GM Pages -->
+        <div id="gm-creature" class="page">
+          <div class="zoomer max-size">
+            
+          </div>
+        </div>
+        <div id="gm-fight" class="page">
+          <div class="zoomer max-size">
+            
+          </div>
+        </div>
+        <div id="gm-ingame" class="page">
+          <div class="zoomer max-size">
+            
+          </div>
+        </div>
+        <div id="gm-language" class="page">
+          <div class="zoomer max-size">
+            <div class="left-bar"></div>
+            <div class="language-name-container character-name-container">
+              <label for="language-name">Name:</label>
+              <input type="text" id="language-name" name="language-name" placeholder="Utopian">
+            </div>
+            <div class="language-container">
+              <div class="language-data-container">
+                <div class="language-data-stuff character-name-container">
+                  <label for="language-desc">Description:</label>
+                  <textarea rows="5" type="text" class="big-text-box" id="language-desc" name="language-desc" placeholder="Utopian is a language spoken by all manner of people, utilized as a common tongue to communicate with other cultures and species."></textarea>
+                </div>
+              </div>
+              <div class="word-data">
+                <label for="word">Word:</label>
+                <input type="text" class="round-input" id="word" name="word" placeholder="Word...">
+                <div id="uses" style="overflow-y: auto; min-height: 40vh; max-height: calc(40vh); width: 100%; background-color: #000000ee;">
+                  
+                </div>
+              </div>
+              <div class="word-list-bg"></div>
+              <div class="word-list">
+                <div id="scrollable-list" class="scrollable-list">
+                  
+                </div>
+                <button id="add-word" style="margin-top: 10px;">+ Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="gm-species" class="page">
+          <div class="zoomer max-size">
 
-      </div>
-      <div id="gm-talent" class="page">
-
+          </div>
+        </div>
+        <div id="gm-talent" class="page">
+          <div class="zoomer max-size">
+            
+          </div>
+        </div>
       </div>
     </div>
     <script type="module" src="/main.js"></script>

@@ -1,6 +1,6 @@
 import Page from "./page";
 
-export default class CharacterCreation extends Page {
+export default class Loading extends Page {
   constructor() {
     super('loading');
   }

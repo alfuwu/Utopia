@@ -5,7 +5,7 @@ const exampleWord = {
   word: "", // jan 
   uses: [{
     type: "noun", // noun, verb, adjective, particle, special
-    //state: "", // archaic, slang, informal, formal, custom
+    //state: "", // archaic, new, slang, informal, formal, custom
     meaning: "", // person, living humanoid being
     example: "", // Mi lukin e jan ni.
     exampleLiteralTranslation: "", // I look (on) human that.
@@ -13,30 +13,12 @@ const exampleWord = {
   }] 
 };
 
-function distance(a, b) { // used for searching
-  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
-
-  for (let i = 0; i <= a.length; i++)
-    matrix[i][0] = i;
-  for (let j = 0; j <= b.length; j++)
-    matrix[0][j] = j;
-
-  for (let i = 1; i <= a.length; i++)
-    for (let j = 1; j <= b.length; j++)
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,
-        matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + a[i - 1] === b[j - 1] ? 0 : 1
-      );
-
-  return matrix[a.length][b.length];
-}
-
 export default class LanguageCreation extends Page {
-  currentLanguage = null;
+  currentLanguage;
   sorting = false;
+  currentIndex;
   constructor() {
-    super('gm-language');
+    super('gm-language', 'language-editor');
     const word = document.getElementById("word");
     word.addEventListener('keypress', (evt) => {
       if (evt.key.length === 1) { // is a keyboard key thing
@@ -49,7 +31,7 @@ export default class LanguageCreation extends Page {
           const replaceSet = new Set();
           let fullMatch = false;
           for (const c of game.languages[this.currentLanguage].alphabet) {
-            if (i === 1 && word.value.endsWith(c)) {
+            if (i === c.length && word.value.endsWith(c) && c.length > 0) {
               fullMatch = true;
               break;
             }
@@ -64,15 +46,21 @@ export default class LanguageCreation extends Page {
             return;
         evt.preventDefault();
       }
-    })
+    });
+    word.addEventListener('input', () => {
+      if (this.currentLanguage !== undefined && this.currentIndex !== undefined) {
+        game.languages[this.currentLanguage].words[this.currentIndex].word = word.value;
+        document.getElementById("scrollable-list").children.item(this.currentIndex).children.item(0).textContent = word.value || "Undefined";
+      }
+    });
     document.getElementById("add-word").addEventListener('click', () => {
-      if (this.currentLanguage == null)
+      if (this.currentLanguage === undefined)
         return;
       game.languages[this.currentLanguage].words.push(exampleWord);
       this.loadWordFromIdx(game.languages[this.currentLanguage].words.length - 1);
       document.getElementById("scrollable-list").appendChild(this.generateWordListElement(game.languages[this.currentLanguage].words[game.languages[this.currentLanguage].words.length - 1]));
-      if (sorting)
-        sortWords();
+      if (this.sorting)
+        this.sortWords();
     });
   }
   generateLanguages() {
@@ -81,19 +69,15 @@ export default class LanguageCreation extends Page {
   generateWordListElement(word) {
     const node = document.createElement("div");
     node.classList.add("btn-toolbar");
-    const wordContainer = document.createElement("div");
-    node.appendChild(wordContainer);
     const wordButton = document.createElement("button");
     wordButton.textContent = word.word || "Undefined";
-    wordButton.addEventListener('click', () => this.loadWord(word));
-    wordContainer.appendChild(wordButton);
-    const xContainer = document.createElement("div");
-    node.appendChild(xContainer);
-    const xButton = document.createElement("button");
-    xButton.classList.add("x");
-    xButton.textContent = 'x';
-    xButton.addEventListener('click', () => this.deleteWord(word));
-    xContainer.appendChild(xButton);
+    wordButton.addEventListener('click', () => this.loadWord(node));
+    node.appendChild(wordButton);
+    const x = document.createElement("button");
+    x.classList.add("x");
+    x.textContent = 'x';
+    x.addEventListener('click', () => this.deleteWord(node));
+    node.appendChild(x);
     return node;
   }
   loadLanguage(language) {
@@ -103,17 +87,37 @@ export default class LanguageCreation extends Page {
     for (const word of game.languages[language].words)
       scrollableList.appendChild(this.generateWordListElement(word));
     this.currentLanguage = language;
-    this.loadWordFromIdx(0);
+    if (game.languages[language].words.length > 0)
+      this.loadWordFromIdx(0);
   }
-  loadWord(word) {
-    this.loadWordFromIdx(game.languages[this.currentLanguage].words.indexOf(word));
+  loadWord(node) {
+    this.loadWordFromIdx(this.getNodeIndex(node));
   }
   loadWordFromIdx(idx) {
-    document.getElementById("word").value = game.languages[this.currentLanguage].words[idx].word;
+    document.getElementById("word").value = idx !== null ? game.languages[this.currentLanguage].words[idx].word : '';
+    this.currentIndex = idx !== null ? idx : undefined;
   }
-  deleteWord(word) {
-    const idx = game.languages[this.currentLanguage].words.indexOf(word);
-    document.getElementById("scrollable-list").children.item(idx).remove();
-    delete game.languages[this.currentLanguage].words[idx];
+  getNodeIndex(child) {
+    let i = 0;
+    while((child = child.previousSibling) != null) 
+      i++;
+    return i;
+  }
+  deleteWord(node) {
+    const idx = this.getNodeIndex(node);
+    node.remove();
+    game.languages[this.currentLanguage].words.splice(idx, 1);
+    if (idx === this.currentIndex && game.languages[this.currentLanguage].words.length > 0)
+      this.loadWordFromIdx(this.currentIndex > 0 ? this.currentIndex - 1 : this.currentIndex);
+    else // no more words left in dictionary, unload
+      this.loadWordFromIdx(null);
+  }
+  sortWords() {
+
+  }
+  show() {
+    super.show();
+    if (this.currentLanguage === undefined && Object.keys(game.languages).length > 0)
+      this.loadLanguage(Object.keys(game.languages)[0]);
   }
 };
