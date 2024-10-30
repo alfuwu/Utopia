@@ -521,6 +521,158 @@ option[value=""][disabled] {
 }
 /* end of character page style sheet */
 
+/* start of talents style sheet */
+.talent-wrapper-thing {
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.talents {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  width: 80%;
+  left: 10%;
+  height: max-content;
+  padding: 30px;
+  background-color: #19191d22;
+  border-radius: 5px;
+  border: 1px solid #00000066;
+}
+
+.big-talent,
+.talent-column-container .talent-row-container .core-talent {
+  position: relative;
+}
+
+.big-talent {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  height: auto;
+  transform: scaleY(1.5);
+}
+
+.img.core-head, .img.big-head {
+  width: 100%;
+  height: auto;
+}
+
+.big-talent img.big-head {
+  position: relative;
+  top: 1px;
+  transform-origin: bottom;
+}
+
+.big-talent img.big-tail {
+  position: relative;
+  top: -1.5px;
+  transform-origin: top;
+}
+
+.big-talent img.big-head, .big-talent img.big-tail {
+  transform: scaleY(0.6666666667);
+}
+
+.talent-column-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.talent-row-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.core-talent {
+  flex: 1 1 30%;
+}
+
+.core-talent img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: scale(1, 1);
+}
+
+.filter-species {
+  filter: sepia(21%) saturate(100%) hue-rotate(169deg) brightness(90%) contrast(87%) drop-shadow(0 0 1em #9d9d9daa);
+}
+.filter-species::after {
+  content: "Species";
+}
+
+.filter-warfare {
+  filter: sepia(20%) saturate(700%) hue-rotate(317deg) brightness(83%) contrast(120%) drop-shadow(0 0 1em #d17f77aa);
+}
+.filter-warfare::after {
+  content: "Warfare";
+}
+
+.filter-tactics {
+  filter: sepia(12%) saturate(1000%) hue-rotate(64deg) brightness(100%) contrast(88%) drop-shadow(0 0 1em #7da974aa);
+}
+.filter-tactics::after {
+  content: "Tactics";
+}
+
+.filter-innovation {
+  filter: sepia(17%) saturate(1000%) hue-rotate(339deg) brightness(97%) contrast(111%) drop-shadow(0 0 1em #f8a26faa);
+}
+.filter-innovation::after {
+  content: "Innovation";
+}
+
+.filter-magecraft {
+  filter: sepia(72%) saturate(200%) hue-rotate(17deg) brightness(102%) contrast(95%) drop-shadow(0 0 1em #d5cd7faa);
+}
+.filter-magecraft::after {
+  content: "Magecraft";
+}
+
+.filter-influence {
+  filter: sepia(93%) saturate(1000%) hue-rotate(177deg) brightness(100%) contrast(100%) drop-shadow(0 0 1em #73c2ffaa);
+}
+.filter-influence::after {
+  content: "Influence";
+}
+
+.filter-prowess {
+  filter: sepia(72%) saturate(500%) hue-rotate(205deg) brightness(98%) contrast(91%) drop-shadow(0 0 1em #d4a8efaa);
+}
+.filter-prowess::after {
+  content: "Prowess";
+}
+
+.filter-specialist {
+  filter: sepia(1%) saturate(1000%) hue-rotate(242deg) brightness(76%) contrast(120%) drop-shadow(0 0 1em #979398aa);
+}
+.filter-specialist::after {
+  content: "Specialist Talents";
+}
+
+.big-talent::after,
+.core-talent::after {
+  font-family: papyrus;
+  position: absolute;
+  color: black;
+  font-size: 24px;
+  font-weight: 1000;
+  font-synthesis-weight: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+/* end of talents style sheet */
+
 /* start of language style sheet */
 .language-container {
   display: flex;
@@ -536,6 +688,24 @@ option[value=""][disabled] {
   width: 100%;
 }
 /* end of language style sheet */
+
+/* start of handbook style shee */
+progress {
+  border-radius: 5px;
+}
+
+.handbook-thing {
+  height: 100%;
+}
+
+.pdf-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+/* end of handbook style sheet */
 
 /* start of gm language style sheet */
 .language-name-container {
@@ -774,6 +944,7 @@ option[value=""][disabled] {
         <button id="action">Actions</button>
         <button id="character-inventory">Inventory</button>
         <button id="language">Languages</button>
+        <button id="open-handbook">Handbook</button>
         <p>GM</p>
         <button id="gm-in-game">Map Editor</button>
         <button id="creature">Creatures</button>
@@ -1193,8 +1364,57 @@ option[value=""][disabled] {
           </div>
         </div>
         <div id="talents" class="page">
-          <div class="zoomer max-size">
-            
+          <div class="zoomer max-size handbook-thing talent-wrapper-thing">
+            <div class="talents">
+              <div class="big-talent filter-species">
+                <img class="big-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
+                <img class="big-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
+                <img class="big-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+              </div>
+          
+              <div class="talent-column-container">
+                <div class="talent-row-container">
+                  <div class="core-talent cht filter-warfare">
+                    <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
+                    <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
+                    <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+                  </div>
+                  <div class="core-talent cht filter-tactics">
+                    <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
+                    <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
+                    <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+                  </div>
+                  <div class="core-talent cht filter-innovation">
+                    <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
+                    <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
+                    <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+                  </div>
+                </div>
+                <div class="talent-row-container">
+                  <div class="core-talent filter-magecraft">
+                    <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
+                    <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
+                    <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+                  </div>
+                  <div class="core-talent filter-influence">
+                    <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
+                    <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
+                    <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+                  </div>
+                  <div class="core-talent filter-prowess">
+                    <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
+                    <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
+                    <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+                  </div>
+                </div>
+              </div>
+          
+              <div class="big-talent filter-specialist">
+                <img class="big-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
+                <img class="big-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
+                <img class="big-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+              </div>
+            </div>
           </div>
         </div>
         <div id="actions" class="page">
@@ -1220,6 +1440,18 @@ option[value=""][disabled] {
               <div id="dict" class="dictionary">
   
               </div>
+            </div>
+          </div>
+        </div>
+        <div id="handbook" class="page">
+          <div class="zoomer max-size handbook-thing">
+            <div id="loading-handbook" style="display: none;">Loading handbook...</div>
+        
+            <div id="progress-container" style="display: none;">
+              <progress id="progress-bar" value="0" max="100"></progress>
+            </div>
+            <div id="pdf-container" class="pdf-container">
+
             </div>
           </div>
         </div>

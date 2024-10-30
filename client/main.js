@@ -15,6 +15,7 @@ import LanguageCreation from "./pages/gm/language";
 import SpeciesCreation from "./pages/gm/species";
 import TalentCreation from "./pages/gm/talent";
 import Page from "./pages/page";
+import Handbook from "./pages/handbook";
 
 export const characterData = {
   species: "",
@@ -80,7 +81,6 @@ export function applyModifier(modifier, stat) {
 
 setupDiscordSdk().then(() => {
   console.log("done");
-  console.log(serverless);
 });
 
 // Initialize pages
@@ -91,6 +91,7 @@ export const pages = {
   actions: new Actions(),
   inventory: new Inventory(),
   language: new Language(),
+  handbook: new Handbook(),
   loading: new Loading(),
   gm: {
     creature: new Creature(),

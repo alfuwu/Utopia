@@ -35,6 +35,11 @@ export const DEPENDANT = true;
 /** action */ export const RESET_TALENT_BRANCH = 9; // resets an entire talent branch, starting from talent. If talent is not specified, resets current branch
 /** action */ export const EITHER = 10; // shows the user two different actions, allowing them to pick one to have apply
 /** action */ export const LEARN_TALENT = 11;
+/** action */ export const ADD_ACTION = 12; // adds an available action to the player's list of actions (doesn't actually provide any mechanical effect)
+/** action */ export const REMOVE_ACTION = 13; // hides an action from the player's list of actions (doesn't actually delete it)
+
+// action costs (used in species creation, in qp, where undefined means it won't show, and null means its dependant on values set)
+export const ACTION_COSTS = [3, 1, 3, 0.5, 1, 1, 4, undefined, 2, undefined, null, null, 1, -0.5];
 
 // subtrait ids
 /** subtrait */ export const SPEED = 0; // agility

@@ -53,6 +53,7 @@ export default class Language extends Page {
   }
   generateWordsList(searchTerm=undefined) {
     const dict = document.getElementById("dict");
+    dict.innerHTML = ``;
     for (const word of game.languages[this.currentLanguage].words)
       if (this.validWord(word) && (searchTerm === undefined || distance(word.word, searchTerm) <= 2))
         dict.appendChild(this.generateWordListElement(word));
