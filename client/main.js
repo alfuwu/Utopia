@@ -1,5 +1,6 @@
 import setupPage from "./lazy";
 import setupDiscordSdk, { serverless } from "./util/discord";
+import * as Constants from "./constants";
 
 import InGame from "./pages/ingame";
 import CharacterSheet from "./pages/character";
@@ -51,7 +52,20 @@ export const game = {
   species: {
     "": { name: "", constitution: 1, endurance: 1, effervescence: 1, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { }, languages: { } },
   },
-  talents: { },
+  talents: {
+    talent1: { tree: Constants.SPECIES, name: "Talent 1", after: null, requirements: [{ type: Constants.SPECIES, species: "human" }], body: 1, mind: 0, soul: 1, description: "Each of your defenses increase by 1.", actions: [{ type: Constants.MODIFY_CORE, id: Constants.CHILL_DEF, amount: 1, op: Constants.ADD }, { type: Constants.MODIFY_CORE, id: Constants.ENERGY_DEF, amount: 1, op: Constants.ADD }, { type: Constants.MODIFY_CORE, id: Constants.HEAT_DEF, amount: 1, op: Constants.ADD }, { type: Constants.MODIFY_CORE, id: Constants.PHYSICAL_DEF, amount: 1, op: Constants.ADD }, { type: Constants.MODIFY_CORE, id: Constants.PSYCHE_DEF, amount: 1, op: Constants.ADD }] },
+    talent2: { tree: Constants.SPECIES, name: "Talent 2", after: "talent1", requirements: [{ type: Constants.SPECIES, species: "human" }], body: 1, mind: 1, soul: 0, description: "Your Dodge Rating increases by 1d12.", actions: [{ type: Constants.MODIFY_DODGE_RATING, amount: [1, 12], op: Constants.ADD }] },
+    talent3: { tree: Constants.SPECIES, name: "Talent 3", after: "talent2", requirements: [{ type: Constants.SPECIES, species: "human" }], body: 1, mind: 0, soul: 1, description: "Your Block Rating increases by 1d4.", actions: [{ type: Constants.MODIFY_BLOCK_RATING, amount: [1, 4], op: Constants.ADD }] },
+    talent4: { tree: Constants.SPECIES, name: "Talent 4", after: "talent3", requirements: [{ type: Constants.SPECIES, species: "human" }], body: 1, mind: 1, soul: 0, description: "When you make an attack, you may spend an additional turn action up to 3 times to deal an additional 2d8 physical damage.", actions: [] },
+    talent5: { tree: Constants.SPECIES, name: "Talent 5", after: null, requirements: [{ type: Constants.SPECIES, species: "human" }], body: 0, mind: 1, soul: 0, description: "When crafting an item other than a component, you require 1 less material component of your choice, minimum of 1.", actions: [{ type: Constants.CRAFTING }] },
+    talent6: { tree: Constants.SPECIES, name: "Talent 6", after: "talent5", requirements: [{ type: Constants.SPECIES, species: "human" }], body: 0, mind: 1, soul: 1, description: "Spells you cast cost 1 less stamina, minimum cost of 1.", actions: [] },
+    talent7: { tree: Constants.SPECIES, name: "Talent 7", after: "talent6", requirements: [{ type: Constants.SPECIES, species: "human" }], body: 0, mind: 1, soul: 1, description: "Choose a subtrait. You become gifted in it.", actions: [{ type: Constants.MODIFY_META, id: Constants.ANY_GIFTED, amount: 1, op: Constants.ADD }] },
+    talent8: { tree: Constants.SPECIES, name: "Talent 8", after: "talent7", requirements: [{ type: Constants.SPECIES, species: "human" }], body: 0, mind: 1, soul: 2, description: "Whenever you make a test using a subtrait that you are gifted in, you may spend 5 stamina to gain a point of favor. You may only gain a point of favor this way once per test.", actions: [] },
+
+    talent9: { primaryBranch: true, tree: Constants.SPECIES, name: "Palent 1", after: null, requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the first-tier talent of any subspecies talent tree. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.SUBSPECIES_TALENT, tree: null }] },
+    talent10: { primaryBranch: true, tree: Constants.SPECIES, name: "Palent 2", after: "talent9", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the second-tier talent chosen with the <b>Flexible</b> talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "flexible" }] },
+    talent11: { primaryBranch: true, tree: Constants.SPECIES, name: "Palent 3", after: "talent10", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the third-tier talent correlated to the talent chosen with the <b>Versatile</b> talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "versatile" }] },
+  },
   languages: {
     utopian: {
       name: "Utopian",
@@ -125,4 +139,4 @@ export function showPage(page) {
 // dev
 //pages.gm.language.show();
 //pages.gm.language.loadLanguage("utopian");
-pages.characterSheet.show();
+pages.talents.show();

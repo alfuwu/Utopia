@@ -579,6 +579,10 @@ option[value=""][disabled] {
   transform: scaleY(0.6666666667);
 }
 
+.big-talent img {
+  z-index: 0;
+}
+
 .talent-column-container {
   display: flex;
   flex-direction: column;
@@ -600,61 +604,126 @@ option[value=""][disabled] {
   width: 100%;
   height: auto;
   transform: scale(1, 1);
+  z-index: 0;
 }
 
+.filter-species img {
+  filter: sepia(21%) saturate(100%) hue-rotate(169deg) brightness(90%) contrast(87%);
+}
 .filter-species {
-  filter: sepia(21%) saturate(100%) hue-rotate(169deg) brightness(90%) contrast(87%) drop-shadow(0 0 1em #9d9d9daa);
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 1em #9d9d9daa);
 }
-.filter-species::after {
-  content: "Species";
+.filter-species:hover {
+  filter: drop-shadow(0 0 2em #9d9d9daa);
+}
+.filter-species::after, .filter-species::before {
+  content: "Species Talents";
 }
 
-.filter-warfare {
-  filter: sepia(20%) saturate(700%) hue-rotate(317deg) brightness(83%) contrast(120%) drop-shadow(0 0 1em #d17f77aa);
+.filter-warfare img {
+  filter: sepia(20%) saturate(700%) hue-rotate(317deg) brightness(83%) contrast(120%);
 }
-.filter-warfare::after {
+.filter-warfare {
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 1em #d17f77aa);
+}
+.filter-warfare:hover {
+  filter: drop-shadow(0 0 2em #d17f77aa);
+}
+.filter-warfare::after, .filter-warfare::before {
   content: "Warfare";
 }
 
-.filter-tactics {
-  filter: sepia(12%) saturate(1000%) hue-rotate(64deg) brightness(100%) contrast(88%) drop-shadow(0 0 1em #7da974aa);
+.filter-tactics img {
+  filter: sepia(12%) saturate(1000%) hue-rotate(64deg) brightness(100%) contrast(88%);
 }
-.filter-tactics::after {
+.filter-tactics {
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 1em #7da974aa);
+}
+.filter-tactics:hover {
+  filter: drop-shadow(0 0 2em #7da974aa);
+}
+.filter-tactics::after, .filter-tactics::before {
   content: "Tactics";
 }
 
-.filter-innovation {
-  filter: sepia(17%) saturate(1000%) hue-rotate(339deg) brightness(97%) contrast(111%) drop-shadow(0 0 1em #f8a26faa);
+.filter-innovation img {
+  filter: sepia(17%) saturate(1000%) hue-rotate(339deg) brightness(97%) contrast(111%);
 }
-.filter-innovation::after {
+.filter-innovation {
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 1em #f8a26faa);
+}
+.filter-innovation:hover {
+  filter: drop-shadow(0 0 2em #f8a26faa);
+}
+.filter-innovation::after, .filter-innovation::before {
   content: "Innovation";
 }
 
-.filter-magecraft {
-  filter: sepia(72%) saturate(200%) hue-rotate(17deg) brightness(102%) contrast(95%) drop-shadow(0 0 1em #d5cd7faa);
+.filter-magecraft img {
+  filter: sepia(72%) saturate(200%) hue-rotate(17deg) brightness(102%) contrast(95%);
 }
-.filter-magecraft::after {
+.filter-magecraft {
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 1em #d5cd7faa);
+}
+.filter-magecraft:hover {
+  filter: drop-shadow(0 0 2em #d5cd7faa);
+}
+.filter-magecraft::after, .filter-magecraft::before {
   content: "Magecraft";
 }
 
-.filter-influence {
-  filter: sepia(93%) saturate(1000%) hue-rotate(177deg) brightness(100%) contrast(100%) drop-shadow(0 0 1em #73c2ffaa);
+.filter-influence img {
+  filter: brightness(30%) sepia(93%) saturate(1000%) hue-rotate(177deg) contrast(90%);
 }
-.filter-influence::after {
+.filter-influence {
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 1em #73c2ffaa);
+}
+.filter-influence:hover {
+  filter: drop-shadow(0 0 2em #73c2ffaa);
+}
+.filter-influence::after, .filter-influence::before {
   content: "Influence";
 }
 
-.filter-prowess {
-  filter: sepia(72%) saturate(500%) hue-rotate(205deg) brightness(98%) contrast(91%) drop-shadow(0 0 1em #d4a8efaa);
+.filter-prowess img {
+  filter: brightness(38%) sepia(72%) saturate(200%) hue-rotate(205deg) contrast(91%);
 }
-.filter-prowess::after {
+.filter-prowess {
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 1em #d4a8efaa);
+}
+.filter-prowess:hover {
+  filter: drop-shadow(0 0 2em #d4a8efaa);
+}
+.filter-prowess::after, .filter-prowess::before {
   content: "Prowess";
 }
 
-.filter-specialist {
-  filter: sepia(1%) saturate(1000%) hue-rotate(242deg) brightness(76%) contrast(120%) drop-shadow(0 0 1em #979398aa);
+.filter-specialist img {
+  filter: sepia(1%) saturate(1000%) hue-rotate(242deg) brightness(76%) contrast(120%);
 }
-.filter-specialist::after {
+.filter-specialist {
+  will-change: filter;
+  transition: filter 300ms;
+  filter: drop-shadow(0 0 1em #979398aa);
+}
+.filter-specialist:hover {
+  filter: drop-shadow(0 0 2em #979398aa);
+}
+.filter-specialist::after, .filter-specialist::before {
   content: "Specialist Talents";
 }
 
@@ -662,14 +731,103 @@ option[value=""][disabled] {
 .core-talent::after {
   font-family: papyrus;
   position: absolute;
-  color: black;
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke: 0;
   font-size: 24px;
   font-weight: 1000;
   font-synthesis-weight: auto;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  pointer-events: none;
+  z-index: 1;
+}
+.big-talent::after {
+  transform: translate(-50%, -50%) scaleY(0.6666666667);
+}
+.big-talent::before,
+.core-talent::before {
+  font-family: papyrus;
+  position: absolute;
+  color: black;
+  -webkit-text-stroke: 0.15em black;
+  font-size: 24px;
+  font-weight: 1000;
+  font-synthesis-weight: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+.big-talent::before {
+  transform: translate(-50%, -50%) scaleY(0.6666666667);
+}
+
+.talent-branch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.talent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: center;
+  zoom: 0.5;
+}
+/* Styling for each SVG part of a talent */
+.talent-head {
+  position: relative;
+  top: 1.5px;
+  transform-origin: bottom;
+}
+
+.talent-body {
+  /* Middle part doesn't need a special transform-origin */
+}
+
+.talent-tail {
+  position: relative;
+  top: -1.5px;
+  transform-origin: top;
+}
+
+.talent-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.talent-name::before {
+  content: attr(data-content);
+  position: absolute;
+  color: black;
+  -webkit-text-stroke: 0.15em black;
+  font-size: 24px;
+  font-weight: 1000;
+  font-synthesis-weight: auto;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.talent-name::after {
+  content: attr(data-content);
+  position: absolute;
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke: 0;
+  font-size: 24px;
+  font-weight: 1000;
+  font-synthesis-weight: auto;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 /* end of talents style sheet */
 
@@ -1365,8 +1523,8 @@ progress {
         </div>
         <div id="talents" class="page">
           <div class="zoomer max-size handbook-thing talent-wrapper-thing">
-            <div class="talents">
-              <div class="big-talent filter-species">
+            <div class="talents" style="display: none;">
+              <div id="species-talents" class="big-talent filter-species">
                 <img class="big-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                 <img class="big-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
                 <img class="big-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
@@ -1374,34 +1532,34 @@ progress {
           
               <div class="talent-column-container">
                 <div class="talent-row-container">
-                  <div class="core-talent cht filter-warfare">
+                  <div id="warfare-talents" class="core-talent filter-warfare">
                     <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                     <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
                     <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
                   </div>
-                  <div class="core-talent cht filter-tactics">
+                  <div id="tactics-talents" class="core-talent filter-tactics">
                     <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                     <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
                     <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
                   </div>
-                  <div class="core-talent cht filter-innovation">
+                  <div id="innovation-talents" class="core-talent filter-innovation">
                     <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                     <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
                     <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
                   </div>
                 </div>
                 <div class="talent-row-container">
-                  <div class="core-talent filter-magecraft">
+                  <div id="magecraft-talents" class="core-talent filter-magecraft">
                     <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                     <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
                     <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
                   </div>
-                  <div class="core-talent filter-influence">
+                  <div id="influence-talents" class="core-talent filter-influence">
                     <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                     <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
                     <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
                   </div>
-                  <div class="core-talent filter-prowess">
+                  <div id="prowess-talents" class="core-talent filter-prowess">
                     <img class="core-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                     <img class="core-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
                     <img class="core-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
@@ -1409,10 +1567,20 @@ progress {
                 </div>
               </div>
           
-              <div class="big-talent filter-specialist">
+              <div id="specialist-talents" class="big-talent filter-specialist">
                 <img class="big-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                 <img class="big-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
                 <img class="big-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
+              </div>
+            </div>
+            <div id="talent-tree" class="talents">
+              <div id="talent-branch" class="talent-branch">
+              </div>
+              <div id="talent-branch2" class="talent-branch">
+              </div>
+              <div id="talent-branch3" class="talent-branch">
+              </div>
+              <div id="talent-branch4" class="talent-branch">
               </div>
             </div>
           </div>
