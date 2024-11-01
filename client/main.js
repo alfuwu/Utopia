@@ -8,6 +8,8 @@ import Talents from "./pages/talents";
 import Actions from "./pages/actions";
 import Inventory from "./pages/inventory";
 import Language from "./pages/language";
+import Handbook from "./pages/handbook";
+import Notes from "./pages/notes";
 import Loading from "./pages/loading";
 import Creature from "./pages/gm/creature";
 import Fight from "./pages/gm/fight";
@@ -16,7 +18,6 @@ import LanguageCreation from "./pages/gm/language";
 import SpeciesCreation from "./pages/gm/species";
 import TalentCreation from "./pages/gm/talent";
 import Page from "./pages/page";
-import Handbook from "./pages/handbook";
 
 export const characterData = {
   species: "",
@@ -106,6 +107,7 @@ export const pages = {
   inventory: new Inventory(),
   language: new Language(),
   handbook: new Handbook(),
+  notes: new Notes(),
   loading: new Loading(),
   gm: {
     creature: new Creature(),

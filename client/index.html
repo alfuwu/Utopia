@@ -107,6 +107,7 @@ option[value=""][disabled] {
   min-width: 180px;
   background-color: #161719;
   border: 5px solid #000000ee;
+  overflow-y: auto;
 }
 
 .navigation button {
@@ -775,17 +776,30 @@ option[value=""][disabled] {
   flex-direction: column;
   align-items: center;
   transform-origin: center;
+  background-color: transparent;
+  border: 0px transparent;
   zoom: 0.5;
+  will-change: filter;
+  transition: filter 300ms;
 }
-/* Styling for each SVG part of a talent */
+
+.talent:focus, .talent:focus-visible {
+  outline: 0px transparent;
+  filter: drop-shadow(0 0 2em #ffffffaa);
+}
+
 .talent-head {
   position: relative;
   top: 1.5px;
   transform-origin: bottom;
 }
 
+.talent-body-wrapper {
+  position: relative;
+}
+
 .talent-body {
-  /* Middle part doesn't need a special transform-origin */
+  display: block;
 }
 
 .talent-tail {
@@ -799,14 +813,14 @@ option[value=""][disabled] {
   left: 0;
   right: 0;
   top: 0;
-  bottom: 0;
+  bottom: 10%;
 }
 
 .talent-name::before {
   content: attr(data-content);
   position: absolute;
   color: black;
-  -webkit-text-stroke: 0.15em black;
+  -webkit-text-stroke: 0.2em black;
   font-size: 24px;
   font-weight: 1000;
   font-synthesis-weight: auto;
@@ -864,6 +878,16 @@ progress {
   vertical-align: middle;
 }
 /* end of handbook style sheet */
+
+/* start of notes style sheet */
+.notes {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+/* end of notes style sheet */
 
 /* start of gm language style sheet */
 .language-name-container {
@@ -1103,6 +1127,7 @@ progress {
         <button id="character-inventory">Inventory</button>
         <button id="language">Languages</button>
         <button id="open-handbook">Handbook</button>
+        <button id="open-notes">Notes</button>
         <p>GM</p>
         <button id="gm-in-game">Map Editor</button>
         <button id="creature">Creatures</button>
@@ -1574,14 +1599,6 @@ progress {
               </div>
             </div>
             <div id="talent-tree" class="talents">
-              <div id="talent-branch" class="talent-branch">
-              </div>
-              <div id="talent-branch2" class="talent-branch">
-              </div>
-              <div id="talent-branch3" class="talent-branch">
-              </div>
-              <div id="talent-branch4" class="talent-branch">
-              </div>
             </div>
           </div>
         </div>
@@ -1622,6 +1639,9 @@ progress {
 
             </div>
           </div>
+        </div>
+        <div id="notes" class="page">
+          <textarea rows="12" type="text" class="big-text-box notes" id="notes-text" name="notes-text" style="min-width: 0%;" placeholder="Enter character notes here (e.g. backstory, custom talent data, etc)..."></textarea>
         </div>
         <div id="loading" class="page">
           <div class="loading-container">

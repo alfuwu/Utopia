@@ -4,56 +4,86 @@ import Page from "./page";
 export default class Talents extends Page {
   constructor() {
     super('talents', 'talent');
-    this.renderBranch("talent-branch", "talent1", "talent2", "talent3", "talent4", "talent5");
-    this.renderBranch("talent-branch2", "talent1", "talent2", "talent3", "talent4", "talent5", "talent6");
-    this.renderBranch("talent-branch3", "talent1", "talent2", "talent3", "talent4", "talent5", "talent6", "talent7");
-    this.renderBranch("talent-branch4", "talent1", "talent2", "talent3", "talent4", "talent5", "talent6", "talent7", "talent8", "talent9", "talent10", "talent11");
+    this.clearTree();
+    this.renderTree(0);
   }
-  renderTalent(talent, index, totalTalents) {
+  lerp(num1, num2, amnt) {
+    return (1 - amnt) * num1 + amnt * num2;
+  }
+  renderTalent(talent, index, speciesTalent, totalTalents) {
     const defaultBranchSize = 5;
-    const headHeight = 12.79;
-    const scaleFactor = (defaultBranchSize / totalTalents);
-    const talentElement = document.createElement('div');
+    const scaleFactor = Math.min(defaultBranchSize / totalTalents, 3);
+    const sf2 = scaleFactor <= 1 ? scaleFactor : this.lerp(scaleFactor, 1, 0.5);
+    const talentElement = document.createElement('button');
     talentElement.className = 'talent';
-    talentElement.style.transform = `scaleY(${scaleFactor})`;
-    talentElement.style.zIndex = -index;
+    talentElement.style.transform = `scaleY(${sf2})`;
+    talentElement.style.zIndex = totalTalents - index;
     if (index < totalTalents - 1)
-      talentElement.style.marginBottom = `calc(-20% * ${1 + (1/scaleFactor)} - 20px)`;
+      talentElement.style.marginBottom = `calc(-60% * ${1/Math.pow(scaleFactor, scaleFactor/1.65)})`;
 
     const head = document.createElement('img');
     head.className = 'talent-head';
     head.src = `./talent-head.svg`;
-    head.style.transform = `scaleY(${1 / scaleFactor})`;
-    head.style.filter = `brightness(calc(30% + 70% * ${1 - index/totalTalents})) contrast(calc(100% + ${index/totalTalents * 5}%))`;
 
+    const bodyWrapper = document.createElement('div');
+    bodyWrapper.className = 'talent-body-wrapper';
     const body = document.createElement('img');
     body.className = 'talent-body';
     body.src = `./talent-body.svg`;
-    body.style.filter = `brightness(calc(30% + 70% * ${1 - index/totalTalents})) contrast(calc(100% + ${index/totalTalents * 5}%))`;
 
     const tail = document.createElement('img');
     tail.className = 'talent-tail';
     tail.src = `./talent-tail.svg`;
-    tail.style.transform = `scaleY(${1 / scaleFactor})`;
-    tail.style.filter = `brightness(calc(30% + 70% * ${1 - index/totalTalents})) contrast(calc(100% + ${index/totalTalents * 5}%))`;
+    tail.style.top = `-${1/sf2*5 -1}px`;
+    head.style.transform = tail.style.transform = `scaleY(${1 / sf2})`;
+
+    head.draggable = body.draggable = tail.draggable = false;
+    head.ondragstart = body.ondragstart = tail.ondragstart = () => false;
+
+    if (speciesTalent)
+      head.style.filter = body.style.filter = tail.style.filter = `brightness(calc(30% + 70% * ${1 - index/totalTalents})) contrast(calc(100% + ${index/totalTalents * 5}%))`;
 
     const name = document.createElement('div');
     name.className = 'talent-name';
-    name.style.transform = `scaleY(${1 / scaleFactor})`;
-    name.dataset.content = game.talents[talent].name;
+    name.style.zIndex = 1;
+    name.style.transform = `scaleY(${1 / sf2})`;
+    name.style.top = index === 0 ? `${(1 - Math.min(scaleFactor, 1))*50}%` : `calc(${(1-scaleFactor)*50}% + ${scaleFactor <= 1 ? 190 : 130 + Math.pow(scaleFactor, 2) * 35}px)`;
+    name.dataset.content = game.talents[talent].name.toUpperCase();
 
     talentElement.appendChild(head);
-    talentElement.appendChild(body);
-    name.style.top = `calc(20% * ${1 + (1/scaleFactor)} + ${headHeight*(1/scaleFactor)}px)`;
+    bodyWrapper.append(body);
+    bodyWrapper.append(name);
+    talentElement.appendChild(bodyWrapper);
     talentElement.appendChild(tail);
-    talentElement.append(name);
     return talentElement;
   }
-  renderBranch(id, ...branch) {
-    const container = document.getElementById(id);
+  renderBranch(speciesTalent, ...branch) {
+    const container = document.createElement('div');
+    container.className = 'talent-branch';
 
     let i = 0;
     for (const key of branch)
-      container.appendChild(this.renderTalent(key, i++, branch.length));
+      container.appendChild(this.renderTalent(key, i++, speciesTalent, branch.length));
+    return container;
+  }
+  clearTree() {
+    document.getElementById('talent-tree').innerHTML = ``;
+  }
+  renderTree(treeId) {
+    const talents = new Set();
+    for (const key of Object.keys(game.talents))
+      if (game.talents[key].tree === treeId)
+        talents.add(key);
+    const branches = new Set();
+    for (const t of talents)
+      if (game.talents[t].after === null)
+        branches.add(new Set().add(t));
+    for (const t of talents)
+      for (const b of branches)
+        if (Array.from(b)[b.size - 1] === game.talents[t].after)
+          b.add(t);
+    const tree = document.getElementById('talent-tree');
+    for (const branch of branches)
+      tree.appendChild(this.renderBranch(treeId === 0, ...branch));
   }
 }
