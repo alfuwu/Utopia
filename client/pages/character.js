@@ -1,5 +1,5 @@
-import { applyModifier, characterData, game } from "../main";
-import Page from "./page";
+import { applyModifier, characterData, game } from '../main';
+import Page from './page';
 
 export default class Character extends Page {
   constructor() {
@@ -30,7 +30,7 @@ export default class Character extends Page {
     });
   }
   generateSpeciesOptions() {
-    const speciesSelect = document.getElementById("species");
+    const speciesSelect = document.getElementById('species');
   
     speciesSelect.innerHTML = '<option value="" disabled selected hidden>Human...</option>';
     
@@ -45,44 +45,47 @@ export default class Character extends Page {
 
   }
   formatModifier(mod) {
-    return mod < 0 ? mod : "+" + mod.toString();
+    return mod < 0 ? mod : '+' + mod.toString();
   }
   calculateTraits() {
-    const agi = parseInt(document.getElementById("speed-value").textContent) + parseInt(document.getElementById("dexterity-value").textContent);
-    const str = parseInt(document.getElementById("power-value").textContent) + parseInt(document.getElementById("fortitude-value").textContent);
-    const int = parseInt(document.getElementById("memory-value").textContent) + parseInt(document.getElementById("engineering-value").textContent);
-    const wil = parseInt(document.getElementById("resolve-value").textContent) + parseInt(document.getElementById("awareness-value").textContent);
-    const dis = parseInt(document.getElementById("portrayal-value").textContent) + parseInt(document.getElementById("stunt-value").textContent);
-    const cha = parseInt(document.getElementById("appeal-value").textContent) + parseInt(document.getElementById("language-value").textContent);
-    document.getElementById("agility-value").textContent = agi;
-    document.getElementById("agility-modifier").textContent = this.formatModifier(agi - 4);
-    document.getElementById("strength-value").textContent = str;
-    document.getElementById("strength-modifier").textContent = this.formatModifier(str - 4);
-    document.getElementById("intellect-value").textContent = int;
-    document.getElementById("intellect-modifier").textContent = this.formatModifier(int - 4);
-    document.getElementById("will-value").textContent = wil;
-    document.getElementById("will-modifier").textContent = this.formatModifier(wil - 4);
-    document.getElementById("display-value").textContent = dis;
-    document.getElementById("display-modifier").textContent = this.formatModifier(dis - 4);
-    document.getElementById("charm-value").textContent = cha;
-    document.getElementById("charm-modifier").textContent = this.formatModifier(cha - 4);
+    const agi = parseInt(document.getElementById('speed-value').textContent) + parseInt(document.getElementById('dexterity-value').textContent);
+    const str = parseInt(document.getElementById('power-value').textContent) + parseInt(document.getElementById('fortitude-value').textContent);
+    const int = parseInt(document.getElementById('memory-value').textContent) + parseInt(document.getElementById('engineering-value').textContent);
+    const wil = parseInt(document.getElementById('resolve-value').textContent) + parseInt(document.getElementById('awareness-value').textContent);
+    const dis = parseInt(document.getElementById('portrayal-value').textContent) + parseInt(document.getElementById('stunt-value').textContent);
+    const cha = parseInt(document.getElementById('appeal-value').textContent) + parseInt(document.getElementById('language-value').textContent);
+    document.getElementById('agility-value').textContent = agi;
+    document.getElementById('agility-modifier').textContent = this.formatModifier(agi - 4);
+    document.getElementById('strength-value').textContent = str;
+    document.getElementById('strength-modifier').textContent = this.formatModifier(str - 4);
+    document.getElementById('intellect-value').textContent = int;
+    document.getElementById('intellect-modifier').textContent = this.formatModifier(int - 4);
+    document.getElementById('will-value').textContent = wil;
+    document.getElementById('will-modifier').textContent = this.formatModifier(wil - 4);
+    document.getElementById('display-value').textContent = dis;
+    document.getElementById('display-modifier').textContent = this.formatModifier(dis - 4);
+    document.getElementById('charm-value').textContent = cha;
+    document.getElementById('charm-modifier').textContent = this.formatModifier(cha - 4);
   }
   calculateSpeciesStats() {
-    document.getElementById("block").textContent = characterData.blockRating[0][0] + 'd' + characterData.blockRating[0][1];
-    document.getElementById("dodge").textContent = characterData.dodgeRating[0][0] + 'd' + characterData.dodgeRating[0][1];
-    document.getElementById("dhp").textContent = characterData.level + characterData.cEff() * characterData.cSoul();
-    document.getElementById("shp").textContent = characterData.level + characterData.cCon() * characterData.cBody();
-    document.getElementById("stamina").textContent = characterData.level + characterData.cEnd() * characterData.cMind();
+    document.getElementById('block').textContent = characterData.blockRating[0][0] + 'd' + characterData.blockRating[0][1];
+    document.getElementById('dodge').textContent = characterData.dodgeRating[0][0] + 'd' + characterData.dodgeRating[0][1];
+    document.getElementById('dhp').textContent = characterData.level + characterData.cEff() * characterData.cSoul();
+    document.getElementById('shp').textContent = characterData.level + characterData.cCon() * characterData.cBody();
+    document.getElementById('stamina').textContent = characterData.level + characterData.cEnd() * characterData.cMind();
+    document.getElementById('constitution').textContent = characterData.cCon();
+    document.getElementById('endurance').textContent = characterData.cEnd();
+    document.getElementById('effervescence').textContent = characterData.cEff();
   }
   calculateXp() {
-    document.getElementById("current-xp").textContent = characterData.xp;
-    document.getElementById("target-xp").textContent = characterData.level * 100;
+    document.getElementById('current-xp').textContent = characterData.xp;
+    document.getElementById('target-xp').textContent = characterData.level * 100;
   }
   calculatePoints() {
-    document.getElementById("talent-points").textContent = characterData.level - characterData.body - characterData.mind - characterData.soul;
-    document.getElementById("body-points").textContent = characterData.body;
-    document.getElementById("mind-points").textContent = characterData.mind;
-    document.getElementById("soul-points").textContent = characterData.soul;
+    document.getElementById('talent-points').textContent = characterData.level - characterData.body - characterData.mind - characterData.soul;
+    document.getElementById('body-points').textContent = characterData.body;
+    document.getElementById('mind-points').textContent = characterData.mind;
+    document.getElementById('soul-points').textContent = characterData.soul;
   }
   show() {
     super.show();

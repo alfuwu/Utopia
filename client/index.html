@@ -826,7 +826,7 @@ option[value=""][disabled] {
   font-synthesis-weight: auto;
   top: 20%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -20%);
   z-index: 1;
 }
 
@@ -840,8 +840,43 @@ option[value=""][disabled] {
   font-synthesis-weight: auto;
   top: 20%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -20%);
   z-index: 1;
+}
+
+.talent-tree {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  width: 60%;
+  left: 10%;
+  height: max-content;
+  padding: 30px;
+  background-color: #19191d22;
+  border-radius: 5px;
+  border: 1px solid #00000066;
+}
+
+.talents-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.talent-data {
+  display: flex;
+  flex-direction: column;
+  min-height: 50%;
 }
 /* end of talents style sheet */
 
@@ -1548,7 +1583,7 @@ progress {
         </div>
         <div id="talents" class="page">
           <div class="zoomer max-size handbook-thing talent-wrapper-thing">
-            <div class="talents" style="display: none;">
+            <div id="talent-selection" class="talents">
               <div id="species-talents" class="big-talent filter-species">
                 <img class="big-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                 <img class="big-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
@@ -1598,7 +1633,13 @@ progress {
                 <img class="big-tail" draggable="false" ondragstart="return false;" src="./fancy-talent-tail.svg" alt="">
               </div>
             </div>
-            <div id="talent-tree" class="talents">
+            <div id="talents-container" class="talents-container" style="display: none;">
+              <div id="talent-tree" class="talent-tree">
+              </div>
+              <div class="talent-data">
+                <div id="talent-name" class="talent-name2">TALENT</div>
+                <div id="talent-desc" class="talent-desc">TALENT DESCRIPTION</div>
+              </div>
             </div>
           </div>
         </div>

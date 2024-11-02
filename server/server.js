@@ -276,9 +276,9 @@ class Game {
 
     // warfare core tree
     cleave: { tree: Constants.WARFARE, name: "Cleave", after: null, body: 1, mind: 0, soul: 1, description: "When a melee attack you make reduses a creature's DHP to 0, you may retarget the remaining damage to another creature within the attack's range.", actions: [] },
-    brawler: { tree: Constants.WARFARE, name: "Brawler", after: "brawler", body: 3, mind: 0, soul: 1, description: "You gain a point of favor on tests made to grapple creatures.", actions: [] },
-    charger: { tree: Constants.WARFARE, name: "Charger", after: "charger", body: 5, mind: 0, soul: 1, description: "When you take the Attack action with a melee weapon directly after taking the Travel action, you may reduce the amount of stamina required for the attack by double the number of meters traveled.", actions: [] },
-    blitzer: { tree: Constants.WARFARE, name: "Blitzer", after: "blitzer", body: 7, mind: 0, soul: 1, description: "When you take the Attack action with a melee weapon, you may target each creature within the weapon's range rather than a single creature. Attacks made this way deal half damage to each creature, rounded up.", actions: [] },
+    brawler: { tree: Constants.WARFARE, name: "Brawler", after: "cleave", body: 3, mind: 0, soul: 1, description: "You gain a point of favor on tests made to grapple creatures.", actions: [] },
+    charger: { tree: Constants.WARFARE, name: "Charger", after: "brawler", body: 5, mind: 0, soul: 1, description: "When you take the Attack action with a melee weapon directly after taking the Travel action, you may reduce the amount of stamina required for the attack by double the number of meters traveled.", actions: [] },
+    blitzer: { tree: Constants.WARFARE, name: "Blitzer", after: "charger", body: 7, mind: 0, soul: 1, description: "When you take the Attack action with a melee weapon, you may target each creature within the weapon's range rather than a single creature. Attacks made this way deal half damage to each creature, rounded up.", actions: [] },
     swiftStrike: { tree: Constants.WARFARE, name: "Swift Strike", after: null, body: 1, mind: 0, soul: 0, description: "When you make an attack with a weapon, you may spend 3 stamina to reduce the number of turn actions required by 1 any number of times, minimum cost of 4.", actions: [] },
     hastyAttacks: { tree: Constants.WARFARE, name: "Hasty Attacks", after: "swiftStrike", body: 1, mind: 1, soul: 0, description: "When you make an attack with a weapon, you may spend 5 stamina to reduce the number of turn actions required by 1 any number of times, minimum cost of 2.", actions: [] },
     recovery: { tree: Constants.WARFARE, name: "Recovery", after: "hastyAttacks", body: 2, mind: 2, soul: 0, description: "You may spend 3 turn actions and up to 20 stamina to regain an amount of SHP equal to the amount of stamina spent.", actions: [] },
@@ -306,8 +306,8 @@ class Game {
     deconstructor: { tree: Constants.INNOVATION, name: "Deconstructor", after: null, body: 0, mind: 1, soul: 1, description: "You may spend 6 turn actions to destroy an item other than a component, receiving half of the components necessary to craft it rounded down.", actions: [] },
     alchemist: { tree: Constants.INNOVATION, name: "Alchemist", after: "deconstructor", body: 0, mind: 3, soul: 1, description: "When you craft a Consumable item, you craft twice as many instead.", actions: [] },
     tenacious: { tree: Constants.INNOVATION, name: "Tenacious", after: "alchemist", body: 0, mind: 5, soul: 2, description: "You may craft items and components without a tool station. Items and components crafted this way require twice as long to craft.", actions: [] },
-    tinkerer: { tree: Constants.INNOVATION, name: "Tinkerer", after: "tenacious", body: 0, mind: 1, soul: 0, description: "You can craft Common items.", actions: [] },
-    craftsman: { tree: Constants.INNOVATION, name: "Craftsman", after: null, body: 0, mind: 3, soul: 0, description: "You can craft Extraordinary items.", actions: [] },
+    tinkerer: { tree: Constants.INNOVATION, name: "Tinkerer", after: null, body: 0, mind: 1, soul: 0, description: "You can craft Common items.", actions: [] },
+    craftsman: { tree: Constants.INNOVATION, name: "Craftsman", after: "tinkerer", body: 0, mind: 3, soul: 0, description: "You can craft Extraordinary items.", actions: [] },
     artisan: { tree: Constants.INNOVATION, name: "Artisan", after: "craftsman", body: 0, mind: 5, soul: 0, description: "You can craft Rare items.", actions: [] },
     visionary: { tree: Constants.INNOVATION, name: "Visionary", after: "artisan", body: 0, mind: 7, soul: 0, description: "You can craft Legendary items.", actions: [] },
     creator: { tree: Constants.INNOVATION, name: "Creator", after: "visionary", body: 0, mind: 9, soul: 0, description: "You can craft Mythical items.", actions: [] },
@@ -324,7 +324,7 @@ class Game {
     enchantmentArtistry: { tree: Constants.MAGECRAFT, name: "Enchantment Artistry", after: null, body: 0, mind: 2, soul: 0, description: "You can cast and craft spells that require the Art of Enchantment.", actions: [] },
     magusApprentice: { tree: Constants.MAGECRAFT, name: "Magus Apprentice", after: "enchantmentArtistry", body: 0, mind: 2, soul: 0, description: "Spells you cast cost 2 less stamina, minimum cost of 1.", actions: [] },
     necromancyArtistry: { tree: Constants.MAGECRAFT, name: "Necromancy Artistry", after: "magusApprentice", body: 0, mind: 4, soul: 0, description: "You can cast and craft spells that require the Art of Necromancy.", actions: [] },
-    runecraftAdept: { tree: Constants.MAGECRAFT, name: "Runecraft Adept", after: "runecraftAdept", body: 0, mind: 7, soul: 0, description: "You may spend an additional turn action up to 3 times when casting a spell. If you do, the spell costs 4 less stamina for each additional turn action, minimum cost of 1.", actions: [] },
+    runecraftAdept: { tree: Constants.MAGECRAFT, name: "Runecraft Adept", after: "necromancyArtistry", body: 0, mind: 7, soul: 0, description: "You may spend an additional turn action up to 3 times when casting a spell. If you do, the spell costs 4 less stamina for each additional turn action, minimum cost of 1.", actions: [] },
     illusionArtistry: { tree: Constants.MAGECRAFT, name: "Illusion Artistry", after: null, body: 0, mind: 1, soul: 1, description: "You can cast and craft spells that require the Art of Illusion.", actions: [] },
     divinationArtistry: { tree: Constants.MAGECRAFT, name: "Divination Artistry", after: "illusionArtistry", body: 0, mind: 2, soul: 1, description: "You can cast and craft spelles that require the Art of Divination.", actions: [] },
     bloodMagic: { tree: Constants.MAGECRAFT, name: "Blood Magic", after: "divinationArtistry", body: 0, mind: 2, soul: 2, description: "When you cast a spell, you may spend SHP instead of stamina. Spells cast this way cannot regain SHP. This does not count as a discoutn to cost.", actions: [] },
@@ -460,7 +460,7 @@ class Game {
     for (const user of this.users)
       clients[ids[user]].send(s);
   }
-  updateUser(user, isGM = false, ...include) {
+  updateUser(user, isGM=false, ...include) {
     const data = Object.assign({}, this);
     if (!include.includes("talents"))
       delete data.talents;
@@ -473,7 +473,7 @@ class Game {
     let s = JSON.stringify({ event: "gameData", data }, (key, value) => value);
     clients[ids[user]].send(s);
   }
-  updateUsers(ignore = 1, ...include) {
+  updateUsers(ignore=1, ...include) {
     let i = 0;
     for (const user of this.users)
       if (i++ != ignore)
