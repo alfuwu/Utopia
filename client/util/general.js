@@ -16,3 +16,36 @@ export function distance(a, b) { // used for searching
 
   return matrix[a.length][b.length];
 }
+
+function sanitizeHTML(input) {
+  return input.replace(/<(?!\/?()>)/g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function removeEscapes(text) {
+  return text.replace(/\\([\*~_])/g, '$1');
+}
+
+export function parseMarkdownToHTML(text) {
+  let sanitizedText = sanitizeHTML(text);
+
+  sanitizedText = sanitizedText
+    .replace(/(^|[^\\])\*\*(.+?)\*\*/g, '$1<b>$2</b>')
+    .replace(/(^|[^\\])\*(.+?)\*/g, '$1<i>$2</i>')
+    .replace(/(^|[^\\])~~(.+?)~~/g, '$1<s>$2</s>')
+    .replace(/(^|[^\\])__(.+?)__/g, '$1<u>$2</u>')
+    .replace(/(^|[^\\])_(.+?)_/g, '$1<i>$2</i>');
+
+  return removeEscapes(sanitizedText);
+}
+
+export function parseMarkdownWithVisibleSymbols(text) {
+  let sanitizedText = sanitizeHTML(text);
+
+  sanitizedText = sanitizedText
+    .replace(/(^|[^\\])\*\*(.+?)\*\*/g, '$1<span style="color:gray;">**</span><b>$2</b><span style="color:gray;">**</span>')
+    .replace(/(^|[^\\])\*(.+?)\*/g, '$1<span style="color:gray;">*</span><i>$2</i><span style="color:gray;">*</span>')
+    .replace(/(^|[^\\])~~(.+?)~~/g, '$1<span style="color:gray;">~~</span><s>$2</s><span style="color:gray;">~~</span>')
+    .replace(/(^|[^\\])__(.+?)__/g, '$1<span style="color:gray;">__</span><u>$2</u><span style="color:gray;">__</span>');
+
+  return removeEscapes(sanitizedText);
+}

@@ -1,5 +1,5 @@
-import { applyModifier, characterData, game } from '../main';
-import Page from './page';
+import { applyModifier, characterData, game } from "../main";
+import Page from "./page";
 
 export default class Character extends Page {
   constructor() {

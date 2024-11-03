@@ -101,6 +101,10 @@ option[value=""][disabled] {
   display: none;
 }
 
+.div-disabled {
+  color: #7e7e7e;
+}
+
 .navigation {
   display: flex;
   flex-direction: column;
@@ -776,16 +780,9 @@ option[value=""][disabled] {
   flex-direction: column;
   align-items: center;
   transform-origin: center;
-  background-color: transparent;
-  border: 0px transparent;
   zoom: 0.5;
   will-change: filter;
   transition: filter 300ms;
-}
-
-.talent:focus, .talent:focus-visible {
-  outline: 0px transparent;
-  filter: drop-shadow(0 0 2em #ffffffaa);
 }
 
 .talent-head {
@@ -844,20 +841,18 @@ option[value=""][disabled] {
   z-index: 1;
 }
 
-.talent-tree {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  width: 60%;
-  left: 10%;
-  height: max-content;
-  padding: 30px;
-  background-color: #19191d22;
-  border-radius: 5px;
-  border: 1px solid #00000066;
+.talent-select {
+  position: absolute;
+  z-index: 1;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: -65px;
+  background-color: transparent;
+  border: 0px transparent;
+}
+.talent-select:focus {
+  outline: none;
 }
 
 .talents-container {
@@ -873,10 +868,74 @@ option[value=""][disabled] {
   bottom: 0px;
 }
 
+.talent-tree {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  left: 10%;
+  width: 60%;
+  height: max-content;
+  padding: 30px;
+  background-color: #19191d22;
+  border-radius: 5px;
+  border: 1px solid #00000066;
+}
+
 .talent-data {
+  margin-left: 10px;
   display: flex;
   flex-direction: column;
-  min-height: 50%;
+  min-height: 60%;
+  flex-grow: 0.5;
+  min-width: 25%;
+  max-width: 25%;
+  background-color: #19191d22;
+  border: 1px solid #00000066;
+  padding: 40px 20px 15px 15px;
+}
+
+.talent-name2 {
+  font-weight: 600;
+  margin-bottom: 5px;
+  padding: 10px;
+  border: 3px solid #000000ee;
+  background-color: #161719;
+}
+
+.talent-desc {
+  text-wrap: wrap;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  text-align: left;
+  padding: 10px;
+  flex-grow: 1;
+  border: 3px solid #000000ee;
+  background-color: #161719;
+  font-size: 14px;
+}
+
+.talent-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.talent-buttons button {
+  flex-grow: 1;
+}
+
+.talent-back {
+  margin-right: 5px;
+}
+
+.talent-learn {
+  margin-left: 5px;
+}
+
+.talent-learn:hover {
+  border-color: #11b111;
 }
 /* end of talents style sheet */
 
@@ -1636,9 +1695,13 @@ progress {
             <div id="talents-container" class="talents-container" style="display: none;">
               <div id="talent-tree" class="talent-tree">
               </div>
-              <div class="talent-data">
-                <div id="talent-name" class="talent-name2">TALENT</div>
-                <div id="talent-desc" class="talent-desc">TALENT DESCRIPTION</div>
+              <div id="td" class="talent-data">
+                <div id="talent-name" class="talent-name2 div-disabled">Talent</div>
+                <div id="talent-desc" class="talent-desc div-disabled">Description...</div>
+                <div class="talent-buttons">
+                  <button id="tb" class="talent-back">Back</button>
+                  <button id="tl" class="talent-learn" disabled>Learn</button>
+                </div>
               </div>
             </div>
           </div>

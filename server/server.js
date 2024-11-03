@@ -2,7 +2,8 @@ import express from "express";
 import expressWs from "express-ws";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
-import * as Constants from "./constants.js";
+import * as Constants from "./constants";
+import * as Util from "./util";
 dotenv.config({ path: "../.env" });
 
 const app = express();
@@ -142,8 +143,8 @@ class Game {
     expertise: { tree: Constants.SPECIES, name: "Expertise", after: "prodigy", requirements: [{ type: Constants.SPECIES, species: "human" }], body: 0, mind: 1, soul: 2, description: "Whenever you make a test using a subtrait that you are gifted in, you may spend 5 stamina to gain a point of favor. You may only gain a point of favor this way once per test.", actions: [] }, // add action to add a thingy that shows for players when making tests?
     // the only thing primaryBranch does is make the traits render differently (bc they're ✨special✨)
     flexible: { primaryBranch: true, tree: Constants.SPECIES, name: "Flexible", after: null, requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the first-tier talent of any subspecies talent tree. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.SUBSPECIES_TALENT, tree: null }] }, // specifying tree as null allows any tree to be used. otherwise, if a a string is supplied, it will use that species' talent tree, or, if an int is supplied, it will use that core tree
-    versatile: { primaryBranch: true, tree: Constants.SPECIES, name: "Versatile", after: "flexible", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the second-tier talent chosen with the <b>Flexible</b> talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "flexible" }] }, // continues the tree chosen in the talent defined as "prev"
-    malleable: { primaryBranch: true, tree: Constants.SPECIES, name: "Malleable", after: "versatile", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the third-tier talent correlated to the talent chosen with the <b>Versatile</b> talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "versatile" }] },
+    versatile: { primaryBranch: true, tree: Constants.SPECIES, name: "Versatile", after: "flexible", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the second-tier talent chosen with the **Flexible** talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "flexible" }] }, // continues the tree chosen in the talent defined as "prev"
+    malleable: { primaryBranch: true, tree: Constants.SPECIES, name: "Malleable", after: "versatile", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the third-tier talent correlated to the talent chosen with the **Versatile** talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "versatile" }] },
 
     // automaton tree
     weakAbsorption: { tree: Constants.SPECIES, name: "Weak Absorption", after: null, requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 0, soul: 0, description: "You may spend 1 turn action and consume a Common or rarer Power Component to regain 3 stamina.", actions: [] },
@@ -152,8 +153,8 @@ class Game {
     absoluteAbsorption: { tree: Constants.SPECIES, name: "Absolute Absorption", after: "strongAbsorption", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 0, soul: 2, description: "You may spend 1 turn action and consume a Legendary or rarer Power Component to regain 24 stamina.", actions: [] },
     thermalBarrierAutomaton: { tree: Constants.SPECIES, name: "Thermal Barrier", after: null, requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 2, mind: 0, soul: 0, description: "Your Heat and Chill defenses each increase by 2.", actions: [] },
     selfRepair: { tree: Constants.SPECIES, name: "Self Repair", after: "thermalBarrierAutomaton", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 2, soul: 0, description: "You may spend 6 turn actions to make an Engineering test. If the test succeeds the amount of DHP you're missing, you regain 2d4 DHP, otherwise you are dealt 3 damage. Dealt this way ignores defenses.", actions: [] },
-    mechanicalMedic: { tree: Constants.SPECIES, name: "Mechanical Medic", after: "selfRepair", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 2, mind: 1, soul: 0, description: "When you use the <b>Self Repair</b> talent, you may consume a Common or rarer material component to gain a point of favor on the Engineering test.", actions: [] },
-    thorough: { tree: Constants.SPECIES, name: "Thorough", after: "mechanicalMedic", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 1, soul: 1, description: "When you succeed on the Engineering test using the <b>Self Repair</b> talent, you regain 2d8 DHP instead.", actions: [] },
+    mechanicalMedic: { tree: Constants.SPECIES, name: "Mechanical Medic", after: "selfRepair", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 2, mind: 1, soul: 0, description: "When you use the **Self Repair** talent, you may consume a Common or rarer material component to gain a point of favor on the Engineering test.", actions: [] },
+    thorough: { tree: Constants.SPECIES, name: "Thorough", after: "mechanicalMedic", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 1, soul: 1, description: "When you succeed on the Engineering test using the **Self Repair** talent, you regain 2d8 DHP instead.", actions: [] },
     kineticBufferAutomaton: { primaryBranch: true, tree: Constants.SPECIES, name: "Kinetic Buffer", after: null, requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 1, soul: 0, description: "Your Energy defense increases by 4.", actions: [] },
     conductiveAutomaton: { primaryBranch: true, tree: Constants.SPECIES, name: "Conductive", after: "kineticBuffer", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 0, soul: 1, description: "Whenever you take any amount of Energy damage, you regain that much stamina.", actions: [] },
     mechanized: { primaryBranch: true, tree: Constants.SPECIES, name: "Mechanized", after: "conductiveAutomaton", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 2, mind: 0, soul: 1, description: "When you are the target of an attack, you may spend 1 interrupt action and up to 7 stamina to increase one of your defenses by the amount of stamina spent for the rest of the action.", actions: [] },
@@ -181,7 +182,7 @@ class Game {
     // cyborg tree
     quickenedAugment: { tree: Constants.SPECIES, name: "Quickened Augment", after: null, requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 0, mind: 1, soul: 0, description: "You may spend 2 turn actions to augment or de-augment an item from yourself.", actions: [] },
     internalSlots: { tree: Constants.SPECIES, name: "Internal Slots", after: "quickenedAugment", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 1, mind: 1, soul: 0, description: "De-augmenting an item does not deal damage to you.", actions: [] },
-    augmentPrep: { tree: Constants.SPECIES, name: "Augment Prep", after: "internalSlots", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 0, mind: 2, soul: 0, description: "You may use the <b>Quickened Augment</b> talent with 1 turn action rather than 2.", actions: [] },
+    augmentPrep: { tree: Constants.SPECIES, name: "Augment Prep", after: "internalSlots", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 0, mind: 2, soul: 0, description: "You may use the **Quickened Augment** talent with 1 turn action rather than 2.", actions: [] },
     steelStrikes: { tree: Constants.SPECIES, name: "Steel Strike", after: "augmentPrep", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 1, mind: 1, soul: 0, description: "Weaponless attacks you make deal an amount of additional Physical damage equal to four times the number of items you have augmented.", actions: [] },
     thermalBarrierCyborg: { tree: Constants.SPECIES, name: "Thermal Barrier", after: null, requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 1, mind: 1, soul: 0, description: "Your Heat and Chill defenses increase by 2.", actions: [] },
     strongDefenseCyborg: { tree: Constants.SPECIES, name: "Strong Defense", after: "thermalBarrierCyborg", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 2, mind: 0, soul: 0, description: "Your Block Rating increases by 1d4.", actions: [] },
@@ -351,7 +352,7 @@ class Game {
     voyager: { tree: Constants.PROWESS, repeatable: true, name: "Voyager", after: "adventurer", body: 1, mind: 1, soul: 1, description: "Choose either your Block Rating or Dodge Rating. If you choose your Block Rating, it increases by 1d4. If you choose your Dodge Rating, it increases by 1d12.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
     practice: { tree: Constants.PROWESS, repeatable: true, name: "Practice", after: null, body: 1, mind: 1, soul: 1, description: "Choose one or two subtraits. If one is chosesn, it increases by 2 given it wouldn't increase past its maximum. If two are chosen, they both increase by 1, given they aren't at their maximum.", actions: [] },
     discipline: { tree: Constants.PROWESS, repeatable: true, name: "Discipline", after: "practice", body: 1, mind: 1, soul: 1, description: "You become gifted in a subtrait of your choice. If you are gifted in each subtrait, instead choose a subtrait. It increases by 3, given it wouldn't increase past its maximum.", actions: [] },
-    prosperity: { tree: Constants.PROWESS, repeatable: true, name: "Propserity", after: "discipline", body: 2, mind: 2, soul: 2, description: "Increase either your Constitution, Endurance, or Effervescence by 1.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
+    prosperity: { tree: Constants.PROWESS, repeatable: true, name: "Prosperity", after: "discipline", body: 2, mind: 2, soul: 2, description: "Increase either your Constitution, Endurance, or Effervescence by 1.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
     nomad: { tree: Constants.PROWESS, repeatable: true, name: "Nomad", after: null, body: 2, mind: 0, soul: 0, description: "When you regain 5 or more SHP, you regain an additional 1d4 SHP.", actions: [] },
     wanderer: { tree: Constants.PROWESS, repeatable: true, name: "Wanderer", after: "nomad", body: 0, mind: 2, soul: 0, description: "When you spend any amount of stamina, you may reduce the cost by an additional 1 stamina, minimum cost of half the original, rounded up.", actions: [] },
     vagabond: { tree: Constants.PROWESS, repeatable: true, name: "Vagabond", after: "wanderer", body: 0, mind: 0, soul: 2, description: "When you finish a rest, you regain an additional 1d4 DHP.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
@@ -516,161 +517,10 @@ class Game {
         return false;
     return true;
   }
-  applyOp(obj, operator) {
-    switch (operator.op) {
-      case Constants.ADD:
-        if (typeof obj === Number)
-          return obj + operator.amount;
-        else
-          obj.flat += operator.amount;
-        return obj;
-      case Constants.SUB:
-        if (typeof obj === Number)
-          return obj - operator.amount;
-        else
-          obj.flat -= operator.amount;
-        return obj;
-      case Constants.MUL:
-        if (typeof obj === Number)
-          return obj * operator.amount;
-        else
-          obj.mult += operator.amount;
-        return obj;
-      case Constants.DIV:
-        if (typeof obj === Number)
-          return obj / operator.amount;
-        else
-          obj.mult -= operator.amount;
-        return obj;
-      case Constants.ABMUL:
-        if (typeof obj === Number)
-          return obj * operator.amount;
-        else
-          obj.abMult += operator.amount;
-        return obj;
-      case Constants.ABDIV:
-        if (typeof obj === Number)
-          return obj / operator.amount;
-        else
-          obj.abMult -= operator.amount;
-        return obj;
-    }
-  }
-  getMaxCon(user) {
-    let max = 10;
-    for (const quirk of this.species[user.species].quirks)
-      if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_CONSTITUTION)
-        max = this.applyOp(max, quirk);
-    for (const talent of user.talents)
-      for (const act of this.talents[talent].actions)
-        if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_CONSTITUTION)
-          max = this.applyOp(max, act);
-    return max;
-  }
-  getMaxEnd(user) {
-    let max = 10;
-    for (const quirk of this.species[user.species].quirks)
-      if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_ENDURANCE)
-        max = this.applyOp(max, quirk);
-    for (const talent of user.talents)
-      for (const act of this.talents[talent].actions)
-        if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_ENDURANCE)
-          max = this.applyOp(max, act);
-    return max;
-  }
-  getMaxEff(user) {
-    let max = 10;
-    for (const quirk of this.species[user.species].quirks)
-      if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_EFFERVESCENCE)
-        max = this.applyOp(max, quirk);
-    for (const talent of user.talents)
-      for (const act of this.talents[talent].actions)
-        if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_EFFERVESCENCE)
-          max = this.applyOp(max, act);
-    return max;
-  }
-  countTalentsFromTree(talents, tree) {
-    if (tree == null)
-      return talents.length;
-    let i = 0;
-    for (const talent of talents)
-      if (talent.tree === tree)
-        i++;
-    return i;
-  }
-  getTraitScore(user, traitId) {
-    return this.userData[user].subtraitModifiers[traitId * 2].apply(this.userData[user].subtraits[traitId * 2]) + this.userData[user].subtraitModifiers[traitId * 2].apply(this.userData[user].subtraits[traitId * 2 + 1]);
-  }
-  meetsRequirements(user, cond) {
-    switch (cond.type) {
-      case Constants.SPECIES:
-        if (this.userData[user].species != cond.species)
-          return false;
-        break;
-      case Constants.TALENT:
-        if (!this.userData[user].talents.has(cond.talent))
-          return false;
-        break;
-      case Constants.AT_LEAST_FROM_TREE:
-        if (this.countTalentsFromTree(this.userData[user].talents, cond.tree) < cond.amount || 1)
-          return false;
-        break;
-      case Constants.ALL_FROM_TREE:
-        if (this.countTalentsFromTree(this.userData[user].talents, cond.tree) < this.countTalentsFromTree(Object.values(this.talents), cond.tree))
-          return false;
-        break;
-      case Constants.AT_LEAST_ANY_OF:
-        // TODO: IMPLEMENT
-        break;
-      case Constants.SUBTRAIT_SCORE:
-        if (this.userData[user].subtraitModifiers[cond.subtrait].apply(this.userData[user].subtraits[cond.subtrait]) < cond.amount)
-          return false;
-        break;
-      case Constants.TRAIT_SCORE:
-        if (this.getTraitScore(user, cond.trait) < cond.amount)
-          return false;
-        break;
-      case Constants.OR:
-        let metReqs = false;
-        for (const req of cond.requirements) {
-          if (this.meetsRequirements(user, req)) {
-            metReqs = true;
-            break;
-          }
-        }
-        if (!metReqs)
-          return false;
-        break;
-      case Constants.EXCLUSIVE_OR:
-        let metExReqs = false;
-        for (const req of cond.requirements) {
-          if (this.meetsRequirements(user, req)) {
-            if (metExReqs)
-              return false;
-            metExReqs = true;
-            break;
-          }
-        }
-        if (!metExReqs)
-          return false;
-        break;
-      case Constants.NOT:
-        if (this.meetsAllRequirements(user, cond.requirements))
-          return false;
-        break;
-    }
-    return true;
-  }
-  meetsAllRequirements(user, requirements) {
-    for (const cond of requirements)
-      if (!this.meetsRequirements(user, cond))
-        return false;
-    return true;
-  }
   applyTalent(user, talent) {
     if (talent.after && !this.userData[user].talents.has(talent.after))
       return;
-    if (talent.requirements && !this.meetsAllRequirements(user, talent.requirements))
+    if (talent.requirements && !Util.meetsAllRequirements(this, user, talent.requirements))
       return;
     if (talent.special) {
       if (this.userData[user].level - this.userData[user].specialistTalents * 10 < 10)
@@ -828,38 +678,8 @@ router.ws(
                 break;
               case "t": // talent
                 const talent = game.talents[msg.data.t];
-                let bodyCost, mindCost, soulCost = 0;
-                if (talent.body.amount || typeof talent.body == Number)
-                  bodyCost += talent.body.amount || talent.body;
-                if (talent.mind.amount || typeof talent.mind == Number)
-                  mindCost += talent.mind.amount || talent.mind;
-                if (talent.soul.amount || typeof talent.soul == Number)
-                  soulCost += talent.soul.amount || talent.soul;
-                if (talent.body.type === Constants.DEPENDANT) {
-                  for (const act of talent.actions) {
-                    if (act.type === Constants.SUBSPECIES_TALENT) {
-                      const tree = act.tree || msg.data.tr;
-                      let subspeciesTalent = null;
-                      for (const tal of game.talents) {
-                        if (tal.primaryBranch && tal.tree === tree) {
-                          subspeciesTalent = tal;
-                          break;
-                        }
-                      }
-                      if (subspeciesTalent !== null) {
-                        if (subspeciesTalent.body.amount || typeof subspeciesTalent.body == Number)
-                          bodyCost += subspeciesTalent.body.amount || subspeciesTalent.body;
-                        if (subspeciesTalent.mind.amount || typeof subspeciesTalent.mind == Number)
-                          mindCost += subspeciesTalent.mind.amount || subspeciesTalent.mind;
-                        if (subspeciesTalent.soul.amount || typeof subspeciesTalent.soul == Number)
-                          soulCost += subspeciesTalent.soul.amount || subspeciesTalent.soul;
-                      }
-                    } else if (act.type === Constants.CONTINUE_SUBSPECIES_TALENT) {
-
-                    }
-                  }
-                }
-                if (game.userData[user].level - game.userData[user].body - game.userData[user].mind - game.userData[user].soul >= bodyCost + mindCost + soulCost) {
+                const [meetsReq, bodyCost, mindCost, soulCost] = Util.meetsTPRequirement(game, talent, game.userData[user].level - game.userData[user].body - game.userData[user].mind - game.userData[user].soul);
+                if (meetsReq) {
                   game.applyTalent(user, talent);
                   game.userData[user].body += bodyCost;
                   game.userData[user].mind += mindCost;
@@ -892,7 +712,7 @@ router.ws(
 );
 
 // dev stuff
-const g = new Game();
+/*const g = new Game();
 const uid = 0;
 const uuid = guid();
 uids.add(uuid);
@@ -907,4 +727,4 @@ g.applyTalent(uid, g.talents.adaptableDefenseHuman);
 g.applyTalent(uid, g.talents.acrobat);
 g.applyTalent(uid, g.talents.archmage);
 g.applyTalent(uid, g.talents.championBrawler);
-console.log(g.userData[uid]);
+console.log(g.userData[uid]);*/

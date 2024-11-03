@@ -12,7 +12,7 @@ const isEmbedded = queryParams.get("frame_id") != null;
 /**
  * @type {EventSocket}
  */
-export let socket;
+let socket;
 export let serverless = false;
 
 if (isEmbedded) {
@@ -167,6 +167,13 @@ export default async function setupDiscordSdk() {
     uuid
   }
   socket.emit("userData", data);
+}
+
+export function emit(event, data) {
+  data.channelId = discordSdk.channelId;
+  data.userId = auth.user.id;
+  data.username = auth.user.username;
+  socket.emit(event, data);
 }
 
 function getUserAvatarUrl({ guildMember, user, cdn = `https://cdn.discordapp.com`, size = 256 }) {

@@ -24,10 +24,12 @@ export const characterData = {
   body: 0,
   mind: 0,
   soul: 0,
+  specialistTalents: 0,
   coreModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   scoreModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   blockRating: [[2, 6]],
   dodgeRating: [[2, 14]],
+  talents: [],
   level: 10,
   cBody() {
     return applyModifier(this.coreModifiers[0], this.body);
@@ -54,14 +56,14 @@ export const game = {
     human: { name: "Human", constitution: 4, endurance: 5, effervescence: 3, blockRating: [2, 4], dodgeRating: [2, 12], gifted: { set: [0] }, languages: { simple: 2 }}
   },
   treeColors: {
-    // brightness 1 -> sepia -> saturation -> hue shift -> brightness 2 -> contrast
-    [Constants.SPECIES]: [undefined, 21, 100, 169, 90, 87],
-    [Constants.WARFARE]: [50, 20, 400, 317, 123, 180],
-    [Constants.TACTICS]: [50, 12, 600, 84, 130, 168],
-    [Constants.INNOVATION]: [80, 17, 500, 339, 97, 171],
-    [Constants.MAGECRAFT]: [75, 72, 120, 27, 102, 165],
-    [Constants.INFLUENCE]: [45, 93, 150, 187, undefined, 180],
-    [Constants.PROWESS]: [45, 72, 120, 205, undefined, 161],
+    // brightness 1 -> sepia -> saturation -> hue shift -> brightness 2 -> contrast -> unlearnt brightness -> unlearnt contrast -> unlearnt saturation -> highlight color -> primaryBranch highlight color
+    [Constants.SPECIES]: [undefined, 21, 100, 169, 90, 87, 50, 120, 70, 'ffffff', 'eeeeff'],
+    [Constants.WARFARE]: [50, 20, 400, 317, 123, 180, 50, 50, 70, 'd17f77'],
+    [Constants.TACTICS]: [50, 12, 600, 84, 130, 168, 50, 50, 70, '7da974'],
+    [Constants.INNOVATION]: [80, 17, 500, 339, 97, 171, 50, 50, 70, 'f8a26f'],
+    [Constants.MAGECRAFT]: [75, 72, 120, 27, 102, 165, 50, 50, 70, 'd5cd7f'],
+    [Constants.INFLUENCE]: [45, 93, 150, 187, undefined, 180, 70, 50, 70, '73c2ff'],
+    [Constants.PROWESS]: [45, 72, 120, 205, undefined, 161, 70, 50, 70, 'd4a8ef'],
   },
   talents: {
     // human tree
@@ -75,8 +77,8 @@ export const game = {
     expertise: { tree: Constants.SPECIES, name: "Expertise", after: "prodigy", requirements: [{ type: Constants.SPECIES, species: "human" }], body: 0, mind: 1, soul: 2, description: "Whenever you make a test using a subtrait that you are gifted in, you may spend 5 stamina to gain a point of favor. You may only gain a point of favor this way once per test.", actions: [] }, // add action to add a thingy that shows for players when making tests?
     // the only thing primaryBranch does is make the traits render differently (bc they're ✨special✨)
     flexible: { primaryBranch: true, tree: Constants.SPECIES, name: "Flexible", after: null, requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the first-tier talent of any subspecies talent tree. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.SUBSPECIES_TALENT, tree: null }] }, // specifying tree as null allows any tree to be used. otherwise, if a a string is supplied, it will use that species' talent tree, or, if an int is supplied, it will use that core tree
-    versatile: { primaryBranch: true, tree: Constants.SPECIES, name: "Versatile", after: "flexible", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the second-tier talent chosen with the <b>Flexible</b> talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "flexible" }] }, // continues the tree chosen in the talent defined as "prev"
-    malleable: { primaryBranch: true, tree: Constants.SPECIES, name: "Malleable", after: "versatile", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the third-tier talent correlated to the talent chosen with the <b>Versatile</b> talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "versatile" }] },
+    versatile: { primaryBranch: true, tree: Constants.SPECIES, name: "Versatile", after: "flexible", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the second-tier talent chosen with the **Flexible** talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "flexible" }] }, // continues the tree chosen in the talent defined as "prev"
+    malleable: { primaryBranch: true, tree: Constants.SPECIES, name: "Malleable", after: "versatile", requirements: [{ type: Constants.SPECIES, species: "human" }], body: { type: Constants.DEPENDANT, amount: 0 }, mind: { type: Constants.DEPENDANT, amount: 0 }, soul: { type: Constants.DEPENDANT, amount: 1 }, description: "You gain the third-tier talent correlated to the talent chosen with the **Versatile** talent. The cost of this talent is equal to the cost of the chosen talent plus 1 Soul Point.", actions: [{ type: Constants.CONTINUE_SUBSPECIES_TALENT, prev: "versatile" }] },
 
     // automaton tree
     weakAbsorption: { tree: Constants.SPECIES, name: "Weak Absorption", after: null, requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 0, soul: 0, description: "You may spend 1 turn action and consume a Common or rarer Power Component to regain 3 stamina.", actions: [] },
@@ -85,8 +87,8 @@ export const game = {
     absoluteAbsorption: { tree: Constants.SPECIES, name: "Absolute Absorption", after: "strongAbsorption", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 0, soul: 2, description: "You may spend 1 turn action and consume a Legendary or rarer Power Component to regain 24 stamina.", actions: [] },
     thermalBarrierAutomaton: { tree: Constants.SPECIES, name: "Thermal Barrier", after: null, requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 2, mind: 0, soul: 0, description: "Your Heat and Chill defenses each increase by 2.", actions: [] },
     selfRepair: { tree: Constants.SPECIES, name: "Self Repair", after: "thermalBarrierAutomaton", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 2, soul: 0, description: "You may spend 6 turn actions to make an Engineering test. If the test succeeds the amount of DHP you're missing, you regain 2d4 DHP, otherwise you are dealt 3 damage. Dealt this way ignores defenses.", actions: [] },
-    mechanicalMedic: { tree: Constants.SPECIES, name: "Mechanical Medic", after: "selfRepair", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 2, mind: 1, soul: 0, description: "When you use the <b>Self Repair</b> talent, you may consume a Common or rarer material component to gain a point of favor on the Engineering test.", actions: [] },
-    thorough: { tree: Constants.SPECIES, name: "Thorough", after: "mechanicalMedic", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 1, soul: 1, description: "When you succeed on the Engineering test using the <b>Self Repair</b> talent, you regain 2d8 DHP instead.", actions: [] },
+    mechanicalMedic: { tree: Constants.SPECIES, name: "Mechanical Medic", after: "selfRepair", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 2, mind: 1, soul: 0, description: "When you use the **Self Repair** talent, you may consume a Common or rarer material component to gain a point of favor on the Engineering test.", actions: [] },
+    thorough: { tree: Constants.SPECIES, name: "Thorough", after: "mechanicalMedic", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 1, soul: 1, description: "When you succeed on the Engineering test using the **Self Repair** talent, you regain 2d8 DHP instead.", actions: [] },
     kineticBufferAutomaton: { primaryBranch: true, tree: Constants.SPECIES, name: "Kinetic Buffer", after: null, requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 1, soul: 0, description: "Your Energy defense increases by 4.", actions: [] },
     conductiveAutomaton: { primaryBranch: true, tree: Constants.SPECIES, name: "Conductive", after: "kineticBuffer", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 1, mind: 0, soul: 1, description: "Whenever you take any amount of Energy damage, you regain that much stamina.", actions: [] },
     mechanized: { primaryBranch: true, tree: Constants.SPECIES, name: "Mechanized", after: "conductiveAutomaton", requirements: [{ type: Constants.SPECIES, species: "automaton" }], body: 2, mind: 0, soul: 1, description: "When you are the target of an attack, you may spend 1 interrupt action and up to 7 stamina to increase one of your defenses by the amount of stamina spent for the rest of the action.", actions: [] },
@@ -114,7 +116,7 @@ export const game = {
     // cyborg tree
     quickenedAugment: { tree: Constants.SPECIES, name: "Quickened Augment", after: null, requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 0, mind: 1, soul: 0, description: "You may spend 2 turn actions to augment or de-augment an item from yourself.", actions: [] },
     internalSlots: { tree: Constants.SPECIES, name: "Internal Slots", after: "quickenedAugment", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 1, mind: 1, soul: 0, description: "De-augmenting an item does not deal damage to you.", actions: [] },
-    augmentPrep: { tree: Constants.SPECIES, name: "Augment Prep", after: "internalSlots", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 0, mind: 2, soul: 0, description: "You may use the <b>Quickened Augment</b> talent with 1 turn action rather than 2.", actions: [] },
+    augmentPrep: { tree: Constants.SPECIES, name: "Augment Prep", after: "internalSlots", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 0, mind: 2, soul: 0, description: "You may use the **Quickened Augment** talent with 1 turn action rather than 2.", actions: [] },
     steelStrikes: { tree: Constants.SPECIES, name: "Steel Strike", after: "augmentPrep", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 1, mind: 1, soul: 0, description: "Weaponless attacks you make deal an amount of additional Physical damage equal to four times the number of items you have augmented.", actions: [] },
     thermalBarrierCyborg: { tree: Constants.SPECIES, name: "Thermal Barrier", after: null, requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 1, mind: 1, soul: 0, description: "Your Heat and Chill defenses increase by 2.", actions: [] },
     strongDefenseCyborg: { tree: Constants.SPECIES, name: "Strong Defense", after: "thermalBarrierCyborg", requirements: [{ type: Constants.SPECIES, species: "cyborg" }], body: 2, mind: 0, soul: 0, description: "Your Block Rating increases by 1d4.", actions: [] },
@@ -284,7 +286,7 @@ export const game = {
     voyager: { tree: Constants.PROWESS, repeatable: true, name: "Voyager", after: "adventurer", body: 1, mind: 1, soul: 1, description: "Choose either your Block Rating or Dodge Rating. If you choose your Block Rating, it increases by 1d4. If you choose your Dodge Rating, it increases by 1d12.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
     practice: { tree: Constants.PROWESS, repeatable: true, name: "Practice", after: null, body: 1, mind: 1, soul: 1, description: "Choose one or two subtraits. If one is chosesn, it increases by 2 given it wouldn't increase past its maximum. If two are chosen, they both increase by 1, given they aren't at their maximum.", actions: [] },
     discipline: { tree: Constants.PROWESS, repeatable: true, name: "Discipline", after: "practice", body: 1, mind: 1, soul: 1, description: "You become gifted in a subtrait of your choice. If you are gifted in each subtrait, instead choose a subtrait. It increases by 3, given it wouldn't increase past its maximum.", actions: [] },
-    prosperity: { tree: Constants.PROWESS, repeatable: true, name: "Propserity", after: "discipline", body: 2, mind: 2, soul: 2, description: "Increase either your Constitution, Endurance, or Effervescence by 1.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
+    prosperity: { tree: Constants.PROWESS, repeatable: true, name: "Prosperity", after: "discipline", body: 2, mind: 2, soul: 2, description: "Increase either your Constitution, Endurance, or Effervescence by 1.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
     nomad: { tree: Constants.PROWESS, repeatable: true, name: "Nomad", after: null, body: 2, mind: 0, soul: 0, description: "When you regain 5 or more SHP, you regain an additional 1d4 SHP.", actions: [] },
     wanderer: { tree: Constants.PROWESS, repeatable: true, name: "Wanderer", after: "nomad", body: 0, mind: 2, soul: 0, description: "When you spend any amount of stamina, you may reduce the cost by an additional 1 stamina, minimum cost of half the original, rounded up.", actions: [] },
     vagabond: { tree: Constants.PROWESS, repeatable: true, name: "Vagabond", after: "wanderer", body: 0, mind: 0, soul: 2, description: "When you finish a rest, you regain an additional 1d4 DHP.", actions: [{ type: Constants.RESET_TALENT_BRANCH }] },
@@ -399,7 +401,6 @@ export const pages = {
     talent: new TalentCreation()
   }
 };
-
 
 function hidePages(p) {
   Object.values(p).forEach(v => {
