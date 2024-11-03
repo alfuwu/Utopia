@@ -32,24 +32,21 @@ export default class Talents extends Page {
 
     const tn = document.getElementById('talent-name');
     const td = document.getElementById('talent-desc');
+    const tc = document.getElementById('talent-cost');
+    const body = document.getElementById('body-cost');
+    const mind = document.getElementById('mind-cost');
+    const soul = document.getElementById('soul-cost');
     document.getElementById('tb').addEventListener('click', () => {
       talentTree.style.display = 'none';
       talents.style = ``;
       this.clearTree();
-      if (this.talent !== undefined) {
-        tn.textContent = 'Talent';
-        td.innerHTML = 'Description...';
-        tn.classList.add('div-disabled');
-        td.classList.add('div-disabled');
-        this.talent.style.filter = ``;
-        document.getElementById('tl').disabled = true;
-        this.index = this.treeId = this.totalTalents = this.talent = this.talentKey = this.head = this.body = this.tail = undefined;
-      }
+      if (this.talent !== undefined)
+        this.clearData(tn, td, tc, body, mind, soul);
     });
     const learn = document.getElementById('tl');
     learn.addEventListener('click', () => {
       learn.disabled = true;
-      const [meetsReq, b, m, s] = Util.meetsTPRequirement(game.talents[this.talentKey], characterData.level - characterData.body - characterData.mind - characterData.soul);
+      const [meetsReq, bodyCost, mindCost, soulCost] = Util.meetsTPRequirement(game.talents[this.talentKey], characterData.level - characterData.body - characterData.mind - characterData.soul);
       if (this.talentKey === undefined || !meetsReq)
         return;
       if (game.talents[this.talentKey].after && !characterData.talents.includes(game.talents[this.talentKey].after))
@@ -61,31 +58,43 @@ export default class Talents extends Page {
           return;
         characterData.specialistTalents++;
       }
-      if (serverless) {
-        characterData.talents.push(this.talentKey);
-      } else {
+      characterData.talents.push(this.talentKey);
+      characterData.body += bodyCost;
+      characterData.mind += mindCost;
+      characterData.soul += soulCost;
+      if (!serverless)
         emit('updateSelfData', {
           type: 't',
           t: this.talentKey,
         });
-      }
-      characterData.body += b;
-      characterData.mind += m;
-      characterData.soul += s;
       const filter = this.getFilter(this.treeId, game.talents[this.talentKey], this.talentKey, this.index, this.totalTalents);
       this.head.style.filter = this.body.style.filter = this.tail.style.filter = filter;
+      tc.classList.remove('div-red');
+      tc.classList.remove('div-disabled');
+      if (!meetsReq)
+        tc.classList.add('div-red');
+      else if (!characterData.talents.includes(talent) || t.after && !characterData.talents.includes(t.after))
+        tc.classList.add('div-disabled');
+      body.textContent = bodyCost;
+      mind.textContent = mindCost;
+      soul.textContent = soulCost;
     });
     document.addEventListener('mousedown', event => {
-      if (event.target.tagName !== 'BUTTON' && event.target.id !== 'talent-desc' && event.target.id !== 'talent-name' && event.target.id !== '' && this.talent !== undefined) {
-        tn.textContent = 'Talent';
-        td.innerHTML = 'Description...';
-        tn.classList.add('div-disabled');
-        td.classList.add('div-disabled');
-        this.talent.style.filter = ``;
-        document.getElementById('tl').disabled = true;
-        this.index = this.treeId = this.totalTalents = this.talent = this.talentKey = this.head = this.body = this.tail = undefined;
-      }
+      if (event.target.tagName !== 'BUTTON' && event.target.id !== 'talent-desc' && event.target.id !== 'talent-name' && event.target.id !== '' && this.talent !== undefined)
+        this.clearData(tn, td, tc, body, mind, soul);
   });
+  }
+  clearData(tn, td, tc, b, m, s) {
+    tn.textContent = 'Talent';
+    td.innerHTML = 'Description...';
+    tn.classList.add('div-disabled');
+    td.classList.add('div-disabled');
+    this.talent.style.filter = ``;
+    document.getElementById('tl').disabled = true;
+    this.index = this.treeId = this.totalTalents = this.talent = this.talentKey = this.head = this.body = this.tail = undefined;
+    tc.classList.remove('div-red');
+    tc.classList.add('div-disabled');
+    b.textContent = m.textContent = s.textContent = '0';
   }
   quickTree(treeId, talents, talentTree) {
     talents.style.display = 'none';
@@ -106,7 +115,7 @@ export default class Talents extends Page {
         filter += `contrast(${col[7]}%)`;
     }
     if (treeId === Constants.SPECIES)
-      filter += `brightness(calc(30%+70%*${1 - index/totalTalents}))contrast(calc(100%+${index/totalTalents * 5}%))`;
+      filter += `brightness(${30 + 70 * (1 - index/totalTalents)}%)contrast(${100 + (index/totalTalents * 5)}%)`;
     if (treeId !== Constants.SPECIES || t.primaryBranch) {
       if (col[0] !== undefined)
         filter += `brightness(${col[0]}%)`;
@@ -186,11 +195,27 @@ export default class Talents extends Page {
       this.head = head;
       this.body = body;
       this.tail = tail;
-      const [meetsReq, b, m, s] = Util.meetsTPRequirement(t, characterData.level - characterData.body - characterData.mind - characterData.soul);
-      if (!meetsReq || characterData.talents.includes(talent) || t.after && !characterData.talents.includes(t.after) || t.requirements && !Util.meetsAllRequirements(t.requirements) || t.special && characterData.level - characterData.specialistTalents * 10 < 10)
-        document.getElementById('tl').disabled = true;
-      else
-        document.getElementById('tl').disabled = false;
+      const [meetsReq, bodyCost, mindCost, soulCost] = Util.meetsTPRequirement(t, characterData.level - characterData.body - characterData.mind - characterData.soul);
+      document.getElementById('tl').disabled = !meetsReq || characterData.talents.includes(talent) || t.after && !characterData.talents.includes(t.after) || t.requirements && !Util.meetsAllRequirements(t.requirements) || t.special && characterData.level - characterData.specialistTalents * 10 < 10;
+      const tc = document.getElementById('talent-cost');
+      tc.classList.remove('div-red');
+      tc.classList.remove('div-disabled');
+      let tb = bodyCost;
+      let tm = mindCost;
+      let ts = soulCost;
+      for (let tal = t; tal.after !== null && !characterData.talents.includes(tal.after); tal = game.talents[tal.after]) {
+        const [_, a, b, c] = Util.meetsTPRequirement(tal, 0);
+        tb += a;
+        tm += b;
+        ts += c;
+      }
+      if (characterData.level - characterData.body - characterData.mind - characterData.soul < tb + tm + ts)
+        tc.classList.add('div-red');
+      else if (characterData.talents.includes(talent) || t.after && !characterData.talents.includes(t.after))
+        tc.classList.add('div-disabled');
+      document.getElementById('body-cost').textContent = bodyCost;
+      document.getElementById('mind-cost').textContent = mindCost;
+      document.getElementById('soul-cost').textContent = soulCost;
     });
 
     talentElement.appendChild(head);

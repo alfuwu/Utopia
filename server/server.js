@@ -531,29 +531,31 @@ class Game {
     for (const act of talent.actions) {
       switch (act.type) {
         case Constants.MODIFY_SUBTRAIT:
-          this.applyOp(this.userData[user].subtraitModifiers[act.id], act);
+          Util.applyOp(this.userData[user].subtraitModifiers[act.id], act);
           break;
         case Constants.MODIFY_META:
           if (act.id === Constants.SIMPLE_LANGUAGE)
-            this.userData[user].availableSimpleLanguages = this.applyOp(this.userData[user].availableSimpleLanguages, act);
+            this.userData[user].availableSimpleLanguages = Util.applyOp(this.userData[user].availableSimpleLanguages, act);
+          break;
         case Constants.MODIFY_CORE:
-          this.applyOp(this.userData[user].coreModifiers[act.id], act);
+          Util.applyOp(this.userData[user].coreModifiers[act.id], act);
+          break;
         case Constants.MODIFY_SCORE:
           if (act.id <= Constants.EFFERVESCENCE) {
-            this.applyOp(this.userData[user].scoreModifiers[act.id], act);
+            Util.applyOp(this.userData[user].scoreModifiers[act.id], act);
             
             // todo: calculate minimum con/end/eff stats
             let stat, max = 0;
             let min = 2;
             if (act.id === Constants.CONSTITUTION) {
               stat = this.userData[user].constitution;
-              max = this.getMaxCon();
+              max = Util.getMaxCon(this, this.userData[user]);
             } else if (act.id === Constants.ENDURANCE) {
               stat = this.userData[user].endurance;
-              max = this.getMaxEnd();
+              max = Util.getMaxEnd(this, this.userData[user]);
             } else if (act.id === Constants.EFFERVESCENCE) {
               stat = this.userData[user].effervescence;
-              max = this.getMaxEff();
+              max = Util.getMaxEff(this, this.userData[user]);
             }
             const applied = this.userData[user].scoreModifiers[act.id].apply(stat);
             if (applied > max)
@@ -561,16 +563,14 @@ class Game {
             else if (applied < min)
               this.userData[user].scoreModifiers[act.id].flat += min - applied;
           }
-          else if (act.id === Constants.MIND)
-            this.userData[user].mind = Math.max(Math.min(this.applyOp(this.userData[user].endurance, act), this.getMaxEnd(this.userData[user])), 2);
-          else if (act.id === Constants.SOUL)
-            this.userData[user].soul = Math.max(Math.min(this.applyOp(this.userData[user].effervescence, act), this.getMaxEff(this.userData[user])), 2);
+          break;
       }
     }
   }
   createDefaultData(avatar, name) {
     const defaultSpecie = Object.keys(this.species)[0];
     return {
+      creatingCharacter: true,
       playerName: name,
       species: defaultSpecie,
       level: this.startingLevel,
@@ -678,7 +678,7 @@ router.ws(
                 break;
               case "t": // talent
                 const talent = game.talents[msg.data.t];
-                const [meetsReq, bodyCost, mindCost, soulCost] = Util.meetsTPRequirement(game, talent, game.userData[user].level - game.userData[user].body - game.userData[user].mind - game.userData[user].soul);
+                const [meetsReq, bodyCost, mindCost, soulCost] = Util.meetsTPRequirement(game, talent, game.userData[user].level - game.userData[user].body - game.userData[user].mind - game.userData[user].soul, msg.data.tr);
                 if (meetsReq) {
                   game.applyTalent(user, talent);
                   game.userData[user].body += bodyCost;

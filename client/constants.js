@@ -1,3 +1,7 @@
+// talent cost type ids
+export const FLAT = false;
+export const DEPENDANT = true;
+
 // tree ids
 export const SPECIES = 0;
 export const WARFARE = 1;
@@ -16,3 +20,8 @@ export const DIV = 3;
 export const ABMUL = 4;
 export const ABDIV = 5;
 export const SUBTRAIT = 6;
+
+// rounding ids
+export const ROUND_UP = true;
+export const ROUND_DOWN = false;
+export const ROUND_NEAREST = null;

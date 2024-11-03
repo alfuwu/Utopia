@@ -51,6 +51,9 @@ export default class Language extends Page {
     div.appendChild(uses);
     return div;
   }
+  updateAvailableLanguages() {
+    
+  }
   generateWordsList(searchTerm=undefined) {
     const dict = document.getElementById("dict");
     dict.innerHTML = ``;

@@ -85,8 +85,8 @@ export function applyOp(obj, operator) {
         i++;
     return i;
   }
-  export function getTraitScore(game, user, traitId) {
-    return applyModifier(characterData.subtraitModifiers[traitId * 2], characterData.subtraits[traitId * 2]) + applyModifier(game.userData[user].subtraitModifiers[traitId * 2], game.userData[user].subtraits[traitId * 2 + 1]);
+  export function getTraitScore(traitId) {
+    return applyModifier(characterData.subtraitModifiers[traitId * 2], characterData.subtraits[traitId * 2]) + applyModifier(characterData.subtraitModifiers[traitId * 2], characterData.subtraits[traitId * 2 + 1]);
   }
   export function meetsRequirements(cond) {
     switch (cond.type) {
@@ -166,12 +166,12 @@ export function applyOp(obj, operator) {
       mindCost += talent.mind.amount || talent.mind;
     if (talent.soul.amount || typeof talent.soul == 'number')
       soulCost += talent.soul.amount || talent.soul;
-    if (talent.body.type === Constants.DEPENDANT) {
+    if (talent.body.type === Constants.DEPENDANT) { // why are we checking body only
       for (const act of talent.actions) {
         if (act.type === Constants.SUBSPECIES_TALENT) {
-          const tree = act.tree || msg.data.tr;
+          const tree = act.tree || 0; // needs to be updated
           let subspeciesTalent = null;
-          for (const tal of game.talents) {
+          for (const tal of Object.values(game.talents)) {
             if (tal.primaryBranch && tal.tree === tree) {
               subspeciesTalent = tal;
               break;

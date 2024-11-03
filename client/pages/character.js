@@ -7,23 +7,29 @@ export default class Character extends Page {
 
     document.querySelectorAll('.increment button').forEach(button => {
       button.addEventListener('click', () => {
+        button.blur();
         const valueElement = button.parentElement.nextElementSibling;
-        const val = parseInt(valueElement.textContent) + 1;
-        valueElement.textContent = val;
+        const sid = parseInt(button.id.split('-')[0]);
+        characterData.subtraits[sid]++;
+        const v = Math.round(characterData.subtrait(sid));
+        valueElement.textContent = v;
         const modifierElement = valueElement.nextElementSibling;
-        modifierElement.textContent = this.formatModifier(val - 4);
+        modifierElement.textContent = this.formatModifier(characterData.gifted.includes(sid) ? Math.max(v - 4, 0) : v - 4);
         this.calculateTraits();
       });
     });
     
     document.querySelectorAll('.decrement button').forEach(button => {
       button.addEventListener('click', () => {
-        const valueElement = button.parentElement.previousElementSibling.previousElementSibling;
-        const val = parseInt(valueElement.textContent) - 1;
-        if (val > 0) {
-          valueElement.textContent = val;
-          const modifierElement = valueElement.nextElementSibling;
-          modifierElement.textContent = this.formatModifier(val - 4);
+        button.blur();
+        const sid = parseInt(button.id.split('-')[0]);
+        if (characterData.subtraits[sid] > 1) {
+          const modifierElement = button.parentElement.previousElementSibling;
+          const valueElement = modifierElement.previousElementSibling;
+          characterData.subtraits[sid]--;
+          const v = Math.round(characterData.subtrait(sid));
+          valueElement.textContent = v;
+          modifierElement.textContent = this.formatModifier(characterData.gifted.includes(sid) ? Math.max(v - 4, 0) : v - 4);
           this.calculateTraits();
         }
       });
@@ -32,40 +38,34 @@ export default class Character extends Page {
   generateSpeciesOptions() {
     const speciesSelect = document.getElementById('species');
   
-    speciesSelect.innerHTML = '<option value="" disabled selected hidden>Human...</option>';
+    speciesSelect.innerHTML = `<option value="" disabled selected hidden>Human...</option>`;
     
-    for (const species in game.species) {
+    for (const species of Object.keys(game.species)) {
+      if (species.length < 1)
+        continue;
       const option = document.createElement('option');
       option.value = species;
       option.textContent = game.species[species].name;
       speciesSelect.appendChild(option);
     }
   }
-  updateAvailableLanguages() {
-
-  }
   formatModifier(mod) {
     return mod < 0 ? mod : '+' + mod.toString();
   }
+  accountForGifted(index) {
+    return characterData.gifted.includes(index) && characterData.subtrait(index) - 4 < 0 ? 4 : characterData.subtrait(index);
+  }
   calculateTraits() {
-    const agi = parseInt(document.getElementById('speed-value').textContent) + parseInt(document.getElementById('dexterity-value').textContent);
-    const str = parseInt(document.getElementById('power-value').textContent) + parseInt(document.getElementById('fortitude-value').textContent);
-    const int = parseInt(document.getElementById('memory-value').textContent) + parseInt(document.getElementById('engineering-value').textContent);
-    const wil = parseInt(document.getElementById('resolve-value').textContent) + parseInt(document.getElementById('awareness-value').textContent);
-    const dis = parseInt(document.getElementById('portrayal-value').textContent) + parseInt(document.getElementById('stunt-value').textContent);
-    const cha = parseInt(document.getElementById('appeal-value').textContent) + parseInt(document.getElementById('language-value').textContent);
-    document.getElementById('agility-value').textContent = agi;
-    document.getElementById('agility-modifier').textContent = this.formatModifier(agi - 4);
-    document.getElementById('strength-value').textContent = str;
-    document.getElementById('strength-modifier').textContent = this.formatModifier(str - 4);
-    document.getElementById('intellect-value').textContent = int;
-    document.getElementById('intellect-modifier').textContent = this.formatModifier(int - 4);
-    document.getElementById('will-value').textContent = wil;
-    document.getElementById('will-modifier').textContent = this.formatModifier(wil - 4);
-    document.getElementById('display-value').textContent = dis;
-    document.getElementById('display-modifier').textContent = this.formatModifier(dis - 4);
-    document.getElementById('charm-value').textContent = cha;
-    document.getElementById('charm-modifier').textContent = this.formatModifier(cha - 4);
+    for (let i = 0; i < characterData.subtraits.length; i+= 2) {
+      const val = Math.round(characterData.subtrait(i) + characterData.subtrait(i + 1))
+      document.getElementById(`${i/2}-trait-value`).textContent = val;
+      document.getElementById(`${i/2}-trait-modifier`).textContent = this.formatModifier(Math.round(this.accountForGifted(i) + this.accountForGifted(i + 1) - 4));
+    }
+  }
+  capGiftedSubtraitModifiers() {
+    for (let i = 0; i < characterData.subtraits.length; i++)
+      if (characterData.gifted.includes(i) && characterData.subtrait(i) - 4 < 0)
+        document.getElementById(`${i}-subtrait-modifier`).textContent = '+0';
   }
   calculateSpeciesStats() {
     document.getElementById('block').textContent = characterData.blockRating[0][0] + 'd' + characterData.blockRating[0][1];
@@ -76,6 +76,9 @@ export default class Character extends Page {
     document.getElementById('constitution').textContent = characterData.cCon();
     document.getElementById('endurance').textContent = characterData.cEnd();
     document.getElementById('effervescence').textContent = characterData.cEff();
+    for (let i = 0; i < characterData.subtraits.length; i++)
+      if (characterData.gifted.includes(i))
+        document.getElementById(`${i}-checkmark`).textContent = '✔';
   }
   calculateXp() {
     document.getElementById('current-xp').textContent = characterData.xp;
@@ -89,7 +92,9 @@ export default class Character extends Page {
   }
   show() {
     super.show();
+    this.generateSpeciesOptions();
     this.calculateTraits();
+    this.capGiftedSubtraitModifiers();
     this.calculateSpeciesStats();
     this.calculateXp();
     this.calculatePoints();

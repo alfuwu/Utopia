@@ -5,72 +5,72 @@ import * as Constants from "./constants";
 export function applyOp(obj, operator) {
   switch (operator.op) {
     case Constants.ADD:
-      if (typeof obj === Number)
+      if (typeof obj === 'number')
         return obj + operator.amount;
       else
         obj.flat += operator.amount;
       return obj;
     case Constants.SUB:
-      if (typeof obj === Number)
+      if (typeof obj === 'number')
         return obj - operator.amount;
       else
         obj.flat -= operator.amount;
       return obj;
     case Constants.MUL:
-      if (typeof obj === Number)
+      if (typeof obj === 'number')
         return obj * operator.amount;
       else
         obj.mult += operator.amount;
       return obj;
     case Constants.DIV:
-      if (typeof obj === Number)
+      if (typeof obj === 'number')
         return obj / operator.amount;
       else
         obj.mult -= operator.amount;
       return obj;
     case Constants.ABMUL:
-      if (typeof obj === Number)
+      if (typeof obj === 'number')
         return obj * operator.amount;
       else
         obj.abMult += operator.amount;
       return obj;
     case Constants.ABDIV:
-      if (typeof obj === Number)
+      if (typeof obj === 'number')
         return obj / operator.amount;
       else
         obj.abMult -= operator.amount;
       return obj;
   }
 }
-export function getMaxCon(user) {
-  let max = 10;
-  for (const quirk of this.species[user.species].quirks)
+export function getMaxCon(game, user) {
+  let max = 8;
+  for (const quirk of game.species[user.species].quirks)
     if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_CONSTITUTION)
       max = applyOp(max, quirk);
   for (const talent of user.talents)
-    for (const act of this.talents[talent].actions)
+    for (const act of game.talents[talent].actions)
       if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_CONSTITUTION)
         max = applyOp(max, act);
   return max;
 }
-export function getMaxEnd(user) {
-  let max = 10;
-  for (const quirk of this.species[user.species].quirks)
+export function getMaxEnd(game, user) {
+  let max = 8;
+  for (const quirk of game.species[user.species].quirks)
     if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_ENDURANCE)
       max = applyOp(max, quirk);
   for (const talent of user.talents)
-    for (const act of this.talents[talent].actions)
+    for (const act of game.talents[talent].actions)
       if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_ENDURANCE)
         max = applyOp(max, act);
   return max;
 }
 export function getMaxEff(user) {
-  let max = 10;
-  for (const quirk of this.species[user.species].quirks)
+  let max = 8;
+  for (const quirk of game.species[user.species].quirks)
     if (quirk.type === Constants.MODIFY_SCORE && quirk.id === Constants.MAX_EFFERVESCENCE)
       max = applyOp(max, quirk);
   for (const talent of user.talents)
-    for (const act of this.talents[talent].actions)
+    for (const act of game.talents[talent].actions)
       if (act.type === Constants.MODIFY_SCORE && act.id === Constants.MAX_EFFERVESCENCE)
         max = applyOp(max, act);
   return max;
@@ -141,7 +141,7 @@ export function meetsRequirements(game, user, cond) {
         return false;
       break;
     case Constants.NOT:
-      if (meetsAllRequirements(user, cond.requirements))
+      if (meetsAllRequirements(game, user, cond.requirements))
         return false;
       break;
   }
@@ -155,7 +155,7 @@ export function meetsAllRequirements(game, user, requirements) {
   return true;
 }
 
-export function meetsTPRequirement(game, talent, unspentTP) {
+export function meetsTPRequirement(game, talent, unspentTP, tr) {
   let bodyCost = 0;
   let mindCost = 0;
   let soulCost = 0;
@@ -168,9 +168,9 @@ export function meetsTPRequirement(game, talent, unspentTP) {
   if (talent.body.type === Constants.DEPENDANT) {
     for (const act of talent.actions) {
       if (act.type === Constants.SUBSPECIES_TALENT) {
-        const tree = act.tree || msg.data.tr;
+        const tree = act.tree || tr;
         let subspeciesTalent = null;
-        for (const tal of game.talents) {
+        for (const tal of Object.values(game.talents)) {
           if (tal.primaryBranch && tal.tree === tree) {
             subspeciesTalent = tal;
             break;

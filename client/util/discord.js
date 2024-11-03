@@ -118,14 +118,14 @@ export default async function setupDiscordSdk() {
     userData[data.userId] = data;
   });
   socket.on("gameData", data => {
-    delete game.speciesStats[""];
+    delete game.species[""];
     Object.assign(game, data);
     pages.characterSheet.generateSpeciesOptions();
-    pages.characterSheet.updateAvailableLanguages();
+    pages.language.updateAvailableLanguages();
     pages.gm.language.generateLanguages();
   });
   socket.on("species", data => {
-    delete game.speciesStats[""];
+    delete game.species[""];
     Object.assign(game.speciesStats, data);
     pages.characterSheet.generateSpeciesOptions();
   });
@@ -136,10 +136,12 @@ export default async function setupDiscordSdk() {
     Object.assign(game.languages, data);
     pages.gm.language.generateLanguages();
     pages.language.generateWordsList();
+    pages.language.updateAvailableLanguages();
   })
   socket.on("resSelfData", data => {
     Object.assign(characterData, data);
     pages.characterSheet.calculateTraits();
+    pages.characterSheet.capGiftedSubtraitModifiers();
     pages.characterSheet.calculateSpeciesStats();
     pages.characterSheet.calculateXp();
     pages.characterSheet.calculatePoints();

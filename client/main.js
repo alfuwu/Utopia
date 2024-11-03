@@ -19,18 +19,22 @@ import TalentCreation from "./pages/gm/talent";
 import Page from "./pages/page";
 
 export const characterData = {
+  creatingCharacter: true, // allows the player to set things like name and species
   species: "human",
+  level: 10,
+  specialistTalents: 0,
   xp: 500,
   body: 0,
   mind: 0,
   soul: 0,
-  specialistTalents: 0,
   coreModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   scoreModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   blockRating: [[2, 6]],
   dodgeRating: [[2, 14]],
   talents: [],
-  level: 10,
+  gifted: [0, 5, 11],
+  subtraits: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  subtraitModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   cBody() {
     return applyModifier(this.coreModifiers[0], this.body);
   },
@@ -48,6 +52,9 @@ export const characterData = {
   },
   cEff() {
     return applyModifier(this.scoreModifiers[2], game.species[this.species].effervescence);
+  },
+  subtrait(idx) {
+    return applyModifier(this.subtraitModifiers[idx], this.subtraits[idx]);
   }
 };
 export const game = {

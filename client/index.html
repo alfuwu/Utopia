@@ -165,7 +165,7 @@ option[value=""][disabled] {
   top: -50px;
   left: 10px;
   bottom: 0px;
-  width: calc(425px + 1%);
+  width: calc(445px + 1%);
   border: 3px solid #000000ee;
   background-color: #161719;
 }
@@ -305,7 +305,13 @@ option[value=""][disabled] {
 /* Checkmark next to subtraits */
 .checkmark {
   color: #646cff;
-  cursor: pointer;
+  background-color: #1a1a1a;
+  text-align: center;
+  min-width: 19px;
+  max-width: 19px;
+  min-height: 19px;
+  max-height: 19px;
+  border: 1px solid #646cff;
 }
 
 .subtrait-line {
@@ -905,16 +911,69 @@ option[value=""][disabled] {
   background-color: #161719;
 }
 
-.talent-desc {
-  text-wrap: wrap;
+.talent-desc-and-cost {
+  position: relative;
   margin-top: 5px;
   margin-bottom: 15px;
-  text-align: left;
-  padding: 10px;
   flex-grow: 1;
   border: 3px solid #000000ee;
   background-color: #161719;
+}
+
+.talent-desc {
+  text-wrap: wrap;
+  text-align: left;
+  padding: 10px;
   font-size: 14px;
+}
+
+.talent-cost {
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+  right: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  vertical-align: middle;
+  justify-content: center;
+  padding-right: 22%;
+  padding-left: 22%;
+}
+
+.talent-cost-item {
+  text-align: center;
+  align-items: center;
+  vertical-align: middle;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  margin-right: 25px;
+}
+
+.talent-cost-item img {
+  width: 30px;
+  height: 30px;
+}
+
+.talent-cost-item div {
+  margin-left: 5px;
+  font-weight: 600;
+  font-size: 15px;
+  min-width: 20px;
+  max-width: 20px;
+}
+
+.talent-cost.div-disabled img {
+  filter: brightness(70%) contrast(90%);
+}
+
+.talent-cost.div-red img {
+  filter: brightness(60%) sepia(20%) saturate(1000%) hue-rotate(310deg) brightness(100%) contrast(120%);
+}
+
+.talent-cost.div-red div {
+  color: crimson;
 }
 
 .talent-buttons {
@@ -1225,7 +1284,7 @@ progress {
         <p>GM</p>
         <button id="gm-in-game">Map Editor</button>
         <button id="creature">Creatures</button>
-        <button id="species">Species</button>
+        <button id="species-editor">Species</button>
         <button id="talent-editor">Talent Creator</button>
         <button id="language-editor">Language Editor</button>
         <button id="fight">Fight</button>
@@ -1287,38 +1346,38 @@ progress {
                 </div>
               </div>
               <div class="value-box">
-                <span class="value" id="agility-value">2</span>
-                <span class="value" id="agility-modifier">-2</span>
+                <span class="value" id="0-trait-value">2</span>
+                <span class="value" id="0-trait-modifier">-2</span>
               </div>
               <div class="subtrait-field">
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="0-checkmark" class="checkmark"></span>
                   <label>Speed</label>
                 </div>
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="1-checkmark" class="checkmark"></span>
                   <label>Dexterity</label>
                 </div>
               </div>
               <div class="subtrait-field ml10">
                 <div class="value-box">
                   <div class="increment">
-                    <button id="speed-inc">+</button>
+                    <button id="0-inc">+</button>
                   </div>
-                  <span class="value" id="speed-value">1</span>
-                  <span class="value" id="speed-modifier">-3</span>
+                  <span class="value" id="0-subtrait-value">1</span>
+                  <span class="value" id="0-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button id="speed-dec">-</button>
+                    <button id="0-dec">-</button>
                   </div>
                 </div>
                 <div class="value-box">
                   <div class="increment">
-                    <button id="dexterity-inc">+</button>
+                    <button id="1-inc">+</button>
                   </div>
-                  <span class="value" id="dexterity-value">1</span>
-                  <span class="value" id="dexterity-modifier">-3</span>
+                  <span class="value" id="1-subtrait-value">1</span>
+                  <span class="value" id="1-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button>-</button>
+                    <button id="1-dec">-</button>
                   </div>
                 </div>
               </div>
@@ -1336,38 +1395,38 @@ progress {
                 </div>
               </div>
               <div class="value-box">
-                <span class="value" id="strength-value">2</span>
-                <span class="value" id="strength-modifier">-2</span>
+                <span class="value" id="1-trait-value">2</span>
+                <span class="value" id="1-trait-modifier">-2</span>
               </div>
               <div class="subtrait-field">
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="2-checkmark" class="checkmark"></span>
                   <label>Power</label>
                 </div>
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="3-checkmark" class="checkmark"></span>
                   <label>Fortitude</label>
                 </div>
               </div>
               <div class="subtrait-field ml10">
                 <div class="value-box">
                   <div class="increment">
-                    <button id="power-inc">+</button>
+                    <button id="2-inc">+</button>
                   </div>
-                  <span class="value" id="power-value">1</span>
-                  <span class="value" id="power-modifier">-3</span>
+                  <span class="value" id="2-subtrait-value">1</span>
+                  <span class="value" id="2-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button id="power-dec">-</button>
+                    <button id="2-dec">-</button>
                   </div>
                 </div>
                 <div class="value-box">
                   <div class="increment">
-                    <button id="fortitude-inc">+</button>
+                    <button id="3-inc">+</button>
                   </div>
-                  <span class="value" id="fortitude-value">1</span>
-                  <span class="value" id="fortitude-modifier">-3</span>
+                  <span class="value" id="3-subtrait-value">1</span>
+                  <span class="value" id="3-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button id="fortitude-dec">-</button>
+                    <button id="3-dec">-</button>
                   </div>
                 </div>
               </div>
@@ -1385,38 +1444,38 @@ progress {
                 </div>
               </div>
               <div class="value-box">
-                <span class="value" id="intellect-value">2</span>
-                <span class="value" id="intellect-modifier">-2</span>
+                <span class="value" id="2-trait-value">2</span>
+                <span class="value" id="2-trait-modifier">-2</span>
               </div>
               <div class="subtrait-field">
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="4-checkmark" class="checkmark"></span>
                   <label>Memory</label>
                 </div>
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="5-checkmark" class="checkmark"></span>
                   <label>Engineering</label>
                 </div>
               </div>
               <div class="subtrait-field ml10">
                 <div class="value-box">
                   <div class="increment">
-                    <button id="memory-inc">+</button>
+                    <button id="4-inc">+</button>
                   </div>
-                  <span class="value" id="memory-value">1</span>
-                  <span class="value" id="memory-modifier">-3</span>
+                  <span class="value" id="4-subtrait-value">1</span>
+                  <span class="value" id="4-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button id="memory-dec">-</button>
+                    <button id="4-dec">-</button>
                   </div>
                 </div>
                 <div class="value-box">
                   <div class="increment">
-                    <button id="engineering-inc">+</button>
+                    <button id="5-inc">+</button>
                   </div>
-                  <span class="value" id="engineering-value">1</span>
-                  <span class="value" id="engineering-modifier">-3</span>
+                  <span class="value" id="5-subtrait-value">1</span>
+                  <span class="value" id="5-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button id="engineering-dec">-</button>
+                    <button id="5-dec">-</button>
                   </div>
                 </div>
               </div>
@@ -1434,38 +1493,38 @@ progress {
                 </div>
               </div>
               <div class="value-box">
-                <span class="value" id="will-value">2</span>
-                <span class="value" id="will-modifier">-2</span>
+                <span class="value" id="3-trait-value">2</span>
+                <span class="value" id="3-trait-modifier">-2</span>
               </div>
               <div class="subtrait-field">
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="6-checkmark" class="checkmark"></span>
                   <label>Resolve</label>
                 </div>
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="7-checkmark" class="checkmark"></span>
                   <label>Awareness</label>
                 </div>
               </div>
               <div class="subtrait-field ml10">
                 <div class="value-box">
                   <div class="increment">
-                    <button>+</button>
+                    <button id="6-inc">+</button>
                   </div>
-                  <span class="value" id="resolve-value">1</span>
-                  <span class="value" id="resolve-modifier">-3</span>
+                  <span class="value" id="6-subtrait-value">1</span>
+                  <span class="value" id="6-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button>-</button>
+                    <button id="6-dec">-</button>
                   </div>
                 </div>
                 <div class="value-box">
                   <div class="increment">
-                    <button>+</button>
+                    <button id="7-inc">+</button>
                   </div>
-                  <span class="value" id="awareness-value">1</span>
-                  <span class="value" id="awareness-modifier">-3</span>
+                  <span class="value" id="7-subtraitwareness-value">1</span>
+                  <span class="value" id="7-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button>-</button>
+                    <button id="7-dec">-</button>
                   </div>
                 </div>
               </div>
@@ -1483,38 +1542,38 @@ progress {
                 </div>
               </div>
               <div class="value-box">
-                <span class="value" id="display-value">2</span>
-                <span class="value" id="display-modifier">-2</span>
+                <span class="value" id="4-trait-value">2</span>
+                <span class="value" id="4-trait-modifier">-2</span>
               </div>
               <div class="subtrait-field">
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="8-checkmark" class="checkmark"></span>
                   <label>Portrayal</label>
                 </div>
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="9-checkmark" class="checkmark"></span>
                   <label>Stunt</label>
                 </div>
               </div>
               <div class="subtrait-field ml10">
                 <div class="value-box">
                   <div class="increment">
-                    <button>+</button>
+                    <button id="8-inc">+</button>
                   </div>
-                  <span class="value" id="portrayal-value">1</span>
-                  <span class="value" id="portrayal-modifier">-3</span>
+                  <span class="value" id="8-subtrait-value">1</span>
+                  <span class="value" id="8-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button>-</button>
+                    <button id="8-dec">-</button>
                   </div>
                 </div>
                 <div class="value-box">
                   <div class="increment">
-                    <button>+</button>
+                    <button id="9-inc">+</button>
                   </div>
-                  <span class="value" id="stunt-value">1</span>
-                  <span class="value" id="stunt-modifier">-3</span>
+                  <span class="value" id="9-subtrait-value">1</span>
+                  <span class="value" id="9-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button>-</button>
+                    <button id="9-dec">-</button>
                   </div>
                 </div>
               </div>
@@ -1532,38 +1591,38 @@ progress {
                 </div>
               </div>
               <div class="value-box">
-                <span class="value" id="charm-value">2</span>
-                <span class="value" id="charm-modifier">-2</span>
+                <span class="value" id="5-trait-value">2</span>
+                <span class="value" id="5-trait-modifier">-2</span>
               </div>
               <div class="subtrait-field">
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="10-checkmark" class="checkmark"></span>
                   <label>Appeal</label>
                 </div>
                 <div class="subtrait">
-                  <span class="checkmark">✔</span>
+                  <span id="11-checkmark" class="checkmark"></span>
                   <label>Language</label>
                 </div>
               </div>
               <div class="subtrait-field ml10">
                 <div class="value-box">
                   <div class="increment">
-                    <button>+</button>
+                    <button id="10-inc">+</button>
                   </div>
-                  <span class="value" id="appeal-value">1</span>
-                  <span class="value" id="appeal-modifier">-3</span>
+                  <span class="value" id="10-subtrait-value">1</span>
+                  <span class="value" id="10-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button>-</button>
+                    <button id="10-dec">-</button>
                   </div>
                 </div>
                 <div class="value-box">
                   <div class="increment">
-                    <button>+</button>
+                    <button id="11-inc">+</button>
                   </div>
-                  <span class="value" id="language-value">1</span>
-                  <span class="value" id="language-modifier">-3</span>
+                  <span class="value" id="11-subtrait-value">1</span>
+                  <span class="value" id="11-subtrait-modifier">-3</span>
                   <div class="decrement">
-                    <button>-</button>
+                    <button id="11-dec">-</button>
                   </div>
                 </div>
               </div>
@@ -1697,7 +1756,23 @@ progress {
               </div>
               <div id="td" class="talent-data">
                 <div id="talent-name" class="talent-name2 div-disabled">Talent</div>
-                <div id="talent-desc" class="talent-desc div-disabled">Description...</div>
+                <div class="talent-desc-and-cost">
+                  <div id="talent-desc" class="talent-desc div-disabled">Description...</div>
+                  <div id="talent-cost" class="talent-cost div-disabled">
+                    <div class="talent-cost-item">
+                      <img src="body.svg" />
+                      <div id="body-cost">0</div>
+                    </div>
+                    <div class="talent-cost-item">
+                      <img src="mind.svg" />
+                      <div id="mind-cost">0</div>
+                    </div>
+                    <div class="talent-cost-item">
+                      <img src="soul.svg" />
+                      <div id="soul-cost">0</div>
+                    </div>
+                  </div>
+                </div>
                 <div class="talent-buttons">
                   <button id="tb" class="talent-back">Back</button>
                   <button id="tl" class="talent-learn" disabled>Learn</button>
@@ -1745,7 +1820,7 @@ progress {
           </div>
         </div>
         <div id="notes" class="page">
-          <textarea rows="12" type="text" class="big-text-box notes" id="notes-text" name="notes-text" style="min-width: 0%;" placeholder="Enter character notes here (e.g. backstory, custom talent data, etc)..."></textarea>
+          <textarea rows="12" type="text" class="big-text-box notes" id="notes-text" name="notes-text" style="min-width: 0%;" placeholder="Enter character notes here (e.g. backstory, custom talent data, etc)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         </div>
         <div id="loading" class="page">
           <div class="loading-container">
