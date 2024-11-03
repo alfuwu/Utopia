@@ -209,7 +209,7 @@ export default class Talents extends Page {
         tm += b;
         ts += c;
       }
-      if (characterData.level - characterData.body - characterData.mind - characterData.soul < tb + tm + ts)
+      if (!characterData.talents.includes(talent) && characterData.level - characterData.body - characterData.mind - characterData.soul < tb + tm + ts)
         tc.classList.add('div-red');
       else if (characterData.talents.includes(talent) || t.after && !characterData.talents.includes(t.after))
         tc.classList.add('div-disabled');
