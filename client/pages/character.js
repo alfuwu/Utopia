@@ -52,14 +52,11 @@ export default class Character extends Page {
   formatModifier(mod) {
     return mod < 0 ? mod : '+' + mod.toString();
   }
-  accountForGifted(index) {
-    return characterData.gifted.includes(index) && characterData.subtrait(index) - 4 < 0 ? 4 : characterData.subtrait(index);
-  }
   calculateTraits() {
     for (let i = 0; i < characterData.subtraits.length; i+= 2) {
       const val = Math.round(characterData.subtrait(i) + characterData.subtrait(i + 1))
       document.getElementById(`${i/2}-trait-value`).textContent = val;
-      document.getElementById(`${i/2}-trait-modifier`).textContent = this.formatModifier(Math.round(this.accountForGifted(i) + this.accountForGifted(i + 1) - 4));
+      document.getElementById(`${i/2}-trait-modifier`).textContent = this.formatModifier(val - 4);
     }
   }
   capGiftedSubtraitModifiers() {

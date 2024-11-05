@@ -1,14 +1,22 @@
-import { goToNextPage, goToPreviousPage, loadPdf } from "../util/pdf";
+import { characterData } from "../main";
+import { goToNextPage, goToPreviousPage, loadPdf, pageNum, renderAllPages, renderedPages, renderPage, setPage, totalPages } from "../util/pdf";
 import Page from "./page";
 
 export default class Handbook extends Page {
   active = false;
+  unloaded = true;
   constructor() {
     super('handbook', 'open-handbook');
-    loadPdf();
 
     document.addEventListener('keydown', (event) => {
-      if (!this.active)
+      if (event.key === 'c') {
+        characterData.scrollingHandbook = !characterData.scrollingHandbook;
+        if (characterData.scrollingHandbook)
+          this.loadScrollablePdf();
+        else
+          this.loadBookPdf();
+      }
+      if (!this.active || characterData.scrollingHandbook)
         return;
       if (event.key === 'ArrowRight' || event.key === 'd' || event.key === 'w')
         goToNextPage(event);
@@ -16,25 +24,45 @@ export default class Handbook extends Page {
         goToPreviousPage(event);
     });
 
-    document.getElementById('pdf-container').addEventListener('click', (event) => {
-      const pdfContainer = document.getElementById('pdf-container');
-      const clickX = event.clientX;
-      const containerWidth = pdfContainer.offsetWidth;
-      // if click is on the right side of the container, go to the next page
-      if (clickX - pdfContainer.offsetLeft > containerWidth / 2)
+    const pdfContainer = document.getElementById('pdf-container');
+    pdfContainer.addEventListener('click', event => {
+      if (characterData.scrollingHandbook)
+        return;
+      if (event.clientX - pdfContainer.getBoundingClientRect().left > pdfContainer.getBoundingClientRect().width / 2)
         goToNextPage(event);
-      else // if click is on the left side, go to the previous page
+      else
         goToPreviousPage(event);
     });
+    pdfContainer.addEventListener('scroll', () => {
+      if (!characterData.scrollingHandbook)
+        return;
+      setPage(Math.min(Math.max(Math.round(pdfContainer.scrollTop * totalPages / pdfContainer.scrollHeight * (renderedPages / totalPages)) + 1, 1), totalPages));
+    })
   }
-
   show() {
     super.show();
     this.active = true;
+    if (this.unloaded) {
+      loadPdf();
+      this.unloaded = undefined;
+    }
   }
-
   hide() {
     super.hide();
     this.active = false;
+  }
+  loadScrollablePdf() {
+    const pdfContainer = document.getElementById('pdf-container');
+    pdfContainer.innerHTML = ``;
+    pdfContainer.classList.remove('pc');
+    pdfContainer.classList.add('pcs');
+    renderAllPages();
+  }
+  loadBookPdf() {
+    const pdfContainer = document.getElementById('pdf-container');
+    pdfContainer.innerHTML = ``;
+    pdfContainer.classList.remove('pcs');
+    pdfContainer.classList.add('pc');
+    renderPage(pageNum);
   }
 }

@@ -130,21 +130,19 @@ option[value=""][disabled] {
   width: 100%;
 }
 
-/* Center the loading container */
 .loading-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Take full viewport height */
+  height: 100vh;
 }
 
-/* Style for the loading icon */
 .loading-icon {
   width: 50px;
   height: 50px;
-  border: 5px solid rgba(255, 255, 255, 0.3); /* Light background for spinner */
-  border-top-color: #646cff; /* Active color */
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #646cff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
@@ -158,7 +156,6 @@ option[value=""][disabled] {
   width: 100%;
 }
 
-/* start of character page style sheet */
 .left-bar {
   position: absolute;
   z-index: -1;
@@ -173,14 +170,13 @@ option[value=""][disabled] {
 .character-bar {
   position: absolute;
   top: 22.5px;
-  left: 13px;
+  left: 18px;
   right: calc(3.5vw + 13px);
   height: 50px;
   border: 3px solid #000000ee;
   background-color: #343434;
 }
 
-/* Position the character name input in the top-left corner */
 .character-name-container {
   position: absolute;
   top: 20px;
@@ -188,7 +184,6 @@ option[value=""][disabled] {
   padding: 10px;
 }
 
-/* Style the input field */
 .character-name-container input[type="text"] {
   padding: 10px;
   font-size: 1em;
@@ -205,17 +200,15 @@ option[value=""][disabled] {
   color: rgba(255, 255, 255, 0.87);
 }
 
-/* Stats container for block, dodge, DHP, and SHP */
 .character-thingy-container {
   position: absolute;
-  top: 100px; /* Position this below the name input */
-  left: 20px;
+  top: 100px;
+  left: 30px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 4px;
 }
 
-/* Position the character name input in the top-left corner */
 .character-name-container {
   position: absolute;
   top: 20px;
@@ -223,7 +216,6 @@ option[value=""][disabled] {
   padding: 10px;
 }
 
-/* Position the species input in the top-right corner */
 .character-species-container {
   position: absolute;
   top: 20px;
@@ -232,7 +224,6 @@ option[value=""][disabled] {
   padding-right: 3.5vw;
 }
 
-/* Style the species input field */
 .character-species-container select {
   padding: 10px;
   min-width: 20em;
@@ -263,18 +254,16 @@ option[value=""][disabled] {
   gap: 0px;
 }
 
-/* Attribute container for all fields */
 .attribute-container {
   display: flex;
   flex-direction: column;
-  gap: 0px; /* Space between each attribute field */
+  gap: 0px;
 }
 
-/* Each attribute field and its subtraits */
 .attribute-field {
   display: flex;
   align-items: center;
-  gap: 10px; /* Space between label and value box */
+  gap: 10px;
   position: relative;
   padding-bottom: 20px;
 }
@@ -292,17 +281,14 @@ option[value=""][disabled] {
   zoom: 0.7;
 }
 
-/* subtraits (e.g. Speed, Dexterity) */
 .subtrait {
   margin-left: 30px;
   margin-top: 13px;
   display: flex;
   align-items: center;
   gap: 10px;
-  /*position: relative;*/
 }
 
-/* Checkmark next to subtraits */
 .checkmark {
   color: #646cff;
   background-color: #1a1a1a;
@@ -373,6 +359,8 @@ option[value=""][disabled] {
   padding-left: 3px;
   padding-right: 3px;
   border-radius: 0px;
+  position: relative;
+  top: 3px;
 }
 
 /* Ensure all boxes line up, regardless of label length */
@@ -382,10 +370,14 @@ option[value=""][disabled] {
 
 .core-stats {
   position: absolute;
-  top: 100px;
+  top: 80px;
   right: calc(max(20px, 4vw));
   display: flex;
   flex-direction: column;
+  background-color: #19191d22;
+  border-radius: 5px;
+  border: 1px solid #00000066;
+  padding: 10px;
 }
 
 .defenses {
@@ -446,6 +438,8 @@ option[value=""][disabled] {
 }
 
 .talent-points, .distributed-points {
+  position: relative;
+  left: -10px;
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -855,7 +849,7 @@ option[value=""][disabled] {
   top: 0px;
   bottom: -65px;
   background-color: transparent;
-  border: 0px transparent;
+  border: none;
 }
 .talent-select:focus {
   outline: none;
@@ -1023,12 +1017,42 @@ progress {
   height: 100%;
 }
 
+.loading-stuff {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .pdf-container {
   height: 100%;
   display: flex;
+  flex-direction: row;
+  overflow-y: scroll;
+}
+.pc {
   align-items: center;
   justify-content: center;
   vertical-align: middle;
+  overflow-y: hidden;
+}
+.pcs {
+  flex-direction: column;
+}
+.pdf-page {
+  position: relative;
+  width: 50%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+.pdf-book-pageh {
+  height: 100%;
+}
+.pdf-book-pagew1 {
+  width: 100%;
+}
+.pdf-book-pagew2 {
+  width: 50%;
 }
 /* end of handbook style sheet */
 
@@ -1265,7 +1289,7 @@ progress {
 
 @media (max-width: 1023px) {
   .zoomer {
-    zoom: 0.6;
+    zoom: 0.5;
   }
 }
     </style>
@@ -1637,7 +1661,7 @@ progress {
                   <span id="heat" class="value">0</span>
                   <span id="physical" class="value">0</span>
                   <span id="psyche" class="value">0</span>
-                  <svg viewBox="00 00 50 1.5" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 45px; right: -12px; left: 7px; height: 15px; z-index: -1;">
+                  <svg viewBox="00 00 50 1.5" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 55px; right: -22px; left: 17px; height: 15px; z-index: -1;">
                     <line x1="0" y1="0" x2="33" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
                   </svg>
                 </div>
@@ -1648,7 +1672,7 @@ progress {
                   <span id="current-xp" class="value" style="margin-right:-6px; margin-left: 0px;">0</span>
                   <span id="target-xp" class="value" style="margin-left:0px">1000</span>
                 </div>
-                <svg viewBox="00 00 50 1.5" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 125px; right: -12px; left: 7px; height: 15px; z-index: -1;">
+                <svg viewBox="00 00 50 1.5" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 135px; right: -22px; left: 17px; height: 15px; z-index: -1;">
                   <line x1="0" y1="0" x2="18.7" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
                   <line x1="20" y1="0" x2="35" y2="0" stroke="#ffffffaa" stroke-width="0.3" />
                 </svg>
@@ -1756,19 +1780,19 @@ progress {
               </div>
               <div id="td" class="talent-data">
                 <div id="talent-name" class="talent-name2 div-disabled">Talent</div>
-                <div class="talent-desc-and-cost">
+                <div id="tdc" class="talent-desc-and-cost">
                   <div id="talent-desc" class="talent-desc div-disabled">Description...</div>
                   <div id="talent-cost" class="talent-cost div-disabled">
                     <div class="talent-cost-item">
-                      <img src="body.svg" />
+                      <img name="a" draggable="false" ondrag="return false;" src="body.svg" />
                       <div id="body-cost">0</div>
                     </div>
                     <div class="talent-cost-item">
-                      <img src="mind.svg" />
+                      <img name="a" draggable="false" ondrag="return false;" src="mind.svg" />
                       <div id="mind-cost">0</div>
                     </div>
                     <div class="talent-cost-item">
-                      <img src="soul.svg" />
+                      <img name="a" draggable="false" ondrag="return false;" src="soul.svg" />
                       <div id="soul-cost">0</div>
                     </div>
                   </div>
@@ -1808,13 +1832,15 @@ progress {
           </div>
         </div>
         <div id="handbook" class="page">
-          <div class="zoomer max-size handbook-thing">
-            <div id="loading-handbook" style="display: none;">Loading handbook...</div>
-        
-            <div id="progress-container" style="display: none;">
-              <progress id="progress-bar" value="0" max="100"></progress>
+          <div class="max-size handbook-thing">
+            <div class="loading-stuff">
+              <div id="loading-handbook" style="display: none;">Loading handbook...</div>
+          
+              <div id="progress-container" style="display: none;">
+                <progress id="progress-bar" value="0" max="100"></progress>
+              </div>
             </div>
-            <div id="pdf-container" class="pdf-container">
+            <div id="pdf-container" class="pdf-container pc">
 
             </div>
           </div>

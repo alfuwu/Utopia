@@ -49,3 +49,15 @@ export function parseMarkdownWithVisibleSymbols(text) {
 
   return removeEscapes(sanitizedText);
 }
+
+export class Color {
+  r; g; b;
+  constructor(r, g, b) {
+    this.r = r;
+    this.g = g;
+    this.b = b;
+  }
+  toString(m=1) {
+    return `${Math.round(this.r*m)},${Math.round(this.g*m)},${Math.round(this.b*m)}`;
+  }
+}

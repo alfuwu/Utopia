@@ -17,6 +17,7 @@ import LanguageCreation from "./pages/gm/language";
 import SpeciesCreation from "./pages/gm/species";
 import TalentCreation from "./pages/gm/talent";
 import Page from "./pages/page";
+import { Color } from "./util/general";
 
 export const characterData = {
   creatingCharacter: true, // allows the player to set things like name and species
@@ -64,13 +65,13 @@ export const game = {
   },
   treeColors: {
     // brightness 1 -> sepia -> saturation -> hue shift -> brightness 2 -> contrast -> unlearnt brightness -> unlearnt contrast -> unlearnt saturation -> highlight color -> primaryBranch highlight color
-    [Constants.SPECIES]: [undefined, 21, 100, 169, 90, 87, 50, 120, 70, 'ffffff', 'eeeeff'],
-    [Constants.WARFARE]: [50, 20, 400, 317, 123, 180, 50, 50, 70, 'd17f77'],
-    [Constants.TACTICS]: [50, 12, 600, 84, 130, 168, 50, 50, 70, '7da974'],
-    [Constants.INNOVATION]: [80, 17, 500, 339, 97, 171, 50, 50, 70, 'f8a26f'],
-    [Constants.MAGECRAFT]: [75, 72, 120, 27, 102, 165, 50, 50, 70, 'd5cd7f'],
-    [Constants.INFLUENCE]: [45, 93, 150, 187, undefined, 180, 70, 50, 70, '73c2ff'],
-    [Constants.PROWESS]: [45, 72, 120, 205, undefined, 161, 70, 50, 70, 'd4a8ef'],
+    [Constants.SPECIES]: [undefined, 21, 100, 169, 90, 87, 50, 120, 70, new Color(255, 255, 255), new Color(238, 238, 255)],
+    [Constants.WARFARE]: [50, 20, 400, 317, 123, 180, 50, 50, 70, new Color(209, 127, 119)],
+    [Constants.TACTICS]: [50, 12, 600, 84, 130, 168, 50, 50, 70, new Color(125, 169, 116)],
+    [Constants.INNOVATION]: [80, 17, 500, 339, 97, 171, 50, 50, 70, new Color(248, 162, 111)],
+    [Constants.MAGECRAFT]: [75, 72, 120, 27, 102, 165, 50, 70, 70, new Color(213, 205, 127)],
+    [Constants.INFLUENCE]: [45, 93, 150, 187, undefined, 180, 70, 50, 70, new Color(80, 94, 155)],
+    [Constants.PROWESS]: [45, 72, 120, 205, undefined, 161, 70, 50, 70, new Color(212, 168, 239)],
   },
   talents: {
     // human tree
@@ -430,4 +431,4 @@ export function showPage(page) {
 // dev
 //pages.gm.language.show();
 //pages.gm.language.loadLanguage("utopian");
-pages.talents.show();
+pages.characterSheet.show();
