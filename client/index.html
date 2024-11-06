@@ -162,7 +162,7 @@ option[value=""][disabled] {
   top: -50px;
   left: 10px;
   bottom: 0px;
-  width: calc(445px + 1%);
+  width: 465px;
   border: 3px solid #000000ee;
   background-color: #161719;
 }
@@ -363,7 +363,6 @@ option[value=""][disabled] {
   top: 3px;
 }
 
-/* Ensure all boxes line up, regardless of label length */
 .attribute-field label, .subtrait label {
   white-space: nowrap;
 }
@@ -992,6 +991,159 @@ option[value=""][disabled] {
 }
 /* end of talents style sheet */
 
+/* start of inventory style sheet */
+.inventory-left {
+  display: flex;
+  flex-direction: row;
+}
+
+.actual-inventory {
+  position: relative;
+  left: 10px;
+  width: 445px;
+  top: 40px;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: left;
+}
+
+.item-list {
+  position: relative;
+  width: calc(100% - 20px);
+  left: -20px;
+  right: -20px;
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.inv-title, .c {
+  font-weight: 600;
+  font-size: 22px;
+  font-family: papyrus;
+  font-synthesis: weight;
+}
+
+.inv-item, .inv-title {
+  margin-top: -2px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.inv-item .inv-name, .inv-title label {
+  text-align: left;
+  min-height: 26.63px;
+}
+.inv-item .inv-name {
+  font-weight: 500;
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+.inv-item label, .inv-item div {
+  border: 2px solid #00000066;
+  background-color: #ffffff0a;
+}
+.inv-amount, .inv-item .inv-slots {
+  width: 20%;
+  font-weight: 600;
+  margin-left: -2px;
+}
+.inv-item .inv-slots {
+  margin-right: 0px;
+}
+.inv-name {
+  width: 50%;
+  padding-left: 20px;
+}
+.slots-thingy {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  gap: 10px;
+  padding-right: 40px;
+}
+
+.equipment {
+  margin: 10px 10px 10px 20px;
+  background-color: #0b0b0c;
+  width: 50%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: left;
+}
+
+.equip-item {
+  width: 100%;
+  text-align: left;
+}
+
+.equip-item select {
+  float: right;
+  margin-right: 5px;
+}
+
+.other-inventory {
+  position: absolute;
+  padding: 70px 0px 0px 0px;
+  left: 485px;
+  width: 280px;
+  top: -50px;
+  bottom: 0px;
+  border: 3px solid #000000ee;
+  background-color: #161719;
+}
+
+.materials {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 10px 0px 10px;
+}
+
+.material {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.empty-rarity, .rarity-name {
+  width: 50%;
+  text-align: left;
+  padding-left: 3px;
+}
+
+.c, .rarity-name {
+  font-size: 16px;
+  padding-left: 0px;
+  border: 3px solid #00000066;
+  margin-left: -3px;
+  margin-top: -3px;
+}
+
+.c {
+  width: 30%;
+  padding: 0px 0px 0px 0px;
+  text-align: center;
+}
+
+.thin {
+  letter-spacing: -0.08em;
+}
+
+hr {
+  position: relative;
+  left: 10px;
+  width: 100%;
+}
+/* end of inventory style sheet */
+
 /* start of language style sheet */
 .language-container {
   display: flex;
@@ -1174,7 +1326,7 @@ progress {
 
 .scrollable-list {
   overflow-y: auto;
-  max-height: calc(100vh - 10px);
+  max-height: calc(100vh - 0.5%);
   width: auto;
 }
 /* end of gm language style sheet */
@@ -1185,10 +1337,10 @@ progress {
   overflow-y: auto;
 
   position: absolute;
-  top: 20px;
-  left: 10px;
-  right: 10px;
-  bottom: 20px;
+  top: 1%;
+  left: 0.5%;
+  right: 0.5%;
+  bottom: 1%;
 }
 
 /* Keyframe for spinning effect */
@@ -1812,7 +1964,212 @@ progress {
         </div>
         <div id="inventory" class="page">
           <div class="zoomer max-size">
-            
+            <div class="left-bar"></div>
+            <div class="inventory-left">
+              <div class="actual-inventory">
+                <div class="inv-title">
+                  <label class="inv-name">Inventory</label>
+                  <div class="slots-thingy">
+                    <div id="slots" class="inv-slots">0/0</div>
+                  </div>
+                </div>
+                <hr>
+                <div class="item-list">
+                  <div class="inv-item">
+                    <label class="inv-name">Appel</label>
+                    <label class="inv-amount">x3</label>
+                    <div class="inv-slots">3</div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                  <div class="inv-item">
+                    <label class="inv-name"></label>
+                    <label class="inv-amount"></label>
+                    <div class="inv-slots"></div>
+                  </div>
+                </div>
+                <div class="equipment">
+                  <div class="equip-item">
+                    <label>Head</label>
+                    <select id="head-select">
+                      <option value="" selected>Empty</option>
+                    </select>
+                    <select id="head-augment">
+                      <option value="" selected>Empty</option>
+                    </select>
+                  </div>
+                  <div class="equip-item">
+                    <label>Neck</label>
+                    <select id="neck-select">
+                      <option value="" selected>Empty</option>
+                    </select>
+                    <select id="neck-augment">
+                      <option value="" selected>Empty</option>
+                    </select>
+                  </div>
+                  <div class="equip-item">
+                    <label>Chest</label>
+                    <select id="chest-select">
+                      <option value="" selected>Empty</option>
+                    </select>
+                    <select id="chest-augment">
+                      <option value="" selected>Empty</option>
+                    </select>
+                  </div>
+                  <div class="equip-item">
+                    <label>Waist</label>
+                    <select id="waist-select">
+                      <option value="" selected>Empty</option>
+                    </select>
+                    <select id="waist-augment">
+                      <option value="" selected>Empty</option>
+                    </select>
+                  </div>
+                  <div class="equip-item">
+                    <label>Hands</label>
+                    <select id="hands-select">
+                      <option value="" selected>Empty</option>
+                    </select>
+                    <select id="hands-augment">
+                      <option value="" selected>Empty</option>
+                    </select>
+                  </div>
+                  <div class="equip-item">
+                    <label>Ring</label>
+                    <select id="ring-select">
+                      <option value="" selected>Empty</option>
+                    </select>
+                    <select id="ring-augment">
+                      <option value="" selected>Empty</option>
+                    </select>
+                  </div>
+                  <div class="equip-item">
+                    <label>Feet</label>
+                    <select id="feet-select">
+                      <option value="" selected>Empty</option>
+                    </select>
+                    <select id="feet-augment">
+                      <option value="" selected>Empty</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="other-inventory">
+                <div class="purse">
+                  <div class="inv-title wallet">Currency</div>
+                  <div class="currency">
+                    <label id="0-cur-t">Silver</label>
+                    <span id="0-cur">0</span>
+                  </div>
+                  <div class="currency">
+                    <label id="1-cur-t">Utian Credits</label>
+                    <span id="1-cur">0</span>
+                  </div>
+                </div>
+                <div class="materials">
+                  <div class="material">
+                    <label class="empty-rarity"></label>
+                    <label class="c">MC</label>
+                    <label class="c">AC</label>
+                    <label class="c">PC</label>
+                  </div>
+                  <div class="material">
+                    <label class="rarity-name">Crude</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                  </div>
+                  <div class="material">
+                    <label class="rarity-name">Common</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                  </div>
+                  <div class="material">
+                    <label class="rarity-name thin">Extraordinary</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                  </div>
+                  <div class="material">
+                    <label class="rarity-name">Rare</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                  </div>
+                  <div class="material">
+                    <label class="rarity-name">Legendary</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                  </div>
+                  <div class="material">
+                    <label class="rarity-name">Mythical</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                    <label class="c">0</label>
+                  </div>
+                  <div class="buttons">
+                    <button id="forage">Forage</button>
+                  </div>
+                </div>
+                <div class="item-stats">
+                  <label id="item-name" class="div-disabled inv-title item-name">Item</label>
+                  <label id="item-desc" class="div-disabled item-description">Description...</label>
+                </div>
+              </div>
+            </div>
+            <div class="crafting">
+              <button id="craft">Craft</button>
+            </div>
           </div>
         </div>
         <div id="languages" class="page">

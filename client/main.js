@@ -36,6 +36,10 @@ export const characterData = {
   gifted: [0, 5, 11],
   subtraits: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   subtraitModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
+  inventory: [
+    // name, amount, weight
+    { n: "Appel", a: 3, w: 1 }
+  ],
   cBody() {
     return applyModifier(this.coreModifiers[0], this.body);
   },
@@ -431,4 +435,4 @@ export function showPage(page) {
 // dev
 //pages.gm.language.show();
 //pages.gm.language.loadLanguage("utopian");
-pages.characterSheet.show();
+pages.inventory.show();
