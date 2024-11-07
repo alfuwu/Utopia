@@ -69,6 +69,15 @@ h1 {
   transition: filter 300ms;
 }
 
+.utopia {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  filter: opacity(10%);
+  z-index: -100;
+}
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
@@ -369,7 +378,7 @@ option[value=""][disabled] {
 
 .core-stats {
   position: absolute;
-  top: 80px;
+  top: 90px;
   right: calc(max(20px, 4vw));
   display: flex;
   flex-direction: column;
@@ -472,7 +481,7 @@ option[value=""][disabled] {
   padding: 7px;
   align-items: end;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .species-stat-thingy {
@@ -733,7 +742,7 @@ option[value=""][disabled] {
 
 .big-talent::after,
 .core-talent::after {
-  font-family: papyrus;
+  font-family: papyrus, Papyrus, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   position: absolute;
   -webkit-text-fill-color: white;
   -webkit-text-stroke: 0;
@@ -750,7 +759,7 @@ option[value=""][disabled] {
 }
 .big-talent::before,
 .core-talent::before {
-  font-family: papyrus;
+  font-family: papyrus, Papyrus, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   position: absolute;
   color: black;
   -webkit-text-stroke: 0.15em black;
@@ -897,6 +906,9 @@ option[value=""][disabled] {
 }
 
 .talent-name2 {
+  font-family: papyrus, Papyrus, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: weight;
+  font-size: 20px;
   font-weight: 600;
   margin-bottom: 5px;
   padding: 10px;
@@ -993,8 +1005,11 @@ option[value=""][disabled] {
 
 /* start of inventory style sheet */
 .inventory-left {
+  position: absolute;
   display: flex;
   flex-direction: row;
+  top: 0px;
+  bottom: 40px;
 }
 
 .actual-inventory {
@@ -1024,7 +1039,7 @@ option[value=""][disabled] {
 .inv-title, .c {
   font-weight: 600;
   font-size: 22px;
-  font-family: papyrus;
+  font-family: papyrus, Papyrus, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-synthesis: weight;
 }
 
@@ -1069,9 +1084,9 @@ option[value=""][disabled] {
 }
 
 .equipment {
-  margin: 10px 10px 10px 20px;
+  margin: 5px 10px 10px 20px;
   background-color: #0b0b0c;
-  width: 50%;
+  width: 80%;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -1080,24 +1095,60 @@ option[value=""][disabled] {
 }
 
 .equip-item {
+  display: flex;
+  flex-direction: row;
   width: 100%;
   text-align: left;
+  margin-top: 5px;
 }
 
-.equip-item select {
-  float: right;
+.equip-item label {
+  width: 30%;
+}
+
+.equip-item button {
+  position: relative;
+  top: -2px;
+  font-size: 14px;
+  padding: 2px 10px 2px 10px;
+}
+
+.equip-item select, .augment {
   margin-right: 5px;
+  flex-grow: 1;
+  max-width: 41.2%;
 }
 
 .other-inventory {
   position: absolute;
   padding: 70px 0px 0px 0px;
-  left: 485px;
+  left: 490px;
   width: 280px;
   top: -50px;
-  bottom: 0px;
+  bottom: -40px;
   border: 3px solid #000000ee;
   background-color: #161719;
+  display: flex;
+  flex-direction: column;
+}
+
+.purse {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0.2;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.cur-title, .item-name {
+  display: block;
+  text-align: center;
+}
+
+.currency {
+  padding: 0px 10px 0px 10px;
+  justify-content: left;
+  text-align: left;
 }
 
 .materials {
@@ -1105,6 +1156,7 @@ option[value=""][disabled] {
   display: flex;
   flex-direction: column;
   padding: 0px 10px 0px 10px;
+  margin-bottom: 20px;
 }
 
 .material {
@@ -1115,7 +1167,6 @@ option[value=""][disabled] {
 
 .empty-rarity, .rarity-name {
   width: 50%;
-  text-align: left;
   padding-left: 3px;
 }
 
@@ -1135,6 +1186,31 @@ option[value=""][disabled] {
 
 .thin {
   letter-spacing: -0.08em;
+}
+
+.material-buttons {
+  margin-top: 5px;
+}
+
+.item-stats {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-name {
+  width: calc(100% - 20px);
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+.item-desc {
+  text-wrap: pretty;
+  display: block;
+  text-align: left;
+  padding: 10px;
+  margin: 0px 10px 10px 10px;
+  flex-grow: 1;
 }
 
 hr {
@@ -1473,6 +1549,7 @@ progress {
         </div>
         <div id="character" class="page">
           <div class="zoomer max-size">
+            <img src="logo-large.svg" class="utopia">
             <div class="left-bar"></div>
             <div class="character-bar"></div>
             <div class="character-name-container">
@@ -2045,13 +2122,11 @@ progress {
                     <select id="head-augment">
                       <option value="" selected>Empty</option>
                     </select>
+                    <button class="augment" id="head-augment-button">Augment</button>
                   </div>
-                  <div class="equip-item">
+                  <div class="unaugmentable equip-item">
                     <label>Neck</label>
                     <select id="neck-select">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <select id="neck-augment">
                       <option value="" selected>Empty</option>
                     </select>
                   </div>
@@ -2063,15 +2138,17 @@ progress {
                     <select id="chest-augment">
                       <option value="" selected>Empty</option>
                     </select>
+                    <button class="augment" id="chest-augment-button">Augment</button>
                   </div>
                   <div class="equip-item">
                     <label>Waist</label>
                     <select id="waist-select">
                       <option value="" selected>Empty</option>
                     </select>
-                    <select id="waist-augment">
+                    <select disabled>
                       <option value="" selected>Empty</option>
                     </select>
+                    <button class="augment" disabled>Augment</button>
                   </div>
                   <div class="equip-item">
                     <label>Hands</label>
@@ -2081,15 +2158,17 @@ progress {
                     <select id="hands-augment">
                       <option value="" selected>Empty</option>
                     </select>
+                    <button class="augment" id="hands-augment-button">Augment</button>
                   </div>
                   <div class="equip-item">
                     <label>Ring</label>
                     <select id="ring-select">
                       <option value="" selected>Empty</option>
                     </select>
-                    <select id="ring-augment">
+                    <select disabled>
                       <option value="" selected>Empty</option>
                     </select>
+                    <button class="augment" disabled>Augment</button>
                   </div>
                   <div class="equip-item">
                     <label>Feet</label>
@@ -2099,12 +2178,13 @@ progress {
                     <select id="feet-augment">
                       <option value="" selected>Empty</option>
                     </select>
+                    <button class="augment" id="feet-augment-button">Augment</button>
                   </div>
                 </div>
               </div>
               <div class="other-inventory">
                 <div class="purse">
-                  <div class="inv-title wallet">Currency</div>
+                  <div class="cur-title inv-title">Currency</div>
                   <div class="currency">
                     <label id="0-cur-t">Silver</label>
                     <span id="0-cur">0</span>
@@ -2157,13 +2237,13 @@ progress {
                     <label class="c">0</label>
                     <label class="c">0</label>
                   </div>
-                  <div class="buttons">
+                  <div class="material-buttons">
                     <button id="forage">Forage</button>
                   </div>
                 </div>
                 <div class="item-stats">
-                  <label id="item-name" class="div-disabled inv-title item-name">Item</label>
-                  <label id="item-desc" class="div-disabled item-description">Description...</label>
+                  <label id="item-name" class="div-disabled item-name inv-title">Item</label>
+                  <label id="item-desc" class="div-disabled item-desc">Description...</label>
                 </div>
               </div>
             </div>
