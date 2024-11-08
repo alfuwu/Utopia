@@ -3,7 +3,7 @@
 /** state */ export const LOBBY = 1;
 
 // talent condition ids
-/** talent condition/tree */ export const SPECIES = 0; // requires player to be of defined species before they may unlock this talent
+/** talent condition/tree/specialist talent category */ export const SPECIES = 0; // requires player to be of defined species before they may unlock this talent
 /** talent condition */ export const TALENT = 1; // requires player to have defined talent before they may unlock this talent
 /** talent condition */ export const AT_LEAST_FROM_TREE = 2; // requires player to have defined amount from the defined tree, or at least 1 from the defined tree if amount is undefined
 /** talent condition */ export const ALL_FROM_TREE = 3; // requires player to have every talent in the defined tree
@@ -81,6 +81,14 @@ export const ACTION_COSTS = [3, 1, 3, 0.5, 1, 1, 4, undefined, 2, undefined, nul
 /** tree */ export const PROWESS = 6;
 /** tree */ export const SPECIALIST = 7; // unused
 
+// specialist talent categories
+///** specialist talent category */ export const SPECIES = 0; // specialist talents only obtainable by specific species
+/** specialist talent category */ export const BASIC = 1; // specific, niche, cheap, synergistic
+/** specialist talent category */ export const SIKLL = 2; // cenetered around a specific subtrait
+/** specialist talent category */ export const FABRICATION = 3; // innovation core tree specialist talents
+/** specialist talent category */ export const ARCANE = 4; // magecraft core tree specialist talents
+/** specialist talent category */ export const ULTIMATE = 5; // specialist talents obtainable after completing a tree
+
 // core stat ids
 /** core */ export const BODY = 0;
 /** core */ export const MIND = 1;
@@ -108,6 +116,13 @@ export const ACTION_COSTS = [3, 1, 3, 0.5, 1, 1, 4, undefined, 2, undefined, nul
 /** score */ export const MIN_CONSTITUTION  = 6;
 /** score */ export const MIN_ENDURANCE = 7;
 /** score */ export const MIN_EFFERVESCENCE = 8;
+
+// item types
+/** item type */ export const NONE = 0; // anything else
+/** item type */ export const WEAPON = 1; // swords, bows, shields, etc
+/** item type */ export const EQUIPMENT = 2; // helmets, breastplates, rings, clothing, etc
+/** item type */ export const CONSUMABLE = 3; // food, potions, etc
+/** item type */ export const GEAR = 4; // rope, lock picks, etc
 
 // operator ids
 /** operator + */ export const ADD = 0;

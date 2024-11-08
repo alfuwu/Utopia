@@ -57,7 +57,7 @@ export class Color {
     this.g = g;
     this.b = b;
   }
-  toString(m=1) {
-    return `${Math.round(this.r*m)},${Math.round(this.g*m)},${Math.round(this.b*m)}`;
+  toString(m=1, s=0) {
+    return `${Math.round(this.r*m)-s},${Math.round(this.g*m)-s},${Math.round(this.b*m)-s}`;
   }
 }

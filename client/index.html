@@ -13,7 +13,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #242427;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,6 +24,27 @@
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(0,0,0);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #666;
+  border-top: 20px;
+  border-radius: 15px;
+  filter: drop-shadow(0 0 2em #000);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 a {
@@ -92,7 +113,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #1b1a1c;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -183,7 +204,7 @@ option[value=""][disabled] {
   right: calc(3.5vw + 13px);
   height: 50px;
   border: 3px solid #000000ee;
-  background-color: #343434;
+  background-color: #2f2e32;
 }
 
 .character-name-container {
@@ -198,7 +219,7 @@ option[value=""][disabled] {
   font-size: 1em;
   border-radius: 5px;
   border: 0px solid #646cff;
-  background-color: #1a1a1a;
+  background-color: #1b1a1c;
   color: rgba(255, 255, 255, 0.87);
   min-width: 20em;
 }
@@ -216,6 +237,7 @@ option[value=""][disabled] {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 4px;
+  font-weight: 700;
 }
 
 .character-name-container {
@@ -239,7 +261,7 @@ option[value=""][disabled] {
   font-size: 1em;
   border-radius: 5px;
   border: 0px solid #646cff;
-  background-color: #1a1a1a;
+  background-color: #1b1a1c;
   color: rgba(255, 255, 255, 0.87);
 }
 
@@ -280,6 +302,7 @@ option[value=""][disabled] {
 .attribute-label {
   display: flex;
   align-items: center;
+  font-weight: 550;
 }
 
 .subtrait-field {
@@ -300,7 +323,7 @@ option[value=""][disabled] {
 
 .checkmark {
   color: #646cff;
-  background-color: #1a1a1a;
+  background-color: #1b1a1c;
   text-align: center;
   min-width: 19px;
   max-width: 19px;
@@ -331,7 +354,7 @@ option[value=""][disabled] {
 }
 
 .value-box button {
-  background-color: #1a1a1a;
+  background-color: #1b1a1c;
   color: white;
   border: 1px solid #646cff;
   padding: 5px 10px;
@@ -348,7 +371,7 @@ option[value=""][disabled] {
   min-width: 30px;
   max-width: 30px;
   text-align: center;
-  background-color: #1a1a1a;
+  background-color: #1b1a1c;
   color: white;
   border: 1px solid #646cff;
   padding: 5px;
@@ -374,6 +397,7 @@ option[value=""][disabled] {
 
 .attribute-field label, .subtrait label {
   white-space: nowrap;
+  font-weight: 550;
 }
 
 .core-stats {
@@ -382,7 +406,7 @@ option[value=""][disabled] {
   right: calc(max(20px, 4vw));
   display: flex;
   flex-direction: column;
-  background-color: #19191d22;
+  background-color: #19191f22;
   border-radius: 5px;
   border: 1px solid #00000066;
   padding: 10px;
@@ -1024,13 +1048,72 @@ option[value=""][disabled] {
   justify-content: left;
 }
 
+.item-categories {
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0px 0px 0px;
+  z-index: 1;
+  gap: -2px;
+}
+
+.item-categories button {
+  min-height: 30px;
+  max-height: 30px;
+  padding: 3px 3px 3px 3px;
+  margin-right: -2px;
+  flex-grow: 1;
+  border: 2px solid black;
+  border-radius: 8px 8px 0 0;
+  background-repeat: no-repeat no-repeat;
+  background-size: 100% 100%;
+  background-color: #88888866;
+}
+
+.item-categories button:hover {
+  background-color: #66666666;
+}
+
+.item-categories button:focus, .item-categories button:focus-visible {
+  z-index: 1;
+  outline: none;
+}
+
+.selected-category {
+  background-color: #666;
+}
+
+.new-category {
+  background-image: url(sparkles.svg);
+}
+
+.all-category {
+  background-image: url(all.svg);
+}
+
+.weapons-category {
+  background-image: url(weapons.svg);
+}
+
+.armor-category {
+  background-image: url(armor.svg);
+}
+
+.consumables-category {
+  background-image: url(food.svg);
+}
+
+.equipment-category {
+  background-image: url(equipment.svg);
+}
+
 .item-list {
   position: relative;
   width: calc(100% - 20px);
   left: -20px;
   right: -20px;
   flex-grow: 1;
-  padding: 20px;
+  padding-left: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -1211,6 +1294,20 @@ option[value=""][disabled] {
   padding: 10px;
   margin: 0px 10px 10px 10px;
   flex-grow: 1;
+  overflow-y: auto;
+}
+
+.crafting {
+  position: absolute;
+  padding: 70px 0px 0px 0px;
+  right: 0px;
+  width: calc(min(100% - 786px, 400px));
+  top: -50px;
+  bottom: 0px;
+  border: 3px solid #000000ee;
+  background-color: #161719;
+  display: flex;
+  flex-direction: column;
 }
 
 hr {
@@ -1291,13 +1388,14 @@ progress {
   bottom: 0px;
   left: 0px;
   right: 0px;
+  background-color: #1b1a1ccc !important;
 }
 /* end of notes style sheet */
 
 /* start of gm language style sheet */
 .language-name-container {
   border: 3px solid #000000ee;
-  background-color: #343434;
+  background-color: #2f2e32;
 }
 
 .word-list-bg {
@@ -1349,7 +1447,7 @@ progress {
   padding: 10px;
   font-size: 1em;
   border-radius: 5px;
-  background-color: #1a1a1a;
+  background-color: #1b1a1c;
   border: 0px;
   color: rgba(255, 255, 255, 0.87);
 }
@@ -1396,7 +1494,7 @@ progress {
   font-size: 1em;
   border-radius: 5px;
   border: 0px solid #646cff;
-  background-color: #1a1a1a;
+  background-color: #1b1a1c;
   color: rgba(255, 255, 255, 0.87);
 }
 
@@ -1565,22 +1663,22 @@ progress {
             </div>
 
             <div class="character-thingy-container">
-              <label for="block" class="attribute-label">Block:</label>
+              <label for="block" class="attribute-label">Block</label>
               <div class="value-box value-box-wide">
                 <span class="value" id="block" name="block">2d4</span>
               </div>
-              <label for="dodge" class="attribute-label">Dodge:</label>
+              <label for="dodge" class="attribute-label">Dodge</label>
               <div class="value-box value-box-wide ml10">
                 <span class="value" id="dodge" name="dodge">2d12</span>
               </div>
           
-              <label for="dhp" class="attribute-label">DHP:</label>
+              <label for="dhp" class="attribute-label">DHP</label>
               <div class="value-box value-box-wide">
-                <span class="value" id="dhp" name="dhp">0</span>
+                <span class="value" id="dhp" name="dhp">0/0</span>
               </div>
-              <label for="shp" class="attribute-label">SHP:</label>
+              <label for="shp" class="attribute-label">SHP</label>
               <div class="value-box value-box-wide ml10">
-                <span class="value" id="shp" name="shp">0</span>
+                <span class="value" id="shp" name="shp">0/0</span>
               </div>
             </div>
 
@@ -1955,6 +2053,7 @@ progress {
         <div id="talents" class="page">
           <div class="zoomer max-size handbook-thing talent-wrapper-thing">
             <div id="talent-selection" class="talents">
+              <img src="logo-large.svg" class="utopia">
               <div id="species-talents" class="big-talent filter-species">
                 <img class="big-head" draggable="false" ondragstart="return false;" src="./talent-head.svg" alt="">
                 <img class="big-body" draggable="false" ondragstart="return false;" src="./talent-body.svg" alt="">
@@ -2041,6 +2140,7 @@ progress {
         </div>
         <div id="inventory" class="page">
           <div class="zoomer max-size">
+            <img src="logo-large.svg" class="utopia">
             <div class="left-bar"></div>
             <div class="inventory-left">
               <div class="actual-inventory">
@@ -2051,6 +2151,14 @@ progress {
                   </div>
                 </div>
                 <hr>
+                <div class="item-categories">
+                  <button class="new-category"></button>
+                  <button class="all-category"></button>
+                  <button class="weapons-category"></button>
+                  <button class="armor-category"></button>
+                  <button class="consumables-category"></button>
+                  <button class="equipment-category"></button>
+                </div>
                 <div class="item-list">
                   <div class="inv-item">
                     <label class="inv-name">Appel</label>
@@ -2124,9 +2232,15 @@ progress {
                     </select>
                     <button class="augment" id="head-augment-button">Augment</button>
                   </div>
-                  <div class="unaugmentable equip-item">
+                  <div class="equip-item">
                     <label>Neck</label>
                     <select id="neck-select">
+                      <option value="" selected>Empty</option>
+                    </select>
+                  </div>
+                  <div class="equip-item">
+                    <label>Back</label>
+                    <select id="back-select">
                       <option value="" selected>Empty</option>
                     </select>
                   </div>
@@ -2138,6 +2252,9 @@ progress {
                     <select id="chest-augment">
                       <option value="" selected>Empty</option>
                     </select>
+                    <select id="chest-augment2">
+                      <option value="" selected>Empty</option>
+                    </select>
                     <button class="augment" id="chest-augment-button">Augment</button>
                   </div>
                   <div class="equip-item">
@@ -2145,10 +2262,6 @@ progress {
                     <select id="waist-select">
                       <option value="" selected>Empty</option>
                     </select>
-                    <select disabled>
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <button class="augment" disabled>Augment</button>
                   </div>
                   <div class="equip-item">
                     <label>Hands</label>
@@ -2165,10 +2278,6 @@ progress {
                     <select id="ring-select">
                       <option value="" selected>Empty</option>
                     </select>
-                    <select disabled>
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <button class="augment" disabled>Augment</button>
                   </div>
                   <div class="equip-item">
                     <label>Feet</label>
@@ -2198,7 +2307,7 @@ progress {
                   <div class="material">
                     <label class="empty-rarity"></label>
                     <label class="c">MC</label>
-                    <label class="c">AC</label>
+                    <label class="c">RC</label>
                     <label class="c">PC</label>
                   </div>
                   <div class="material">
@@ -2283,6 +2392,7 @@ progress {
           </div>
         </div>
         <div id="notes" class="page">
+          <img src="logo-large.svg" class="zoomer utopia">
           <textarea rows="12" type="text" class="big-text-box notes" id="notes-text" name="notes-text" style="min-width: 0%;" placeholder="Enter character notes here (e.g. backstory, custom talent data, etc)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         </div>
         <div id="loading" class="page">

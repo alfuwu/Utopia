@@ -28,6 +28,9 @@ export const characterData = {
   body: 0,
   mind: 0,
   soul: 0,
+  cShp: 0,
+  cDhp: 0,
+  cStam: 0,
   coreModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   scoreModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   blockRating: [[2, 6]],
@@ -38,7 +41,7 @@ export const characterData = {
   subtraitModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   inventory: [
     // name, amount, weight
-    { n: "Appel", a: 3, w: 1 }
+    { n: "Appel", a: 3, w: 1, new: true }
   ],
   cBody() {
     return applyModifier(this.coreModifiers[0], this.body);

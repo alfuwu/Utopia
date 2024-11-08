@@ -67,9 +67,9 @@ export default class Character extends Page {
   calculateSpeciesStats() {
     document.getElementById('block').textContent = characterData.blockRating[0][0] + 'd' + characterData.blockRating[0][1];
     document.getElementById('dodge').textContent = characterData.dodgeRating[0][0] + 'd' + characterData.dodgeRating[0][1];
-    document.getElementById('dhp').textContent = characterData.level + characterData.cEff() * characterData.cSoul();
-    document.getElementById('shp').textContent = characterData.level + characterData.cCon() * characterData.cBody();
-    document.getElementById('stamina').textContent = characterData.level + characterData.cEnd() * characterData.cMind();
+    document.getElementById('dhp').textContent = characterData.cDhp + '/' + (characterData.level + characterData.cEff() * characterData.cSoul());
+    document.getElementById('shp').textContent = characterData.cShp + '/' + (characterData.level + characterData.cCon() * characterData.cBody());
+    document.getElementById('stamina').textContent = characterData.cStam + '/' + (characterData.level + characterData.cEnd() * characterData.cMind());
     document.getElementById('constitution').textContent = characterData.cCon();
     document.getElementById('endurance').textContent = characterData.cEnd();
     document.getElementById('effervescence').textContent = characterData.cEff();
