@@ -1310,6 +1310,23 @@ option[value=""][disabled] {
   flex-direction: column;
 }
 
+.equip-thingy, .augment-thingy {
+  padding: 2px;
+  flex-grow: 1;
+  border-radius: 5px;
+  background-color: #1B1A1C;
+  margin-right: 5px;
+}
+
+.bar {
+  position: relative;
+  top: -10px;
+  width: 3px;
+  height: calc(100% + 20px);
+  background-color: #888;
+  margin-right: 5px;
+}
+
 hr {
   position: relative;
   left: 10px;
@@ -2224,70 +2241,51 @@ progress {
                 <div class="equipment">
                   <div class="equip-item">
                     <label>Head</label>
-                    <select id="head-select">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <select id="head-augment">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <button class="augment" id="head-augment-button">Augment</button>
+                    <label class="equip-thingy">Empty</label>
+                    <div class="bar"></div>
+                    <label class="augment-thingy">Empty</label>
                   </div>
                   <div class="equip-item">
                     <label>Neck</label>
-                    <select id="neck-select">
-                      <option value="" selected>Empty</option>
-                    </select>
+                    <label class="equip-thingy">Empty</label>
+                    <div class="bar"></div>
+                    <label class="augment-thingy"></label>
                   </div>
                   <div class="equip-item">
                     <label>Back</label>
-                    <select id="back-select">
-                      <option value="" selected>Empty</option>
-                    </select>
+                    <label class="equip-thingy">Empty</label>
+                    <div class="bar"></div>
+                    <label class="augment-thingy"></label>
                   </div>
                   <div class="equip-item">
                     <label>Chest</label>
-                    <select id="chest-select">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <select id="chest-augment">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <select id="chest-augment2">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <button class="augment" id="chest-augment-button">Augment</button>
+                    <label class="equip-thingy">Empty</label>
+                    <div class="bar"></div>
+                    <label class="augment-thingy">Empty</label>
                   </div>
                   <div class="equip-item">
                     <label>Waist</label>
-                    <select id="waist-select">
-                      <option value="" selected>Empty</option>
-                    </select>
+                    <label class="equip-thingy">Empty</label>
+                    <div class="bar"></div>
+                    <label class="augment-thingy"></label>
                   </div>
                   <div class="equip-item">
                     <label>Hands</label>
-                    <select id="hands-select">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <select id="hands-augment">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <button class="augment" id="hands-augment-button">Augment</button>
+                    <label class="equip-thingy">Empty</label>
+                    <div class="bar"></div>
+                    <label class="augment-thingy">Empty</label>
                   </div>
                   <div class="equip-item">
                     <label>Ring</label>
-                    <select id="ring-select">
-                      <option value="" selected>Empty</option>
-                    </select>
+                    <label class="equip-thingy">Empty</label>
+                    <div class="bar"></div>
+                    <label class="augment-thingy"></label>
                   </div>
                   <div class="equip-item">
                     <label>Feet</label>
-                    <select id="feet-select">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <select id="feet-augment">
-                      <option value="" selected>Empty</option>
-                    </select>
-                    <button class="augment" id="feet-augment-button">Augment</button>
+                    <label class="equip-thingy">Empty</label>
+                    <div class="bar"></div>
+                    <label class="augment-thingy">Empty</label>
                   </div>
                 </div>
               </div>
@@ -2347,12 +2345,39 @@ progress {
                     <label class="c">0</label>
                   </div>
                   <div class="material-buttons">
+                    <!-- These selects are ugly as hecc
+                         Maybe make a separate pop-out menu for foraging, so it doesn't clutter the base inventory screen?
+                    -->
+                    <select id="forage-time" class="">
+                      <option>1 hour</option>
+                      <option>4 hours</option>
+                      <option>8 hours</option>
+                      <option>12 hours</option>
+                      <option>18 hours</option>
+                    </select>
+                    <select id="forage-rarity" class="">
+                      <option>Crude</option>
+                      <option>Common</option>
+                      <option>Extraordinary</option>
+                      <option>Rare</option>
+                      <option>Legendary</option>
+                      <option>Mythical</option>
+                    </select>
+                    <select id="forage-type" class="">
+                      <option>Material</option>
+                      <option>Refinement</option>
+                      <option>Power</option>
+                    </select>
                     <button id="forage">Forage</button>
                   </div>
                 </div>
                 <div class="item-stats">
                   <label id="item-name" class="div-disabled item-name inv-title">Item</label>
                   <label id="item-desc" class="div-disabled item-desc">Description...</label>
+                  <div class="item-buttons">
+                    <button id="augment" disabled>Augment</button>
+                    <button id="equip" disabled>Equip</button>
+                  </div>
                 </div>
               </div>
             </div>
