@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spinning Icosahedron</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Include the Three.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+// Scene, camera, and renderer setup
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Create an icosahedron geometry
+const geometry = new THREE.IcosahedronGeometry(1, 0);
+
+// Function to create a unique canvas texture for each face
+function createCanvasTexture(faceIndex) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 640;
+    const context = canvas.getContext('2d');
+
+    // Fill with a random color
+    context.fillStyle = `hsl(${(faceIndex / geometry.attributes.position.count) * 360}, 100%, 50%)`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the text
+    context.font = '300px Arial';
+    context.fillStyle = 'black';
+    context.textAlign = 'center';
+
+    // Calculate the center position
+    const x = canvas.width / 2;
+    const y = canvas.height / 2;
+    document.body.append(canvas);
+
+    // Draw the text
+    context.fillText(faceIndex + 1, x, canvas.height * (85 / 100));
+    
+    // Create and return a texture
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;  // Ensure the texture is updated when drawn
+    return texture;
+}
+
+// Create materials array, one for each face of the icosahedron
+const materials = [];
+for (let i = 0; i < geometry.attributes.position.count / 3; i++) {
+    const texture = createCanvasTexture(i);
+    materials.push(new THREE.MeshBasicMaterial({ map: texture }));
+}
+
+const icosahedron = new THREE.Object3D();  // Group to hold individual face meshes
+
+const positionAttribute = geometry.getAttribute('position');
+for (let i = 0; i < positionAttribute.count; i += 3) {
+    // Create a new geometry for each triangular face
+    const g = new THREE.BufferGeometry();
+
+    // Extract vertices for the current face
+    const vertices = [];
+    for (let j = 0; j < 3; j++) {
+        const vertex = new THREE.Vector3().fromBufferAttribute(geometry.attributes.position, i + j);
+        vertices.push(vertex);
+    }
+    g.setFromPoints(vertices);
+    g.setIndex([0, 1, 2]);  // Define the face (triangle) indices
+    g.setAttribute("uv", new THREE.Float32BufferAttribute([0, 0, 1, 0, 0.5, 1], 2));
+
+    // Apply a unique texture to each face
+    const material = materials[i / 3];
+    const faceMesh = new THREE.Mesh(g, material);
+    
+    // Add the face to the icosahedron object
+    icosahedron.add(faceMesh);
+}
+
+scene.add(icosahedron);
+
+// Set camera position
+camera.position.z = 5;
+
+// Variables for rotation speed
+let rotX = 0;
+let rotY = 0;
+let damping = 0.94;  // Slow down factor
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+    
+    // Apply rotation speed to the icosahedron
+    icosahedron.rotation.x += rotX;
+    icosahedron.rotation.y += rotY;
+    
+    // Gradually reduce the rotation speed to simulate "slowing down"
+    rotX *= damping;
+    rotY *= damping;
+    if (rotX < 0.001) rotX = 0;
+    if (rotY < 0.001) rotY = 0;
+
+    // Render the scene
+    renderer.render(scene, camera);
+}
+
+// Start animation loop
+animate();
+
+// Event listener for click
+document.addEventListener('click', () => {
+    let rand = Math.random();
+    rotX = rand * 0.3;
+    rotY = (1 - rand) * 0.3;
+});
+
+// Adjust canvas size when window is resized
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
+    </script>
+</body>
+</html>
