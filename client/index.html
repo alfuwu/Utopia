@@ -255,7 +255,7 @@ option[value=""][disabled] {
   padding-right: 3.5vw;
 }
 
-.character-species-container select {
+select {
   padding: 10px;
   min-width: 20em;
   font-size: 1em;
@@ -271,7 +271,7 @@ option[value=""][disabled] {
   color: rgba(255, 255, 255, 0.87);
 }
 
-.character-species-container select:invalid {
+select:invalid {
   color: gray;
 }
 
@@ -1327,6 +1327,27 @@ option[value=""][disabled] {
   margin-right: 5px;
 }
 
+.forage-menu {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  background-color: #070809;
+  padding: 0px 30px 10px 30px;
+  border-radius: 8px;
+}
+
+.forage-menu label {
+  margin-top: 15px;
+}
+
+.forage-menu span {
+  color: #888;
+  font-size: 14px;
+}
+
 hr {
   position: relative;
   left: 10px;
@@ -2152,14 +2173,22 @@ progress {
         </div>
         <div id="actions" class="page">
           <div class="zoomer max-size">
-            
+            <div id="actions-list" class="actions-list">
+              <div class="action">
+                <div>Name</div>
+                <div>Turn Action Cost</div>
+                <div>Stamina Cost</div>
+                <div>Damage</div>
+                <div>Range & Effects</div>
+                <div>Notes</div>
+              </div>
+            </div>
           </div>
         </div>
         <div id="inventory" class="page">
           <div class="zoomer max-size">
             <img src="logo-large.svg" class="utopia">
             <div class="left-bar"></div>
-            <div class="forage-menu"></div>
             <div class="inventory-left">
               <div class="actual-inventory">
                 <div class="inv-title">
@@ -2361,6 +2390,35 @@ progress {
             </div>
             <div class="crafting">
               <button id="craft">Craft</button>
+            </div>
+            <div class="forage-menu">
+              <label>Rarity</label>
+              <select id="rarity">
+                <option>Crude</option>
+                <option>Common</option>
+                <option>Extraordinary</option>
+                <option>Rare</option>
+                <option>Legendary</option>
+                <option>Mythical</option>
+              </select>
+              <label>Component Type</label>
+              <select id="component-type">
+                <option>Material</option>
+                <option>Refinement</option>
+                <option>Power</option>
+              </select>
+              <label>Time</label>
+              <select id="time">
+                <option>1 hour (1 disfavor)</option>
+                <option>4 hours (no favor)</option>
+                <option>8 hours (1 favor)</option>
+                <option>12 houus (2 favor)</option>
+                <option>18 hours (3 favor)</option>
+              </select>
+              <label>Favor: -1 (2d6)</label>
+              <label>Difficulty Class: 1d4</label>
+              <span>(harvests 1d8)</span>
+              <button id="roll-forage">Roll</button>
             </div>
           </div>
         </div>

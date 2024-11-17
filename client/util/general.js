@@ -57,7 +57,75 @@ export class Color {
     this.g = g;
     this.b = b;
   }
+  rgbToHsl() {
+    const r = this.r / 255;
+    const g = this.g / 255;
+    const b = this.b / 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h, s, l;
+
+    l = (max + min) / 2;
+
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+
+      h *= 60; // Convert to degrees
+    }
+
+    return { h, s, l };
+  }
+  hslToRgb(h, s, l) {
+    const hueToRgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    let r, g, b;
+
+    if (s === 0) {
+      r = g = b = l; // achromatic
+    } else {
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hueToRgb(p, q, h / 360 + 1 / 3);
+      g = hueToRgb(p, q, h / 360);
+      b = hueToRgb(p, q, h / 360 - 1 / 3);
+    }
+    
+    return { r: r * 255, g: g * 255, b: b * 255 };
+  }
+  modifyHsl(hDelta = 0, sDelta = 0, lDelta = 0) {
+    const { h, s, l } = this.rgbToHsl();
+    const newH = (h + hDelta) % 360;
+    const newS = Math.min(Math.max(s + sDelta, 0), 1); // Clamp between 0 and 1
+    const newL = Math.min(Math.max(l + lDelta, 0), 1); // Clamp between 0 and 1
+
+    const { r, g, b } = this.hslToRgb(newH, newS, newL);
+    console.log(r, g, b);
+    return new Color(r, g, b);
+  }
   toString(m=1, s=0) {
-    return `${Math.round(this.r*m)-s},${Math.round(this.g*m)-s},${Math.round(this.b*m)-s}`;
+    return `${Math.round(Math.pow(this.r,m))-s},${Math.round(Math.pow(this.g,m))-s},${Math.round(Math.pow(this.b,m))-s}`;
   }
 }

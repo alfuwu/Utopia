@@ -189,7 +189,7 @@ export default class Talents extends Page {
       const col = game.treeColors[treeId];
       const h = characterData.talents.includes(talent);
       const sb = (treeId === Constants.SPECIES ? 0.3 + 0.7 * (1 - index/totalTalents) : 1) * (h ? 1 : 0.7);
-      talentElement.style.filter = `drop-shadow(0 0 2em rgb(${t.primaryBranch ? col[10].toString(sb, h ? 0 : 50) : col[9].toString(sb, h ? 0 : 50) || col[9].toString(sb, h ? 0 : 50) || '255,255,255'}))`;
+      talentElement.style.filter = `drop-shadow(0 0 2em rgb(${t.primaryBranch ? col[10].toString(sb) : col[9].toString(sb) || col[9].toString(sb) || '255,255,255'}))`;
       tn.classList.remove('div-disabled');
       td.classList.remove('div-disabled');
       this.index = index;

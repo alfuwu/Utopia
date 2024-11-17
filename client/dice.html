@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spinning Icosahedron</title>
+    <title>Spinning dice</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -20,8 +20,118 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Create an icosahedron geometry
-const geometry = new THREE.IcosahedronGeometry(1, 0);
+function isIndexed(geometry) {
+    return geometry.index != null;
+}
+
+function getFaces(geometry) {
+    const faces = [];
+    const position = geometry.getAttribute('position');
+    
+    for (let i = 0; i < position.count; i += 3) {
+        const face = { // only a single vertex, needs to be a list of tris
+            a: i,
+            b: i+1,
+            c: i+2
+        };
+        faces.push(face);
+    }
+    
+    for (let j = 0; j < faces.length; j++) {
+        const face = faces[j];
+        let pointA = new THREE.Vector3(
+            position.getX(face.a),
+            position.getY(face.a),
+            position.getZ(face.a)
+        );
+        let pointB = new THREE.Vector3(
+            position.getX(face.b),
+            position.getY(face.b),
+            position.getZ(face.b)
+        );
+        let pointC = new THREE.Vector3(
+            position.getX(face.c),
+            position.getY(face.c),
+            position.getZ(face.c)
+        );
+        
+        let faceTriangle = new THREE.Triangle(
+            pointA,
+            pointB,
+            pointC
+        );
+        
+        faceTriangle.getNormal(face.normal);
+    }
+    
+    return faces;
+}
+
+function getVertices(geometry) {
+    const position = geometry.getAttribute('position');
+    const vertices = [];
+    
+    for (let i = 0; i < position.count / position.itemSize; i++) {
+        const vertex = new THREE.Vector3(
+            position.getX(i),
+            position.getY(i),
+            position.getZ(i)
+        );
+        
+        vertices.push(vertex);
+    }
+    
+    return vertices;
+}
+
+function getFaceVertexUvs(geometry) {
+    const faceVertexUvs = [];
+    const uv = geometry.getAttribute( 'uv' );
+    
+    if (isIndexed(geometry)) {
+        const index = geometry.getIndex();
+        
+        for (let i = 0; i < index.count; i += 3) {
+            const faceVertexUv = [
+                new THREE.Vector2(
+                    uv.getX(index.getX(i)),
+                    uv.getY(index.getX(i))
+                ),
+                new THREE.Vector2(
+                    uv.getX(index.getX(i+1)),
+                    uv.getY(index.getX(i+1))
+                ),
+                new THREE.Vector2(
+                    uv.getX(index.getX(i+2)),
+                    uv.getY(index.getX(i+2))
+                )
+            ];
+            
+            faceVertexUvs.push(faceVertexUv);
+        }
+    } else {
+        for (let i = 0; i < uv.count; i += 3) {
+            const faceVertexUv = [
+                new THREE.Vector2(
+                    uv.getX(i),
+                    uv.getY(i)
+                ),
+                new THREE.Vector2(
+                    uv.getX(i+1),
+                    uv.getY(i+1)
+                ),
+                new THREE.Vector2(
+                    uv.getX(i+2),
+                    uv.getY(i+2)
+                )
+            ];
+            
+            faceVertexUvs.push(faceVertexUv);
+        }
+    }
+    
+    return faceVertexUvs;
+}
 
 // Function to create a unique canvas texture for each face
 function createCanvasTexture(faceIndex) {
@@ -31,7 +141,7 @@ function createCanvasTexture(faceIndex) {
     const context = canvas.getContext('2d');
 
     // Fill with a random color
-    context.fillStyle = `hsl(${(faceIndex / geometry.attributes.position.count) * 360}, 100%, 50%)`;
+    context.fillStyle = `hsl(${(faceIndex / 20) * 360}, 100%, 50%)`;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw the text
@@ -41,51 +151,68 @@ function createCanvasTexture(faceIndex) {
 
     // Calculate the center position
     const x = canvas.width / 2;
-    const y = canvas.height / 2;
-    document.body.append(canvas);
+    const y = canvas.height * 0.7;
+    context.fillText(faceIndex + 1, x, y);
 
-    // Draw the text
-    context.fillText(faceIndex + 1, x, canvas.height * (85 / 100));
-    
     // Create and return a texture
     const texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;  // Ensure the texture is updated when drawn
+    texture.needsUpdate = true; // Ensure the texture is updated
     return texture;
 }
 
-// Create materials array, one for each face of the icosahedron
-const materials = [];
-for (let i = 0; i < geometry.attributes.position.count / 3; i++) {
-    const texture = createCanvasTexture(i);
-    materials.push(new THREE.MeshBasicMaterial({ map: texture }));
+// Function to create a numbered material for each face
+function createFaceMaterials(geometry) {
+    const faces = getFaces(geometry); // Extract faces
+    const materials = [];
+
+    faces.forEach((face, index) => {
+        const texture = createCanvasTexture(index);
+        materials.push(new THREE.MeshBasicMaterial({ map: texture }));
+    });
+
+    return materials;
 }
 
-const icosahedron = new THREE.Object3D();  // Group to hold individual face meshes
+const dice = new THREE.Object3D();
+const faceCenters = [];
 
+// Create the icosahedron geometry
+const geometry = new THREE.DodecahedronGeometry(1, 0);
+
+// Create the materials for the faces
+const materials = createFaceMaterials(geometry);
+
+// Create a mesh with a multi-material
 const positionAttribute = geometry.getAttribute('position');
-for (let i = 0; i < positionAttribute.count; i += 3) {
-    // Create a new geometry for each triangular face
+
+const faces = getFaces(geometry);
+faces.forEach((face, index) => {
+    // Create a new BufferGeometry for the face
     const g = new THREE.BufferGeometry();
+    const vertices = [
+        positionAttribute.getX(face.a),
+        positionAttribute.getY(face.a),
+        positionAttribute.getZ(face.a),
+        positionAttribute.getX(face.b),
+        positionAttribute.getY(face.b),
+        positionAttribute.getZ(face.b),
+        positionAttribute.getX(face.c),
+        positionAttribute.getY(face.c),
+        positionAttribute.getZ(face.c)
+    ];
 
-    // Extract vertices for the current face
-    const vertices = [];
-    for (let j = 0; j < 3; j++) {
-        const vertex = new THREE.Vector3().fromBufferAttribute(geometry.attributes.position, i + j);
-        vertices.push(vertex);
-    }
-    g.setFromPoints(vertices);
-    g.setIndex([0, 1, 2]);  // Define the face (triangle) indices
-    g.setAttribute("uv", new THREE.Float32BufferAttribute([0, 0, 1, 0, 0.5, 1], 2));
+    g.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    g.setIndex([0, 1, 2]);
 
-    // Apply a unique texture to each face
-    const material = materials[i / 3];
-    const faceMesh = new THREE.Mesh(g, material);
-    
-    // Add the face to the icosahedron object
-    icosahedron.add(faceMesh);
-}
+    // Apply the corresponding material
+    const faceMesh = new THREE.Mesh(g, materials[index]);
+    faceMesh.userData.faceIndex = index + 1;
 
-scene.add(icosahedron);
+    // Add the face mesh to the group
+    dice.add(faceMesh);
+});
+
+scene.add(dice);
 
 // Set camera position
 camera.position.z = 5;
@@ -93,21 +220,99 @@ camera.position.z = 5;
 // Variables for rotation speed
 let rotX = 0;
 let rotY = 0;
-let damping = 0.94;  // Slow down factor
+let damping = 0.975;
+
+let targetQuaternion = null;
+let interpolationFactor = 0.05;
+
+const raycaster = new THREE.Raycaster();
+const center = new THREE.Vector3();
+
+function getClosestFaceIndex() {
+    raycaster.set(camera.position, center.sub(camera.position).normalize());
+
+    const intersects = raycaster.intersectObjects(dice.children);
+
+    if (intersects.length > 0) {
+        const closestFace = intersects[0].object;
+        return closestFace.userData.faceIndex;
+    }
+    return null;
+}
+
+function alignFaceToCamera() {
+    const diceWorldMatrix = dice.matrixWorld;
+    let closestFaceIndex = -1;
+    let minAngle = Infinity;
+
+    // Compute the direction vector of the camera in world space
+    const cameraDirection = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+
+    // Find the face closest to the camera's forward direction
+    faceCenters.forEach((faceCenter, index) => {
+        const faceCenterWorld = faceCenter.clone().applyMatrix4(diceWorldMatrix);
+        const faceDirection = faceCenterWorld.sub(dice.position).normalize();
+        const angle = faceDirection.angleTo(cameraDirection);
+
+        if (angle < minAngle) {
+            minAngle = angle;
+            closestFaceIndex = index;
+        }
+    });
+
+    if (closestFaceIndex !== -1) {
+        const vertices = [];
+        for (let j = 0; j < 3; j++) {
+            vertices.push(new THREE.Vector3().fromBufferAttribute(geometry.attributes.position, closestFaceIndex * 3 + j));
+        }
+
+        // Calculate the face normal
+        const faceNormal = new THREE.Vector3()
+            .crossVectors(
+                vertices[1].clone().sub(vertices[0]),
+                vertices[2].clone().sub(vertices[0])
+            )
+            .normalize();
+
+        // Calculate quaternion to rotate faceNormal to cameraDirection
+        const lookAtQuaternion = new THREE.Quaternion().setFromUnitVectors(faceNormal, cameraDirection);
+
+        // Final target quaternion for alignment
+        targetQuaternion = lookAtQuaternion;
+    }
+}
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
     
-    // Apply rotation speed to the icosahedron
-    icosahedron.rotation.x += rotX;
-    icosahedron.rotation.y += rotY;
+    // Apply rotation speed to the dice
+    dice.rotation.x += rotX;
+    dice.rotation.y += rotY;
     
-    // Gradually reduce the rotation speed to simulate "slowing down"
     rotX *= damping;
     rotY *= damping;
-    if (rotX < 0.001) rotX = 0;
-    if (rotY < 0.001) rotY = 0;
+    if (Math.abs(rotX) < 0.01 && Math.abs(rotY) < 0.01 && (rotX > 0 || rotY > 0)) {
+        rotX = rotY = 0;
+        alignFaceToCamera();
+    }
+    if (targetQuaternion) {
+        dice.quaternion.slerp(targetQuaternion, interpolationFactor);
+
+        if (dice.quaternion.angleTo(targetQuaternion) < 0.01) {
+            targetQuaternion = null;
+            const closestFaceIndex = getClosestFaceIndex();
+            if (closestFaceIndex !== null)
+                console.log("Closest face index:", closestFaceIndex);
+            else
+                console.log("An error occurred and the dice roll could not be determined. Please roll the die again.");
+        }
+    }
+
+    if (Math.abs(rotX) < 0.001)
+        rotX = 0;
+    if (Math.abs(rotY) < 0.001)
+        rotY = 0;
 
     // Render the scene
     renderer.render(scene, camera);
@@ -121,6 +326,8 @@ document.addEventListener('click', () => {
     let rand = Math.random();
     rotX = rand * 0.3;
     rotY = (1 - rand) * 0.3;
+    targetQuaternion = null;
+    //alignFaceToCamera();
 });
 
 // Adjust canvas size when window is resized
