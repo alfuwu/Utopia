@@ -13,6 +13,64 @@
     <!-- Include the Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+// extra geometries
+THREE.DecahedronGeometry = function(radius, detail) {
+    const sides = 10 * (detail + 1);
+    const verticesPerFace = 6; // A quadrilateral is made of 2 triangles
+    const vertices = [
+      [0, 0, 1],
+      [0, 0, -1]
+    ].flat();
+
+    // https://github.com/byWulf/threejs-dice/blob/master/lib/dice.js#L499
+    for (let i = 0; i < sides; ++i) {
+      const b = (i * Math.PI * 2) / sides;
+      vertices.push(-Math.cos(b), -Math.sin(b), 0.105 * (i % 2 ? 1 : -1));
+    }
+
+    const f = [
+      0, 11, 2,
+      0, 2, 3,
+      0, 3, 4,
+      0, 4, 5,
+      0, 5, 6,
+      0, 6, 7,
+      0, 7, 8,
+      0, 8, 9,
+      0, 9, 10,
+      0, 10, 11,
+      1, 3, 2,
+      1, 4, 3,
+      1, 5, 4,
+      1, 6, 5,
+      1, 7, 6,
+      1, 8, 7,
+      1, 9, 8,
+      1, 10, 9,
+      1, 11, 10,
+      1, 2, 11
+    ];
+    const args = [vertices, f, radius, 0];
+    const pentagonalTrapezohedronGeometry = new THREE.PolyhedronGeometry(...args);
+    return pentagonalTrapezohedronGeometry;
+}
+THREE.CoinGeometry = function(radius, detail) {
+    return new THREE.CylinderGeometry(1, 1, 0.2 * radius, 32 * (detail + 1));
+}
+THREE.MobiusGeometry = function(detail) {
+    function mobius(u, t, target) {
+        u = u - 0.5;
+        const v = 2 * Math.PI * t;
+        let x, y, z;
+        const a = 2;
+        x = Math.cos(v) * (a + u * Math.cos(v / 2));
+        y = Math.sin(v) * (a + u * Math.cos(v / 2));
+        z = u * Math.sin(v / 2);
+        target.set(x, y, z);
+    }
+    return new THREE.ParametricGeometry(mobius, 100 * (detail + 1), 100 * (detail + 1));
+}
+
 // Scene, camera, and renderer setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -20,128 +78,72 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-function isIndexed(geometry) {
-    return geometry.index != null;
+function onSamePlane(vec, tri, epsilon=1e-6) {
+    // Step 1: Calculate the normal of the plane
+    const edge1 = new THREE.Vector3().subVectors(tri[1], tri[0]); // v2 - v1
+    const edge2 = new THREE.Vector3().subVectors(tri[2], tri[0]); // v3 - v1
+    const normal = new THREE.Vector3().crossVectors(edge1, edge2).normalize(); // Normalized normal vector
+
+    // Step 2: Calculate the plane constant
+    // Plane equation: ax + by + cz + d = 0
+    const constant = -normal.dot(tri[0]); // d = - (normal • vertex1)
+
+    // Step 3: Check if the test vertex satisfies the plane equation
+    const distance = normal.dot(vec) + constant;
+
+    return Math.abs(distance) < epsilon;
+}
+
+function hasMatchingAxes(vec1, vec2) {
+    let matches = 0;
+    if (vec1.x === vec2.x) matches++;
+    if (vec1.y === vec2.y) matches++;
+    if (vec1.z === vec2.z) matches++;
+
+    return matches >= 2; // Returns true if 2 or more axes match
+}
+
+function hasVertex(vec, list) {
+    for (const vec1 of list)
+        if (vec.x === vec1.x && vec.y === vec1.y && vec.z === vec1.z)
+            return true;
+    return false;
 }
 
 function getFaces(geometry) {
+    const positionAttribute = geometry.getAttribute('position');
     const faces = [];
-    const position = geometry.getAttribute('position');
-    
-    for (let i = 0; i < position.count; i += 3) {
-        const face = { // only a single vertex, needs to be a list of tris
-            a: i,
-            b: i+1,
-            c: i+2
-        };
-        faces.push(face);
+    for (let i = 0; i < positionAttribute.count; i += 3) {
+        const v1 = new THREE.Vector3().fromBufferAttribute(geometry.attributes.position, i);
+        const v2 = new THREE.Vector3().fromBufferAttribute(geometry.attributes.position, i+1);
+        const v3 = new THREE.Vector3().fromBufferAttribute(geometry.attributes.position, i+2);
+        const tri = [v1, v2, v3];
+        let matching = false;
+        for (const face of faces) {
+            for (const tri1 of face) {
+                if (tri.filter(v => hasVertex(v, tri1)).length === 2 && onSamePlane(tri.filter(v => !hasVertex(v, tri1))[0], tri1, 0.1)) {
+                    matching = true;
+                    break;
+                }
+            }
+            if (matching)
+                face.push([v1, v2, v3]);
+        }
+        if (!matching)
+            faces.push([[v1, v2, v3]]);
     }
-    
-    for (let j = 0; j < faces.length; j++) {
-        const face = faces[j];
-        let pointA = new THREE.Vector3(
-            position.getX(face.a),
-            position.getY(face.a),
-            position.getZ(face.a)
-        );
-        let pointB = new THREE.Vector3(
-            position.getX(face.b),
-            position.getY(face.b),
-            position.getZ(face.b)
-        );
-        let pointC = new THREE.Vector3(
-            position.getX(face.c),
-            position.getY(face.c),
-            position.getZ(face.c)
-        );
-        
-        let faceTriangle = new THREE.Triangle(
-            pointA,
-            pointB,
-            pointC
-        );
-        
-        faceTriangle.getNormal(face.normal);
-    }
-    
     return faces;
 }
 
-function getVertices(geometry) {
-    const position = geometry.getAttribute('position');
-    const vertices = [];
-    
-    for (let i = 0; i < position.count / position.itemSize; i++) {
-        const vertex = new THREE.Vector3(
-            position.getX(i),
-            position.getY(i),
-            position.getZ(i)
-        );
-        
-        vertices.push(vertex);
-    }
-    
-    return vertices;
-}
-
-function getFaceVertexUvs(geometry) {
-    const faceVertexUvs = [];
-    const uv = geometry.getAttribute( 'uv' );
-    
-    if (isIndexed(geometry)) {
-        const index = geometry.getIndex();
-        
-        for (let i = 0; i < index.count; i += 3) {
-            const faceVertexUv = [
-                new THREE.Vector2(
-                    uv.getX(index.getX(i)),
-                    uv.getY(index.getX(i))
-                ),
-                new THREE.Vector2(
-                    uv.getX(index.getX(i+1)),
-                    uv.getY(index.getX(i+1))
-                ),
-                new THREE.Vector2(
-                    uv.getX(index.getX(i+2)),
-                    uv.getY(index.getX(i+2))
-                )
-            ];
-            
-            faceVertexUvs.push(faceVertexUv);
-        }
-    } else {
-        for (let i = 0; i < uv.count; i += 3) {
-            const faceVertexUv = [
-                new THREE.Vector2(
-                    uv.getX(i),
-                    uv.getY(i)
-                ),
-                new THREE.Vector2(
-                    uv.getX(i+1),
-                    uv.getY(i+1)
-                ),
-                new THREE.Vector2(
-                    uv.getX(i+2),
-                    uv.getY(i+2)
-                )
-            ];
-            
-            faceVertexUvs.push(faceVertexUv);
-        }
-    }
-    
-    return faceVertexUvs;
-}
-
 // Function to create a unique canvas texture for each face
-function createCanvasTexture(faceIndex) {
+function createCanvasTexture(faceIndex, totalFaces) {
     const canvas = document.createElement('canvas');
     canvas.width = 640;
     canvas.height = 640;
     const context = canvas.getContext('2d');
 
     // Fill with a random color
-    context.fillStyle = `hsl(${(faceIndex / 20) * 360}, 100%, 50%)`;
+    context.fillStyle = `hsl(${(faceIndex / totalFaces) * 360}, 100%, 50%)`;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw the text
@@ -160,58 +162,108 @@ function createCanvasTexture(faceIndex) {
     return texture;
 }
 
-// Function to create a numbered material for each face
 function createFaceMaterials(geometry) {
     const faces = getFaces(geometry); // Extract faces
     const materials = [];
 
     faces.forEach((face, index) => {
-        const texture = createCanvasTexture(index);
+        const texture = createCanvasTexture(index, faces.length);
         materials.push(new THREE.MeshBasicMaterial({ map: texture }));
     });
 
     return materials;
 }
 
-const dice = new THREE.Object3D();
-const faceCenters = [];
+function createDiceModel(sides) {
+    const dice = new THREE.Object3D();
+    const faceCenters = [];
 
-// Create the icosahedron geometry
-const geometry = new THREE.DodecahedronGeometry(1, 0);
+    /* Available geometries:
+    * 
+    * IcosahedronGeometry(1, 0) - 20-sided die
+    * DodecahedronGeometry(1, 0) - 12 sided die
+    * DecahedronGeometry(1, 0) - 10 sided die
+    * OctahedronGeometry(1, 0) - 8 sided die
+    * BoxGeometry(1, 1, 1) - 6 sided die (broken)
+    * TetrahedronGeometry(1, 0) - 4 sided die
+    * CoinGeometry(1, 0) - 2 sided die
+    * MobiusGeometry(0) - 1 sided die?
+    */
+    let geometry;
+    switch(sides) {
+        case 1: {
+            geometry = new THREE.MobiusGeometry(0); break;
+        }
+        case 2: {
+            geometry = new THREE.CoinGeometry(1, 0); break;
+        }
+        case 4: {
+            geometry = new THREE.TetrahedronGeometry(1, 0); break;
+        }
+        case 6: {
+            geometry = new THREE.BoxGeometry(1, 1, 1); break;
+        }
+        case 8: {
+            geometry = new THREE.OctahedronGeometry(1, 0); break;
+        }
+        case 10: {
+            geometry = new THREE.DecahedronGeometry(1, 0); break;
+        }
+        case 12: {
+            geometry = new THREE.DodecahedronGeometry(1, 0); break;
+        }
+        case 20: {
+            geometry = new THREE.IcosahedronGeometry(1, 0); break;
+        }
+        case 100: {
+            geometry = new THREE.IcosahedronGeometry(1, 2); break;
+        }
+        default: {
+            console.error("Invalid dice sides: " + sides);
+            break;
+        }
+    }
 
-// Create the materials for the faces
-const materials = createFaceMaterials(geometry);
+    // Create the materials for the faces
+    const materials = createFaceMaterials(geometry);
 
-// Create a mesh with a multi-material
-const positionAttribute = geometry.getAttribute('position');
+    // Create a mesh with a multi-material
+    const positionAttribute = geometry.getAttribute('position');
 
-const faces = getFaces(geometry);
-faces.forEach((face, index) => {
-    // Create a new BufferGeometry for the face
-    const g = new THREE.BufferGeometry();
-    const vertices = [
-        positionAttribute.getX(face.a),
-        positionAttribute.getY(face.a),
-        positionAttribute.getZ(face.a),
-        positionAttribute.getX(face.b),
-        positionAttribute.getY(face.b),
-        positionAttribute.getZ(face.b),
-        positionAttribute.getX(face.c),
-        positionAttribute.getY(face.c),
-        positionAttribute.getZ(face.c)
-    ];
+    if (sides > 2 && sides != 6) {
+        const faces = getFaces(geometry);
+        faces.forEach((face, index) => {
+            for (const tri of face) {
+                // Create a new BufferGeometry for the face
+                const g = new THREE.BufferGeometry();
+                console.log(tri);
 
-    g.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    g.setIndex([0, 1, 2]);
+                //faceCenters.push(new THREE.Vector3(
+                //    (vertices[0].x + vertices[1].x + vertices[2].x) / 3,
+                //    (vertices[0].y + vertices[1].y + vertices[2].y) / 3,
+                //    (vertices[0].z + vertices[1].z + vertices[2].z) / 3
+                //));
 
-    // Apply the corresponding material
-    const faceMesh = new THREE.Mesh(g, materials[index]);
-    faceMesh.userData.faceIndex = index + 1;
+                g.setFromPoints(tri);
+                g.setIndex([0, 1, 2]);
 
-    // Add the face mesh to the group
-    dice.add(faceMesh);
-});
+                const otherI = index;// index & 0x1 === 1 ? faces.length - index : index;
 
+                // Apply the corresponding material
+                const faceMesh = new THREE.Mesh(g, materials[otherI]);
+                faceMesh.userData.faceIndex = otherI + 1;
+
+                // Add the face mesh to the group
+                dice.add(faceMesh);
+            }
+        });
+    } else {
+        dice.add(new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ side: THREE.DoubleSide })));
+    }
+    return dice;
+}
+
+const dice = createDiceModel(1);
 scene.add(dice);
 
 // Set camera position
