@@ -153,7 +153,7 @@ function createCanvasTexture(faceIndex, totalFaces) {
 
     // Calculate the center position
     const x = canvas.width / 2;
-    const y = canvas.height * 0.7;
+    const y = canvas.height * 0.825;
     context.fillText(faceIndex + 1, x, y);
 
     // Create and return a texture
@@ -162,8 +162,8 @@ function createCanvasTexture(faceIndex, totalFaces) {
     return texture;
 }
 
-function createFaceMaterials(geometry) {
-    const faces = getFaces(geometry); // Extract faces
+function createFaceMaterials(geometry, epsilon=0.1) {
+    const faces = getFaces(geometry, epsilon); // Extract faces
     const materials = [];
 
     faces.forEach((face, index) => {
@@ -180,44 +180,41 @@ function createDiceModel(sides) {
 
     /* Available geometries:
     * 
-    * IcosahedronGeometry(1, 0) - 20-sided die
-    * DodecahedronGeometry(1, 0) - 12 sided die
-    * DecahedronGeometry(1, 0) - 10 sided die
-    * OctahedronGeometry(1, 0) - 8 sided die
-    * BoxGeometry(1, 1, 1) - 6 sided die (broken)
-    * TetrahedronGeometry(1, 0) - 4 sided die
-    * CoinGeometry(1, 0) - 2 sided die
-    * MobiusGeometry(0) - 1 sided die?
+    * IcosahedronGeometry(1, 0) - 20-sided die (tri per face)
+    * DodecahedronGeometry(1, 0) - 12 sided die (three tri per face)
+    * DecahedronGeometry(1, 0) - 10 sided die (two tri per face)
+    * OctahedronGeometry(1, 0) - 8 sided die (tri per face)
+    * BoxGeometry(1, 1, 1) - 6 sided die (not textured (yet), two tri per face)
+    * TetrahedronGeometry(1, 0) - 4 sided die (tri per face)
+    * CoinGeometry(1, 0) - 2 sided die (a lot of tris per face)
+    * MobiusGeometry(0) - 1 sided die? (also a lot of tris per face)
     */
     let geometry;
     switch(sides) {
-        case 1: {
-            geometry = new THREE.MobiusGeometry(0); break;
-        }
-        case 2: {
-            geometry = new THREE.CoinGeometry(1, 0); break;
-        }
-        case 4: {
-            geometry = new THREE.TetrahedronGeometry(1, 0); break;
-        }
-        case 6: {
-            geometry = new THREE.BoxGeometry(1, 1, 1); break;
-        }
-        case 8: {
-            geometry = new THREE.OctahedronGeometry(1, 0); break;
-        }
-        case 10: {
-            geometry = new THREE.DecahedronGeometry(1, 0); break;
-        }
-        case 12: {
-            geometry = new THREE.DodecahedronGeometry(1, 0); break;
-        }
-        case 20: {
-            geometry = new THREE.IcosahedronGeometry(1, 0); break;
-        }
-        case 100: {
-            geometry = new THREE.IcosahedronGeometry(1, 2); break;
-        }
+        case 1:
+            geometry = new THREE.MobiusGeometry(-0.5);
+            break;
+        case 2:
+            geometry = new THREE.CoinGeometry(1, 0);
+            break;
+        case 4:
+            geometry = new THREE.TetrahedronGeometry(1, 0);
+            break;
+        case 6:
+            geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+            break;
+        case 8:
+            geometry = new THREE.OctahedronGeometry(1, 0);
+            break;
+        case 10:
+            geometry = new THREE.DecahedronGeometry(1, 0);
+            break;
+        case 12:
+            geometry = new THREE.DodecahedronGeometry(1, 0);
+            break;
+        case 20:
+            geometry = new THREE.IcosahedronGeometry(1, 0);
+            break;
         default: {
             console.error("Invalid dice sides: " + sides);
             break;
@@ -233,21 +230,22 @@ function createDiceModel(sides) {
     if (sides > 2 && sides != 6) {
         const faces = getFaces(geometry);
         faces.forEach((face, index) => {
+            let faceCenter = new THREE.Vector3((face[0][0].x + face[0][1].x + face[0][2].x) / 3, (face[0][0].y + face[0][1].y + face[0][2].y) / 3, (face[0][0].z + face[0][1].z + face[0][2].z) / 3);
             for (const tri of face) {
                 // Create a new BufferGeometry for the face
                 const g = new THREE.BufferGeometry();
-                console.log(tri);
-
-                //faceCenters.push(new THREE.Vector3(
-                //    (vertices[0].x + vertices[1].x + vertices[2].x) / 3,
-                //    (vertices[0].y + vertices[1].y + vertices[2].y) / 3,
-                //    (vertices[0].z + vertices[1].z + vertices[2].z) / 3
-                //));
 
                 g.setFromPoints(tri);
                 g.setIndex([0, 1, 2]);
+                g.setAttribute("uv", new THREE.Float32BufferAttribute([
+                    0, 0, // bottom left
+                    1, 0, // bottom right
+                    0.5, 1 // middle top
+                ], 2));
 
-                const otherI = index;// index & 0x1 === 1 ? faces.length - index : index;
+                faceCenter = new THREE.Vector3((faceCenter.x + ((tri[0].x + tri[2].x + tri[2].x) / 3)) / 2, (faceCenter.y + ((tri[0].y + tri[2].y + tri[2].y) / 3)) / 2, (faceCenter.z + ((tri[0].z + tri[2].z + tri[2].z) / 3)) / 2);
+
+                const otherI = index & 0x1 === 1 ? faces.length - index : index;
 
                 // Apply the corresponding material
                 const faceMesh = new THREE.Mesh(g, materials[otherI]);
@@ -256,14 +254,25 @@ function createDiceModel(sides) {
                 // Add the face mesh to the group
                 dice.add(faceMesh);
             }
+            faceCenters.push(faceCenter);
         });
     } else {
         dice.add(new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ side: THREE.DoubleSide })));
+        switch(sides) {
+            case 2:
+                faceCenters.push(new THREE.Vector3(0.7143575325608253, 0.10000000149011612, 0.633920835951964));
+                faceCenters.push(new THREE.Vector3(0.32963351905345917, 0.10000000149011612, 0.9199893871943156));
+                break;
+            case 6:
+                break;
+        }
     }
-    return dice;
+    return { dice, geometry, faceCenters };
 }
 
-const dice = createDiceModel(1);
+const sides = 2;
+const { dice, geometry, faceCenters } = createDiceModel(sides);
+console.log(faceCenters);
 scene.add(dice);
 
 // Set camera position
@@ -272,25 +281,14 @@ camera.position.z = 5;
 // Variables for rotation speed
 let rotX = 0;
 let rotY = 0;
+let rotZ = 0;
 let damping = 0.975;
+let roll = -1;
 
 let targetQuaternion = null;
 let interpolationFactor = 0.05;
 
-const raycaster = new THREE.Raycaster();
 const center = new THREE.Vector3();
-
-function getClosestFaceIndex() {
-    raycaster.set(camera.position, center.sub(camera.position).normalize());
-
-    const intersects = raycaster.intersectObjects(dice.children);
-
-    if (intersects.length > 0) {
-        const closestFace = intersects[0].object;
-        return closestFace.userData.faceIndex;
-    }
-    return null;
-}
 
 function alignFaceToCamera() {
     const diceWorldMatrix = dice.matrixWorld;
@@ -313,10 +311,13 @@ function alignFaceToCamera() {
     });
 
     if (closestFaceIndex !== -1) {
-        const vertices = [];
-        for (let j = 0; j < 3; j++) {
-            vertices.push(new THREE.Vector3().fromBufferAttribute(geometry.attributes.position, closestFaceIndex * 3 + j));
+        let vertices = [];
+        if (sides > 2) {
+            vertices = getFaces(geometry)[closestFaceIndex][0]; // first tri is probably fine to use
+        } else {
+            vertices = getFaces(geometry)[closestFaceIndex][0]
         }
+        // i dont wanna center it
 
         // Calculate the face normal
         const faceNormal = new THREE.Vector3()
@@ -332,6 +333,7 @@ function alignFaceToCamera() {
         // Final target quaternion for alignment
         targetQuaternion = lookAtQuaternion;
     }
+    return closestFaceIndex;
 }
 
 // Animation loop
@@ -341,21 +343,20 @@ function animate() {
     // Apply rotation speed to the dice
     dice.rotation.x += rotX;
     dice.rotation.y += rotY;
+    dice.rotation.z += rotZ;
     
     rotX *= damping;
     rotY *= damping;
-    if (Math.abs(rotX) < 0.01 && Math.abs(rotY) < 0.01 && (rotX > 0 || rotY > 0)) {
-        rotX = rotY = 0;
-        alignFaceToCamera();
-    }
+    rotZ *= damping;
+    if (Math.abs(rotX) < 0.005 && Math.abs(rotY) < 0.005 & Math.abs(rotZ) < 0.005 && (rotX > 0 || rotY > 0 || rotZ > 0))
+        roll = alignFaceToCamera();
     if (targetQuaternion) {
         dice.quaternion.slerp(targetQuaternion, interpolationFactor);
 
         if (dice.quaternion.angleTo(targetQuaternion) < 0.01) {
             targetQuaternion = null;
-            const closestFaceIndex = getClosestFaceIndex();
-            if (closestFaceIndex !== null)
-                console.log("Closest face index:", closestFaceIndex);
+            if (roll !== -1)
+                console.log("Closest face index:", roll);
             else
                 console.log("An error occurred and the dice roll could not be determined. Please roll the die again.");
         }
@@ -365,6 +366,8 @@ function animate() {
         rotX = 0;
     if (Math.abs(rotY) < 0.001)
         rotY = 0;
+    if (Math.abs(rotZ) < 0.001)
+        rotZ = 0;
 
     // Render the scene
     renderer.render(scene, camera);
@@ -375,9 +378,11 @@ animate();
 
 // Event listener for click
 document.addEventListener('click', () => {
-    let rand = Math.random();
-    rotX = rand * 0.3;
-    rotY = (1 - rand) * 0.3;
+    const x = Math.random();
+    const y = Math.random();
+    rotX = x * 0.3;
+    rotY = (y - x) * 0.3;
+    rotZ = (1 -  y) * 0.3;
     targetQuaternion = null;
     //alignFaceToCamera();
 });
