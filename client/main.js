@@ -40,8 +40,8 @@ export const characterData = {
   subtraits: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   subtraitModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
   inventory: [
-    // name, amount, weight
-    { n: "Appel", a: 3, w: 1, new: true }
+    // name, amount, weight, new?, type
+    { n: "Appel", a: 3, w: 1, e: true, t: Constants.WEAPON }
   ],
   cBody() {
     return applyModifier(this.coreModifiers[0], this.body);
@@ -75,10 +75,10 @@ export const game = {
     [Constants.SPECIES]: [undefined, 21, 100, 169, 90, 87, 50, 120, 70, new Color(255, 255, 255), new Color(238, 238, 255)],
     [Constants.WARFARE]: [50, 20, 400, 317, 123, 180, 50, 50, 70, new Color(209, 127, 119)],
     [Constants.TACTICS]: [50, 12, 600, 84, 130, 168, 50, 50, 70, new Color(125, 169, 116)],
-    [Constants.INNOVATION]: [80, 17, 500, 339, 97, 171, 50, 50, 70, new Color(248, 162, 111)],
+    [Constants.INNOVATION]: [80, 17, 500, 339, 97, 171, 50, 50, 70, new Color(208, 162, 111)],
     [Constants.MAGECRAFT]: [75, 72, 120, 27, 102, 165, 50, 70, 70, new Color(213, 205, 127)],
-    [Constants.INFLUENCE]: [45, 93, 150, 187, undefined, 180, 70, 50, 70, new Color(80, 94, 155)],
-    [Constants.PROWESS]: [45, 72, 120, 205, undefined, 161, 70, 50, 70, new Color(212, 168, 239)],
+    [Constants.INFLUENCE]: [45, 93, 150, 187, undefined, 180, 70, 50, 70, new Color(120, 134, 165)],
+    [Constants.PROWESS]: [45, 72, 120, 205, undefined, 161, 70, 50, 70, new Color(162, 128, 179)],
   },
   talents: {
     // human tree

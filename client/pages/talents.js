@@ -80,7 +80,7 @@ export default class Talents extends Page {
       soul.textContent = soulCost;
       const col = game.treeColors[this.treeId];
       const sb = this.treeId === Constants.SPECIES ? 0.3 + 0.7 * (1 - this.index/this.totalTalents) : 1;
-      this.talent.style.filter = `drop-shadow(0 0 2em rgb(${game.talents[this.talentKey].primaryBranch ? col[10].toString(sb) : col[9].toString(sb) || col[9].toString(sb) || '255,255,255'}))`;
+      this.talent.style.filter = `drop-shadow(0 0 2em rgb(${game.talents[this.talentKey].primaryBranch ? col[10].toString(sb) || col[9].toString(sb) || '255,255,255' : col[9].toString(sb) || '255,255,255'}))`;
     });
     document.addEventListener('mousedown', event => {
       if (event.target.tagName !== 'BUTTON' && event.target.id !== 'talent-desc' && event.target.id !== 'talent-name' && event.target.id !== 'tdc' && event.target.id !== 'talent-cost' && event.target.id !== 'td' && event.target.id !== 'body-cost' && event.target.id !== 'mind-cost' && event.target.id !== 'soul-cost' && event.target.name !== 'a' && this.talent !== undefined)
@@ -189,7 +189,7 @@ export default class Talents extends Page {
       const col = game.treeColors[treeId];
       const h = characterData.talents.includes(talent);
       const sb = (treeId === Constants.SPECIES ? 0.3 + 0.7 * (1 - index/totalTalents) : 1) * (h ? 1 : 0.7);
-      talentElement.style.filter = `drop-shadow(0 0 2em rgb(${t.primaryBranch ? col[10].toString(sb) : col[9].toString(sb) || col[9].toString(sb) || '255,255,255'}))`;
+      talentElement.style.filter = `drop-shadow(0 0 2em rgb(${t.primaryBranch ? col[10].modifyHsl(1, 1, h ? 1 : 0.5).toString(sb) || col[9].modifyHsl(1, 1, h ? 1 : 0.5).toString(sb) || '255,255,255' : col[9].modifyHsl(1, 1, h ? 1 : 0.5).toString(sb) || '255,255,255'}))`;
       tn.classList.remove('div-disabled');
       td.classList.remove('div-disabled');
       this.index = index;

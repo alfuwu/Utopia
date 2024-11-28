@@ -117,15 +117,15 @@ export class Color {
   }
   modifyHsl(hDelta = 0, sDelta = 0, lDelta = 0) {
     const { h, s, l } = this.rgbToHsl();
-    const newH = (h + hDelta) % 360;
-    const newS = Math.min(Math.max(s + sDelta, 0), 1); // Clamp between 0 and 1
-    const newL = Math.min(Math.max(l + lDelta, 0), 1); // Clamp between 0 and 1
+    const newH = (h * hDelta) % 360;
+    const newS = Math.min(Math.max(s * sDelta, 0), 1); // Clamp between 0 and 1
+    const newL = Math.min(Math.max(l * lDelta, 0), 1); // Clamp between 0 and 1
 
     const { r, g, b } = this.hslToRgb(newH, newS, newL);
-    console.log(r, g, b);
+    console.log(this.r, this.g, this.b, " || ", r, g, b);
     return new Color(r, g, b);
   }
   toString(m=1, s=0) {
-    return `${Math.round(Math.pow(this.r,m))-s},${Math.round(Math.pow(this.g,m))-s},${Math.round(Math.pow(this.b,m))-s}`;
+    return `${Math.round(this.r*m)-s},${Math.round(this.g*m)-s},${Math.round(this.b*m)-s}`;
   }
 }
