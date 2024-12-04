@@ -39,10 +39,15 @@ export const characterData = {
   gifted: [0, 5, 11],
   subtraits: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   subtraitModifiers: [{flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1 }, {flat: 0, mult: 1, abMult: 1}, {flat: 0, mult: 1, abMult: 1}],
-  inventory: [
-    // name, amount, weight, new?, type
-    { n: "Appel", a: 3, w: 1, e: true, t: Constants.WEAPON }
-  ],
+  inventory: {
+    // name, amount, weight, new, type, components
+    items: [{ n: "Appel", a: 3, w: 1, e: true, t: Constants.CONSUMABLE, c: [] }],
+    equipment: [],
+    mats: {
+      cr: [0, 0, 0], c: [0, 0, 0], ex: [0, 0, 0], r: [0, 0, 0], e: [0, 0, 0], l: [0, 0, 0], m: [0, 0, 0]
+    },
+    cur: [{t: "Silver", a: 100}, {t: "Utian Credits", a: 0}]
+  },
   cBody() {
     return applyModifier(this.coreModifiers[0], this.body);
   },

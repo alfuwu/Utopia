@@ -127,6 +127,18 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+textarea, input[type="text"] {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  background-color: #1b1a1c;
+  border: 0px;
+  color: rgba(255, 255, 255, 0.87);
+  resize: none;
+  text-wrap: pretty;
+  text-align: left;
+}
+
 option[value=""][disabled] {
   display: none;
 }
@@ -215,12 +227,8 @@ option[value=""][disabled] {
 }
 
 .character-name-container input[type="text"] {
-  padding: 10px;
   font-size: 1em;
-  border-radius: 5px;
   border: 0px solid #646cff;
-  background-color: #1b1a1c;
-  color: rgba(255, 255, 255, 0.87);
   min-width: 20em;
 }
 
@@ -1229,9 +1237,19 @@ select:invalid {
 }
 
 .currency {
+  display: flex;
+  flex-direction: row;
   padding: 0px 10px 0px 10px;
   justify-content: left;
   text-align: left;
+}
+
+.currency label, .currency span {
+  width: 50%;
+}
+
+.currency span {
+  font-family: papyrus, Papyrus, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .materials {
@@ -1325,6 +1343,50 @@ select:invalid {
   height: calc(100% + 20px);
   background-color: #888;
   margin-right: 5px;
+}
+
+.components {
+  background-color: #00000033;
+  border-radius: 5px;
+  margin: 15px;
+  padding: 5px;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.components button {
+  width: 100%;
+  font-size: 14px;
+}
+
+.craft-name2 {
+  margin-bottom: 15px;
+}
+
+.craft-desc {
+  flex-grow: 0.2;
+  margin: 5px 15px 5px 15px;
+}
+
+.type {
+  margin-top: 10px;
+}
+
+.damage-select {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.damage-select select {
+  min-width: 0em;
+  flex-grow: 1;
+}
+
+.craft {
+  margin: 0px 15px 15px 15px;
 }
 
 .forage-menu {
@@ -1503,15 +1565,6 @@ progress {
   overflow-x: hidden;
   flex-wrap: wrap;
   text-wrap: wrap;
-}
-
-.round-input {
-  padding: 10px;
-  font-size: 1em;
-  border-radius: 5px;
-  background-color: #1b1a1c;
-  border: 0px;
-  color: rgba(255, 255, 255, 0.87);
 }
 
 .language-container {
@@ -2413,12 +2466,27 @@ progress {
               </div>
             </div>
             <div class="crafting">
-              <div>
-                <label for="craft-rarity">Rarity: </span>
-                <label id="craft-rarity" class="crude">Crude</label>
+              <div class="craft-name2">
+                <label for="craft-name">Name:</label>
+                <input id="craft-name" type="text" placeholder="Gram" />
               </div>
-              <input type="text" />
-              <textarea></textarea>
+              <label>Description:</label>
+              <textarea id="craft-desc" class="craft-desc" placeholder="Gram, slayer of Fafnir"></textarea>
+              <div class="type">
+                <label for="type">Type:</label>
+                <select id="type">
+                  <option value="0" selected>Fast Weapon</option>
+                  <option value="1">Moderate Weapon</option>
+                  <option value="2">Slow Weapon</option>
+                  <option value="3">Shield</option>
+                  <option value="8">Consumable</option>
+                  <option value="4">Chest Armor</option>
+                  <option value="5">Head Armor</option>
+                  <option value="6">Hand Armor</option>
+                  <option value="7">Foot Armor</option>
+                  <option value="9">Artifact</option>
+                </select>
+              </div>
               <div class="components">
                 <button id="add-component">Add Component</button>
               </div>
@@ -2431,31 +2499,35 @@ progress {
               <div class="rp">
                 <label>RP: 1</label>
               </div>
-              <button id="craft">Craft</button>
+              <div>
+                <label for="craft-rarity">Rarity:</span>
+                <label id="craft-rarity" class="crude">Crude</label>
+              </div>
+              <button class="craft" id="craft">Craft</button>
             </div>
-            <div class="forage-menu" style="display: none;">
+            <div class="forage-menu" id="fm" style="display: none;">
               <label>Rarity</label>
               <select id="rarity">
-                <option>Crude</option>
-                <option>Common</option>
-                <option>Extraordinary</option>
-                <option>Rare</option>
-                <option>Legendary</option>
-                <option>Mythical</option>
+                <option value="cr">Crude</option>
+                <option value="c">Common</option>
+                <option value="ex">Extraordinary</option>
+                <option value="r">Rare</option>
+                <option value="l">Legendary</option>
+                <option value="m">Mythical</option>
               </select>
               <label>Component Type</label>
               <select id="component-type">
-                <option>Material</option>
-                <option>Refinement</option>
-                <option>Power</option>
+                <option value="0">Material</option>
+                <option value="1">Refinement</option>
+                <option value="2">Power</option>
               </select>
               <label>Time</label>
               <select id="time">
-                <option>1 hour (1 disfavor)</option>
-                <option>4 hours (no favor)</option>
-                <option>8 hours (1 favor)</option>
-                <option>12 houus (2 favor)</option>
-                <option>18 hours (3 favor)</option>
+                <option value="-1">1 hour (1 disfavor)</option>
+                <option value="0">4 hours (no favor)</option>
+                <option value="1">8 hours (1 favor)</option>
+                <option value="2">12 houus (2 favor)</option>
+                <option value="3">18 hours (3 favor)</option>
               </select>
               <label>Favor: -1 (2d6)</label>
               <label>Difficulty Class: 1d4</label>
@@ -2472,7 +2544,7 @@ progress {
                 <p id="lang-desc"></p>
               </div>
               <div class="lang-search-container">
-                <input type="text" class="form-control round-input" id="lang-search" placeholder="Search Utopian dictionary">
+                <input type="text" class="form-control" id="lang-search" placeholder="Search Utopian dictionary">
               </div>
               <div id="dict" class="dictionary">
   
@@ -2537,7 +2609,7 @@ progress {
               </div>
               <div class="word-data">
                 <label for="word">Word:</label>
-                <input type="text" class="round-input" id="word" name="word" placeholder="Word...">
+                <input type="text" id="word" name="word" placeholder="Word...">
                 <div id="uses" style="overflow-y: auto; min-height: 40vh; max-height: calc(40vh); width: 100%; background-color: #000000ee;">
                   
                 </div>
